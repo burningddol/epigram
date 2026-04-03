@@ -112,7 +112,7 @@
 
 ### US2 — Features (의존: T036~T043)
 
-- [ ] T044 [US2] 감정 선택 feature 구현 — 5가지 감정 선택 UI, 선택 후 컴포넌트 숨김, 하루 1회 제한 (`src/features/emotion-select/ui/EmotionSelector.tsx`, `src/features/emotion-select/model/useEmotionSelect.ts`)
+- [x] T044 [US2] 감정 선택 feature 구현 — 5가지 감정 선택 UI, 선택 후 컴포넌트 숨김, 하루 1회 제한 (`src/features/emotion-select/ui/EmotionSelector.tsx`, `src/features/emotion-select/model/useEmotionSelect.ts`)
 
 ### US2 — Widgets (의존: T044)
 
