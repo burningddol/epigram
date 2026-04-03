@@ -62,7 +62,7 @@
 ### US1 — 엔티티 & 모델
 
 - [x] T021 [P] [US1] User 엔티티 Zod 스키마 정의 (`src/entities/user/model/schema.ts`)
-- [ ] T022 [P] [US1] Auth 응답 타입 정의 — SignUpResponse, SignInResponse (`src/entities/user/model/types.ts`)
+- [x] T022 [P] [US1] Auth 응답 타입 정의 — SignUpResponse, SignInResponse (`src/entities/user/model/types.ts`)
 
 ### US1 — API 레이어
 
