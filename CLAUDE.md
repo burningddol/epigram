@@ -44,6 +44,8 @@ General: Follow standard conventions
 4. 작업 수행
 5. 커밋 메시지: "type: 설명 (#이슈번호)"
 6. PR 생성 — 본문에 반드시 `Closes #이슈번호` 포함 → 사용자가 merge
+7. PR의 코드를 code-review스킬을 사용하여 리뷰하고 comment 작성
+8. 코드리뷰 comment를 참고하여 simplify 스킬을 사용하여 리팩토링 후 커밋 및 푸쉬
 ```
 
 코드를 한 줄이라도 작성하기 전에 이슈와 브랜치가 먼저 존재해야 한다.
@@ -109,15 +111,16 @@ curl -s -H "X-Figma-Token: $FIGMA_TOKEN" \
 
 ### ISR 적용 기준
 
-| 페이지 / 데이터 | 전략 | 이유 |
-|---|---|---|
-| 에피그램 상세 (`/epigrams/[id]`) | ISR (`revalidate: 60`) | 공개 데이터, 변경 빈도 낮음 |
-| 에피그램 목록 (`/epigrams`) | ISR (`revalidate: 30`) | 공개 데이터, 새 에피그램 추가 가능 |
-| 랜딩 (`/`) | `force-static` | 완전 정적, 데이터 없음 |
-| 마이페이지 (`/mypage`) | **ISR 금지** — 클라이언트 전용 | 인증 필요, 개인화 데이터 |
-| 감정 로그 (`/mypage` 등 인증 영역) | **ISR 금지** — 클라이언트 전용 | 사용자별 데이터 |
+| 페이지 / 데이터                    | 전략                           | 이유                               |
+| ---------------------------------- | ------------------------------ | ---------------------------------- |
+| 에피그램 상세 (`/epigrams/[id]`)   | ISR (`revalidate: 60`)         | 공개 데이터, 변경 빈도 낮음        |
+| 에피그램 목록 (`/epigrams`)        | ISR (`revalidate: 30`)         | 공개 데이터, 새 에피그램 추가 가능 |
+| 랜딩 (`/`)                         | `force-static`                 | 완전 정적, 데이터 없음             |
+| 마이페이지 (`/mypage`)             | **ISR 금지** — 클라이언트 전용 | 인증 필요, 개인화 데이터           |
+| 감정 로그 (`/mypage` 등 인증 영역) | **ISR 금지** — 클라이언트 전용 | 사용자별 데이터                    |
 
 **규칙:**
+
 - 공개(비인증) 데이터 → ISR 우선
 - 인증 필요 / 개인화 데이터 → React Query(클라이언트) 유지, ISR 금지
 - 검색 결과 (`/search`) → `dynamic = 'force-dynamic'` (쿼리 파라미터 기반)
@@ -151,11 +154,7 @@ export async function generateStaticParams() {
   return epigrams.list.map((e) => ({ id: String(e.id) }));
 }
 
-export default async function EpigramDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function EpigramDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const epigram = await fetchEpigramByIdServer(id);
   return <EpigramDetailView epigram={epigram} />;
@@ -179,7 +178,7 @@ export async function fetchEpigramsServer(params?: {
   const res = await fetch(`${BACKEND_BASE}/epigrams?${query}`, {
     next: {
       revalidate: 30,
-      tags: ["epigrams"],      // On-demand revalidation 태그
+      tags: ["epigrams"], // On-demand revalidation 태그
     },
   });
 
@@ -208,7 +207,7 @@ import { revalidateTag, revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  const { tag, path } = await request.json() as { tag?: string; path?: string };
+  const { tag, path } = (await request.json()) as { tag?: string; path?: string };
 
   if (tag) revalidateTag(tag);
   if (path) revalidatePath(path);
@@ -223,8 +222,8 @@ import { revalidateTag, revalidatePath } from "next/cache";
 
 export async function createEpigramAction(data: CreateEpigramRequest) {
   // ... 에피그램 생성 로직
-  revalidateTag("epigrams");           // 목록 캐시 무효화
-  revalidatePath("/epigrams");         // 목록 페이지 재생성
+  revalidateTag("epigrams"); // 목록 캐시 무효화
+  revalidatePath("/epigrams"); // 목록 페이지 재생성
 }
 ```
 
@@ -235,10 +234,10 @@ export async function createEpigramAction(data: CreateEpigramRequest) {
 **⚠️ ISR 서버 컴포넌트에서 `/api/[...path]` 프록시 경유를 금지한다.**
 프록시 route handler는 `cache: "no-store"`로 고정되어 있으므로 ISR 캐싱이 불가하다.
 
-| 컨텍스트 | 사용할 fetch 방식 | 위치 |
-|---|---|---|
-| 서버 컴포넌트 (ISR) | `fetch(BACKEND_URL/...)` with `next.revalidate` | `src/entities/*/api/server.ts` |
-| 클라이언트 컴포넌트 (React Query) | `apiClient` (axios, `/api/...` 경유) | `src/entities/*/api/client.ts` |
+| 컨텍스트                          | 사용할 fetch 방식                               | 위치                           |
+| --------------------------------- | ----------------------------------------------- | ------------------------------ |
+| 서버 컴포넌트 (ISR)               | `fetch(BACKEND_URL/...)` with `next.revalidate` | `src/entities/*/api/server.ts` |
+| 클라이언트 컴포넌트 (React Query) | `apiClient` (axios, `/api/...` 경유)            | `src/entities/*/api/client.ts` |
 
 - 서버 전용 함수 파일명: `server.ts`
 - 클라이언트 전용 함수 파일명: `client.ts` (기존 유지)
@@ -273,6 +272,7 @@ export default async function EpigramsPage() {
 ```
 
 이렇게 하면:
+
 1. 서버에서 ISR 캐시로 빠르게 HTML 생성
 2. 클라이언트에서 React Query가 초기 데이터를 재사용 (중복 fetch 없음)
 3. 이후 갱신은 React Query의 `staleTime` / `refetchOnWindowFocus` 로직 따름
