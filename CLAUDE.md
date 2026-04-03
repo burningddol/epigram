@@ -103,6 +103,195 @@ curl -s -H "X-Figma-Token: $FIGMA_TOKEN" \
 
 **⚠️ contracts/ 나 spec.md 기술 내용이 실제 swagger와 다를 수 있다. 반드시 swagger를 정답으로 삼는다. 예외 없음.**
 
+## ISR 캐싱 최적화 원칙 (예외 없음)
+
+**이 프로젝트는 가능한 모든 페이지에 ISR(Incremental Static Regeneration)을 적용한다.**
+
+### ISR 적용 기준
+
+| 페이지 / 데이터 | 전략 | 이유 |
+|---|---|---|
+| 에피그램 상세 (`/epigrams/[id]`) | ISR (`revalidate: 60`) | 공개 데이터, 변경 빈도 낮음 |
+| 에피그램 목록 (`/epigrams`) | ISR (`revalidate: 30`) | 공개 데이터, 새 에피그램 추가 가능 |
+| 랜딩 (`/`) | `force-static` | 완전 정적, 데이터 없음 |
+| 마이페이지 (`/mypage`) | **ISR 금지** — 클라이언트 전용 | 인증 필요, 개인화 데이터 |
+| 감정 로그 (`/mypage` 등 인증 영역) | **ISR 금지** — 클라이언트 전용 | 사용자별 데이터 |
+
+**규칙:**
+- 공개(비인증) 데이터 → ISR 우선
+- 인증 필요 / 개인화 데이터 → React Query(클라이언트) 유지, ISR 금지
+- 검색 결과 (`/search`) → `dynamic = 'force-dynamic'` (쿼리 파라미터 기반)
+
+---
+
+### ISR 구현 패턴 (Next.js App Router)
+
+#### 1. 페이지 레벨 revalidate (기본)
+
+```tsx
+// src/app/epigrams/page.tsx
+export const revalidate = 30; // 30초마다 백그라운드 재생성
+
+export default async function EpigramsPage() {
+  // 서버 컴포넌트에서 직접 fetch — proxy(/api/...) 경유 금지
+  const data = await fetchEpigramsServer();
+  return <EpigramsView initialData={data} />;
+}
+```
+
+#### 2. 동적 라우트 ISR + generateStaticParams
+
+```tsx
+// src/app/epigrams/[id]/page.tsx
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  // 빌드 시 자주 조회되는 에피그램 ID를 미리 생성
+  const epigrams = await fetchRecentEpigramsServer({ limit: 20 });
+  return epigrams.list.map((e) => ({ id: String(e.id) }));
+}
+
+export default async function EpigramDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const epigram = await fetchEpigramByIdServer(id);
+  return <EpigramDetailView epigram={epigram} />;
+}
+```
+
+#### 3. fetch 레벨 캐싱 (세밀한 제어)
+
+```ts
+// src/entities/epigram/api/server.ts  ← 서버 전용 fetch 함수
+const BACKEND_BASE = `${process.env.BACKEND_URL}/${process.env.TEAM_ID}`;
+
+export async function fetchEpigramsServer(params?: {
+  limit?: number;
+  cursor?: number;
+}): Promise<EpigramListResponse> {
+  const query = new URLSearchParams();
+  if (params?.limit) query.set("limit", String(params.limit));
+  if (params?.cursor) query.set("cursor", String(params.cursor));
+
+  const res = await fetch(`${BACKEND_BASE}/epigrams?${query}`, {
+    next: {
+      revalidate: 30,
+      tags: ["epigrams"],      // On-demand revalidation 태그
+    },
+  });
+
+  if (!res.ok) throw new Error(`Failed to fetch epigrams: ${res.status}`);
+  return res.json() as Promise<EpigramListResponse>;
+}
+
+export async function fetchEpigramByIdServer(id: string): Promise<Epigram> {
+  const res = await fetch(`${BACKEND_BASE}/epigrams/${id}`, {
+    next: {
+      revalidate: 60,
+      tags: ["epigrams", `epigram-${id}`],
+    },
+  });
+
+  if (!res.ok) throw new Error(`Failed to fetch epigram ${id}: ${res.status}`);
+  return res.json() as Promise<Epigram>;
+}
+```
+
+#### 4. On-demand Revalidation (에피그램 생성/수정/삭제 시)
+
+```ts
+// src/app/api/revalidate/route.ts
+import { revalidateTag, revalidatePath } from "next/cache";
+import { NextRequest, NextResponse } from "next/server";
+
+export async function POST(request: NextRequest): Promise<NextResponse> {
+  const { tag, path } = await request.json() as { tag?: string; path?: string };
+
+  if (tag) revalidateTag(tag);
+  if (path) revalidatePath(path);
+
+  return NextResponse.json({ revalidated: true });
+}
+```
+
+```ts
+// 에피그램 생성 후 캐시 무효화 (Server Action 또는 API 호출 후)
+import { revalidateTag, revalidatePath } from "next/cache";
+
+export async function createEpigramAction(data: CreateEpigramRequest) {
+  // ... 에피그램 생성 로직
+  revalidateTag("epigrams");           // 목록 캐시 무효화
+  revalidatePath("/epigrams");         // 목록 페이지 재생성
+}
+```
+
+---
+
+### 서버 전용 fetch vs 클라이언트 axios 구분
+
+**⚠️ ISR 서버 컴포넌트에서 `/api/[...path]` 프록시 경유를 금지한다.**
+프록시 route handler는 `cache: "no-store"`로 고정되어 있으므로 ISR 캐싱이 불가하다.
+
+| 컨텍스트 | 사용할 fetch 방식 | 위치 |
+|---|---|---|
+| 서버 컴포넌트 (ISR) | `fetch(BACKEND_URL/...)` with `next.revalidate` | `src/entities/*/api/server.ts` |
+| 클라이언트 컴포넌트 (React Query) | `apiClient` (axios, `/api/...` 경유) | `src/entities/*/api/client.ts` |
+
+- 서버 전용 함수 파일명: `server.ts`
+- 클라이언트 전용 함수 파일명: `client.ts` (기존 유지)
+- 서버 전용 파일 최상단에 반드시 `// Server-only: DO NOT import in client components` 주석 추가
+
+---
+
+### Hydration 전략 (서버 → 클라이언트 상태 전달)
+
+React Query와 ISR을 함께 쓸 때 초기 데이터를 클라이언트에 전달하여 중복 요청을 방지한다.
+
+```tsx
+// src/app/epigrams/page.tsx
+import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
+
+export const revalidate = 30;
+
+export default async function EpigramsPage() {
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: ["epigrams"],
+    queryFn: () => fetchEpigramsServer({ limit: 10 }),
+  });
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <EpigramsView />
+    </HydrationBoundary>
+  );
+}
+```
+
+이렇게 하면:
+1. 서버에서 ISR 캐시로 빠르게 HTML 생성
+2. 클라이언트에서 React Query가 초기 데이터를 재사용 (중복 fetch 없음)
+3. 이후 갱신은 React Query의 `staleTime` / `refetchOnWindowFocus` 로직 따름
+
+---
+
+### ISR 구현 체크리스트
+
+새로운 페이지를 만들 때마다 아래를 확인한다:
+
+- [ ] 공개 데이터인가? → `export const revalidate = N` 추가
+- [ ] 동적 라우트인가? → `generateStaticParams` 구현
+- [ ] 서버 fetch 함수가 `next: { revalidate, tags }` 옵션을 사용하는가?
+- [ ] 데이터 변경 로직에 `revalidateTag` / `revalidatePath` 호출이 있는가?
+- [ ] 서버 컴포넌트가 axios/프록시 경유 대신 직접 fetch를 사용하는가?
+- [ ] 인증 필요 데이터에 ISR을 잘못 적용하지 않았는가?
+
+---
+
 ## 커밋 전 필수 체크
 
 ```
