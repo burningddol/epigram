@@ -29,7 +29,7 @@ function HeroSection() {
         className="pointer-events-none absolute left-2 top-8 select-none font-serif text-[140px] leading-none text-blue-300 opacity-40 tablet:left-10 tablet:text-[220px]"
         aria-hidden="true"
       >
-        {'\u201C'}
+        {"\u201C"}
       </span>
 
       <div className="relative flex flex-col items-center gap-6 animate-fade-in-up">
