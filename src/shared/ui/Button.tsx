@@ -4,10 +4,11 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const VARIANT_CLASSES = {
-  primary: "bg-black text-white hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed",
+  primary:
+    "bg-black-500 text-white hover:bg-black-600 disabled:bg-blue-300 disabled:text-white disabled:cursor-not-allowed",
   secondary:
-    "border border-black text-black hover:bg-gray-100 disabled:border-gray-300 disabled:text-gray-300 disabled:cursor-not-allowed",
-  ghost: "text-gray-500 hover:text-black disabled:text-gray-300 disabled:cursor-not-allowed",
+    "border border-black-500 text-black-500 hover:bg-blue-200 disabled:border-blue-300 disabled:text-blue-300 disabled:cursor-not-allowed",
+  ghost: "text-blue-400 hover:text-black-500 disabled:text-blue-300 disabled:cursor-not-allowed",
 } as const;
 
 export function Button({
@@ -21,7 +22,7 @@ export function Button({
   return (
     <button
       disabled={disabled || isLoading}
-      className={`inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black ${VARIANT_CLASSES[variant]} ${className}`}
+      className={`inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black-500 ${VARIANT_CLASSES[variant]} ${className}`}
       {...props}
     >
       {isLoading ? (
