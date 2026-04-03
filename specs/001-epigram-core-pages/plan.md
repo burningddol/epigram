@@ -81,10 +81,8 @@ src/
 │   ├── page.tsx                      # / 랜딩 페이지
 │   ├── login/page.tsx                # /login
 │   ├── signup/page.tsx               # /signup
-│   ├── oauth/signup/
-│   │   ├── kakao/page.tsx            # /oauth/signup/kakao
-│   │   ├── google/page.tsx           # /oauth/signup/google (확장 대비)
-│   │   └── naver/page.tsx            # /oauth/signup/naver (확장 대비)
+│   ├── oauth/callback/
+│   │   └── kakao/page.tsx            # /oauth/callback/kakao (인가 코드 처리 → /epigrams)
 │   ├── epigrams/
 │   │   ├── page.tsx                  # /epigrams 메인 홈
 │   │   └── [id]/
@@ -102,7 +100,6 @@ src/
 │   ├── landing/
 │   ├── login/
 │   ├── signup/
-│   ├── oauth-signup/
 │   ├── epigrams/
 │   ├── epigram-detail/
 │   ├── epigram-edit/

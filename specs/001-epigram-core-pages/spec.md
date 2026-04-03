@@ -31,7 +31,7 @@
 9. **Given** 로그인 정보가 올바를 때, **When** 로그인 버튼을 클릭하면, **Then** 홈(`/`)으로 이동한다.
 10. **Given** 로그인 정보가 틀렸을 때, **When** 로그인 버튼을 클릭하면, **Then** "이메일 혹은 비밀번호를 확인해주세요." 에러 메시지를 표시한다.
 11. **Given** 이미 로그인된 사용자가 `/login`에 접근하면, **When** 페이지가 로드되면, **Then** 홈(`/`)으로 리다이렉트된다.
-12. **Given** 카카오 간편 로그인 시 미가입 상태이면, **When** OAuth 콜백이 실행되면, **Then** `/oauth/signup/kakao`로 이동한다.
+12. **Given** 카카오 간편 로그인 버튼을 클릭하면, **When** OAuth 콜백이 실행되면, **Then** `/epigrams`로 이동한다. (가입과 로그인 단일 처리 — `POST /auth/signIn/kakao`)
 
 ---
 
@@ -48,7 +48,7 @@
 1. **Given** 로그인된 사용자가 메인 페이지에 있을 때, **When** 페이지가 로드되면, **Then** 오늘의 에피그램 1개와 최신 에피그램 3개가 표시된다.
 2. **Given** 최신 에피그램 섹션에서, **When** "더보기" 버튼을 클릭하면, **Then** 5개의 에피그램이 추가로 표시된다.
 3. **Given** 최근 댓글 섹션에서, **When** "더보기" 버튼을 클릭하면, **Then** 4개의 댓글이 추가로 표시된다.
-4. **Given** 오늘의 감정을 아직 선택하지 않은 사용자가, **When** 감정(감동/기쁨/고민/슬픔/분노) 중 하나를 선택하면, **Then** 감정 선택 컴포넌트가 사라진다.
+4. **Given** 오늘의 감정을 아직 선택하지 않은 사용자가, **When** 감정(`MOVED/HAPPY/WORRIED/SAD/ANGRY`) 중 하나를 선택하면, **Then** 감정 선택 컴포넌트가 사라진다.
 5. **Given** 이미 오늘의 감정을 선택한 사용자가, **When** 메인 페이지에 접근하면, **Then** 감정 선택 컴포넌트가 렌더링되지 않는다 (완전히 숨김).
 6. **Given** 사용자가 일정 수준 스크롤을 내리면, **When** 위화살표 버튼이 나타나고 클릭하면, **Then** 페이지 최상단으로 이동한다.
 7. **Given** 에피그램 카드를 클릭하면, **When** 클릭 시, **Then** 해당 에피그램 상세 페이지(`/epigrams/:id`)로 이동한다.
@@ -128,7 +128,7 @@
 1. **Given** 마이페이지에서, **When** "로그아웃" 버튼을 클릭하면, **Then** 로그아웃되고 홈(`/`)으로 이동한다.
 2. **Given** 프로필 이미지를 클릭하면, **When** 파일 선택 창에서 영문 파일명 이미지를 선택하면, **Then** 이미지가 업로드되고 프로필에 반영된다.
 3. **Given** 감정 달력에서, **When** 월을 이동하면, **Then** 해당 월의 날짜별 감정 이모지가 달력에 표시된다.
-4. **Given** 감정 파이 차트에서, **When** 해당 월의 감정 데이터가 있으면, **Then** 감동/기쁨/고민/슬픔/분노 비율이 파이 차트로 표시된다.
+4. **Given** 감정 파이 차트에서, **When** 해당 월의 감정 데이터가 있으면, **Then** `MOVED/HAPPY/WORRIED/SAD/ANGRY` 비율이 파이 차트로 표시된다.
 5. **Given** 내 에피그램 목록에서 항목을 클릭하면, **When** 클릭 시, **Then** 해당 에피그램 상세 페이지로 이동한다.
 6. **Given** 내 댓글 목록 제목에서, **When** 페이지가 로드되면, **Then** 총 댓글 수가 괄호 안에 표시된다.
 7. **Given** 내 댓글 항목을 클릭하면, **When** 클릭 시, **Then** 해당 댓글이 있는 에피그램 상세 페이지로 이동한다.
@@ -139,10 +139,10 @@
 
 - 닉네임 중복 가입 시 서버에서 500 에러가 반환되므로, 이를 "이미 사용 중인 닉네임입니다."로 사용자에게 표시한다.
 - 이미지 파일명에 한글이 포함된 경우 업로드 오류가 발생하므로, 파일 선택 시 또는 업로드 실패 시 영문 파일명 사용을 안내한다.
-- 로그인 상태에서 `/login`, `/signup`, `/oauth/signup/kakao` 접근 시 홈(`/`)으로 즉시 리다이렉트한다.
+- 로그인 상태에서 `/login`, `/signup` 접근 시 홈(`/`)으로 즉시 리다이렉트한다.
 - 댓글/에피그램 무한 스크롤에서 `nextCursor`가 `null`이면 더 이상 로드하지 않고 트리거를 숨긴다.
 - 오늘의 감정은 하루에 한 번만 선택 가능하다. `GET /{teamId}/emotionLogs/today`로 오늘 감정 존재 여부를 확인한다.
-- OAuth 간편 가입 시 회원가입이 이미 되어 있으면 바로 로그인 처리, 미가입 시 `/oauth/signup/kakao`로 이동한다.
+- 카카오 OAuth 콜백(`POST /auth/signIn/kakao`)은 가입·로그인을 단일 처리한다. needsSignup 분기 없음 — 성공 시 항상 `/epigrams`로 이동한다.
 - 에피그램이 없는 사용자의 마이페이지에서 "내 에피그램" 섹션은 빈 상태 UI를 표시한다.
 
 ---
@@ -174,7 +174,6 @@
 - **FR-011**: 폼 검증은 blur 이벤트 시점에 실행되어야 한다. 유효성 검사 규칙은 아래와 같다:
   - 이메일: 필수, 이메일 형식
   - 닉네임(일반 가입): 필수, 최대 20자
-  - 닉네임(OAuth 가입): 필수, 최대 10자
   - 비밀번호: 필수, 최소 8자, 숫자·영문·특수문자로만 구성
   - 비밀번호 확인: 필수, 비밀번호와 일치
 - **FR-012**: 로그인 실패 시 이메일 입력창에 "이메일 혹은 비밀번호를 확인해주세요." 메시지를 표시하고, 두 입력창을 에러 상태로 표시해야 한다. (BFF 프록시를 통해 `POST /{teamId}/auth/signIn` 호출)
@@ -182,13 +181,13 @@
 - **FR-014**: 인증 토큰(accessToken, refreshToken)은 BFF 프록시가 설정하는 HttpOnly 쿠키에 저장되어야 하며, 클라이언트 코드에서 직접 토큰에 접근하거나 localStorage에 저장하는 것을 금지한다.
 - **FR-015**: accessToken 갱신 로직은 BFF 프록시 내부에서 처리되어야 하며, 클라이언트는 토큰 갱신을 인식하지 않아도 정상 동작해야 한다.
 - **FR-016**: 인증이 필요한 페이지는 보호되어야 하며, 비로그인 접근 시 `/login`으로 리다이렉트한다.
-- **FR-017**: 로그인 상태에서 인증 페이지(`/login`, `/signup`, `/oauth/signup/kakao`) 접근 시 홈(`/`)으로 리다이렉트한다.
+- **FR-017**: 로그인 상태에서 인증 페이지(`/login`, `/signup`) 접근 시 홈(`/`)으로 리다이렉트한다.
 
 ### 에피그램 메인 페이지 요구사항
 
 - **FR-020**: 오늘의 에피그램은 `GET /{teamId}/epigrams/today`로 가져와 표시해야 한다.
 - **FR-021**: 오늘의 감정 데이터 유무를 `GET /{teamId}/emotionLogs/today`로 확인하고, 미등록 시 감정 선택 UI를 표시해야 한다. 이미 등록된 경우 감정 선택 컴포넌트를 렌더링하지 않는다 (완전 숨김).
-- **FR-022**: 감정 선택(감동/기쁨/고민/슬픔/분노) 시 `POST /{teamId}/emotionLogs/today`로 저장하고, 선택 컴포넌트를 즉시 숨겨야 한다.
+- **FR-022**: 감정 선택(`MOVED/HAPPY/WORRIED/SAD/ANGRY`) 시 `POST /{teamId}/emotionLogs/today`로 저장하고, 선택 컴포넌트를 즉시 숨겨야 한다.
 - **FR-023**: 최신 에피그램은 초기 3개를 표시하며(`GET /{teamId}/epigrams?limit=3`), 더보기 클릭마다 5개씩 추가 로드한다 (cursor 기반).
 - **FR-024**: 최근 댓글은 초기 표시 후 더보기 클릭마다 4개씩 추가 로드한다 (`GET /{teamId}/comments?limit=4`, cursor 기반).
 - **FR-025**: 스크롤 위치가 일정 이상 내려가면 위화살표 버튼을 표시하며, 클릭 시 페이지 최상단으로 이동해야 한다.
@@ -227,7 +226,7 @@
 - **FR-060**: 내 프로필 정보는 `GET /{teamId}/users/me`로 가져와 닉네임·프로필 이미지를 표시해야 한다.
 - **FR-061**: 프로필 이미지 변경은 `POST /{teamId}/images/upload`로 업로드한 뒤, `PATCH /{teamId}/users/me`로 이미지 URL을 저장해야 한다. 파일명은 영문이어야 하며, 한글 파일명에 대한 안내를 제공해야 한다.
 - **FR-062**: 감정 달력은 `GET /{teamId}/emotionLogs/monthly?userId=N&year=N&month=N`으로 월별 데이터를 가져와 달력 UI로 표시해야 한다.
-- **FR-063**: 감정 파이 차트는 월별 감정 데이터를 집계하여 감동/기쁨/고민/슬픔/분노 비율을 파이 차트로 표시해야 한다.
+- **FR-063**: 감정 파이 차트는 월별 감정 데이터를 집계하여 `MOVED/HAPPY/WORRIED/SAD/ANGRY` 비율을 파이 차트로 표시해야 한다.
 - **FR-064**: 내 에피그램 목록은 `GET /{teamId}/epigrams?writerId={내 id}&limit=N&cursor=N`으로 가져오며, 더보기 버튼 클릭 시 추가 로드하는 방식으로 페이지네이션을 구현한다.
 - **FR-065**: 내 댓글 목록은 `GET /{teamId}/users/{id}/comments?limit=N&cursor=N`으로 가져오며, 더보기 버튼 클릭 시 추가 로드하는 방식으로 페이지네이션을 구현한다. 총 댓글 수를 제목 옆 괄호에 표시해야 한다.
 - **FR-066**: 로그아웃 시 인증 토큰을 삭제하고 홈(`/`)으로 이동해야 한다.
@@ -236,11 +235,11 @@
 
 ### 주요 엔티티
 
-- **User**: id(number), nickname(string, 최대 30자), email(string), image(string | null), teamId(string), createdAt(datetime), updatedAt(datetime)
-- **Epigram**: id(number), content(string, 최대 500자), author(string), referenceTitle(string | null), referenceUrl(string | null), tags(Tag[]), writerId(number), likeCount(number), isLiked(boolean)
+- **User**: id(number), nickname(string, 최대 30자), image(string | null), teamId(string), createdAt(datetime), updatedAt(datetime) — swagger `User` 스키마 기준. `email`은 `SignInResponse.user`에만 포함됨
+- **Epigram**: id(number), content(string, 최대 500자), author(string), referenceTitle(string | null), referenceUrl(string | null), tags(Tag[]), writerId(number), likeCount(number) — `isLiked(boolean)`는 상세 조회(`GET /epigrams/{id}`) 응답에만 존재, 목록 응답에 없음
 - **Tag**: id(number), name(string, 최대 10자)
 - **Comment**: id(number), content(string), isPrivate(boolean), epigramId(number), writer(User), createdAt(datetime), updatedAt(datetime)
-- **EmotionLog**: id(number), emotion(감동 | 기쁨 | 고민 | 슬픔 | 분노), userId(number), createdAt(datetime)
+- **EmotionLog**: id(number), emotion(`MOVED | HAPPY | WORRIED | SAD | ANGRY`), userId(number), createdAt(datetime)
 - **AuthToken**: accessToken(string), refreshToken(string), user(User)
 - **PaginatedResponse\<T\>**: totalCount(number), nextCursor(number | null), list(T[])
 
