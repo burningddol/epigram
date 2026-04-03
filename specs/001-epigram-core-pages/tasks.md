@@ -88,7 +88,7 @@
 - [ ] T031 [P] [US1] 랜딩 페이지 구현 — 시작하기 버튼 (로그인 여부에 따라 분기) (`src/views/landing/ui/LandingPage.tsx`, `src/app/page.tsx`)
 - [ ] T032 [P] [US1] 로그인 페이지 구현 — 이미 로그인 시 `/` 리다이렉트, 카카오 로그인 버튼 포함 (`src/views/login/ui/LoginPage.tsx`, `src/app/login/page.tsx`)
 - [ ] T033 [P] [US1] 일반 회원가입 페이지 구현 (`src/views/signup/ui/SignUpPage.tsx`, `src/app/signup/page.tsx`)
-- [ ] T034 [US1] 카카오 OAuth 콜백 처리 — 인가 코드 → BFF 전달(`/api/auth/signIn/kakao`), 성공 시 `/epigrams` 이동. needsSignup 분기 없음 (`src/app/oauth/callback/kakao/page.tsx`)
+- [x] T034 [US1] 카카오 OAuth 콜백 처리 — 인가 코드 → BFF 전달(`/api/auth/signIn/kakao`), 성공 시 `/epigrams` 이동. needsSignup 분기 없음 (`src/app/oauth/callback/kakao/page.tsx`)
 - [N/A] T035 [US1] ~~카카오 간편 회원가입 페이지 구현~~ — swagger 기준 불필요. T029 와 함께 삭제됨.
 
 **체크포인트**: 회원가입 → accessToken/refreshToken HttpOnly 쿠키 설정 확인 → 로그인 → `/epigrams` 정상 이동 확인
