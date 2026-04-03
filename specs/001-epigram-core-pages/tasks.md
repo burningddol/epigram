@@ -73,8 +73,13 @@
 
 ### US1 — Features (의존: T021~T026)
 
+<<<<<<< feat/#60-signup-form
+- [ ] T027 [US1] 로그인 폼 feature 구현 — RHF + Zod 검증, blur 에러 처리, 로그인 API 호출 (`src/features/auth/ui/LoginForm.tsx`, `src/features/auth/model/loginSchema.ts`)
+- [x] T028 [US1] 회원가입 폼 feature 구현 — 이메일·닉네임·비밀번호·비밀번호 확인 검증, 닉네임 중복(500) 에러 처리 (`src/features/auth/ui/SignUpForm.tsx`, `src/features/auth/model/signUpSchema.ts`)
+=======
 - [x] T027 [US1] 로그인 폼 feature 구현 — RHF + Zod 검증, blur 에러 처리, 로그인 API 호출 (`src/features/auth/ui/LoginForm.tsx`, `src/features/auth/model/loginSchema.ts`)
 - [ ] T028 [US1] 회원가입 폼 feature 구현 — 이메일·닉네임·비밀번호·비밀번호 확인 검증, 닉네임 중복(500) 에러 처리 (`src/features/auth/ui/SignUpForm.tsx`, `src/features/auth/model/signUpSchema.ts`)
+>>>>>>> main
 - [N/A] T029 [US1] ~~카카오 OAuth 간편 가입 폼 feature 구현~~ — swagger `signIn/{provider}` 응답에 `needsSignup` 필드 없음. 별도 가입 폼 불필요. 삭제됨.
 - [ ] T030 [US1] 로그아웃 기능 구현 — `/api/auth/logout` 호출, 쿠키 삭제 후 홈 이동 (`src/features/auth/api/logout.ts`)
 
