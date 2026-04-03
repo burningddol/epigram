@@ -75,7 +75,7 @@
 
 - [ ] T027 [US1] 로그인 폼 feature 구현 — RHF + Zod 검증, blur 에러 처리, 로그인 API 호출 (`src/features/auth/ui/LoginForm.tsx`, `src/features/auth/model/loginSchema.ts`)
 - [ ] T028 [US1] 회원가입 폼 feature 구현 — 이메일·닉네임·비밀번호·비밀번호 확인 검증, 닉네임 중복(500) 에러 처리 (`src/features/auth/ui/SignUpForm.tsx`, `src/features/auth/model/signUpSchema.ts`)
-- [ ] T029 [US1] 카카오 OAuth 간편 가입 폼 feature 구현 — 닉네임 검증(최대 10자), 가입 API 호출 (`src/features/auth/ui/KakaoSignUpForm.tsx`)
+- [N/A] T029 [US1] ~~카카오 OAuth 간편 가입 폼 feature 구현~~ — swagger `signIn/{provider}` 응답에 `needsSignup` 필드 없음. 별도 가입 폼 불필요. 삭제됨.
 - [ ] T030 [US1] 로그아웃 기능 구현 — `/api/auth/logout` 호출, 쿠키 삭제 후 홈 이동 (`src/features/auth/api/logout.ts`)
 
 ### US1 — Pages & App Routes (의존: T027~T030)
@@ -83,8 +83,8 @@
 - [ ] T031 [P] [US1] 랜딩 페이지 구현 — 시작하기 버튼 (로그인 여부에 따라 분기) (`src/views/landing/ui/LandingPage.tsx`, `src/app/page.tsx`)
 - [ ] T032 [P] [US1] 로그인 페이지 구현 — 이미 로그인 시 `/` 리다이렉트, 카카오 로그인 버튼 포함 (`src/views/login/ui/LoginPage.tsx`, `src/app/login/page.tsx`)
 - [ ] T033 [P] [US1] 일반 회원가입 페이지 구현 (`src/views/signup/ui/SignUpPage.tsx`, `src/app/signup/page.tsx`)
-- [ ] T034 [US1] 카카오 OAuth 콜백 처리 — 인가 코드 → BFF 전달, 미가입 시 `/oauth/signup/kakao` 이동 (`src/app/oauth/callback/kakao/page.tsx`)
-- [ ] T035 [US1] 카카오 간편 회원가입 페이지 구현 — 로그인 상태에서 접근 시 `/` 리다이렉트 (`src/views/oauth-signup/ui/KakaoSignUpPage.tsx`, `src/app/oauth/signup/kakao/page.tsx`)
+- [ ] T034 [US1] 카카오 OAuth 콜백 처리 — 인가 코드 → BFF 전달(`/api/auth/signIn/kakao`), 성공 시 `/epigrams` 이동. needsSignup 분기 없음 (`src/app/oauth/callback/kakao/page.tsx`)
+- [N/A] T035 [US1] ~~카카오 간편 회원가입 페이지 구현~~ — swagger 기준 불필요. T029 와 함께 삭제됨.
 
 **체크포인트**: 회원가입 → accessToken/refreshToken HttpOnly 쿠키 설정 확인 → 로그인 → `/epigrams` 정상 이동 확인
 
@@ -98,8 +98,8 @@
 
 ### US2 — 엔티티 & 모델 (의존: Phase 2)
 
-- [ ] T036 [P] [US2] Epigram 엔티티 Zod 스키마 정의 (`src/entities/epigram/model/schema.ts`)
-- [ ] T037 [P] [US2] EmotionLog 엔티티 Zod 스키마 정의 — Emotion enum 포함 (`src/entities/emotion-log/model/schema.ts`)
+- [ ] T036 [P] [US2] Epigram 엔티티 Zod 스키마 정의 — `isLiked`는 상세 조회(`GET /epigrams/{id}`) 응답에만 존재, 목록(`GET /epigrams`) 응답에는 없음 (`src/entities/epigram/model/schema.ts`)
+- [ ] T037 [P] [US2] EmotionLog 엔티티 Zod 스키마 정의 — Emotion enum: `MOVED | HAPPY | WORRIED | SAD | ANGRY` (영문, swagger 기준) (`src/entities/emotion-log/model/schema.ts`)
 
 ### US2 — API 레이어
 
@@ -137,7 +137,7 @@
 ### US3 — Features (의존: T036, T026)
 
 - [ ] T049 [US3] 에피그램 작성 API 함수 구현 — `createEpigram` (`src/entities/epigram/api/createEpigram.ts`)
-- [ ] T050 [US3] 에피그램 작성 폼 Zod 스키마 정의 — content(최대 500자), author, tags(최대 3개, 각 10자), referenceTitle, referenceUrl (`src/features/epigram-create/model/schema.ts`)
+- [ ] T050 [US3] 에피그램 작성 폼 Zod 스키마 정의 — content(최대 500자), author, tags(최대 3개, 각 10자), referenceTitle, referenceUrl. 전송 시 tags는 `string[]`, 응답의 tags는 `{ id: number; name: string }[]` (`src/features/epigram-create/model/schema.ts`)
 - [ ] T051 [US3] 에피그램 작성 feature 구현 — 저자 라디오 버튼(직접입력/알 수 없음/본인), 태그 입력·삭제, URL 형식 검증 (`src/features/epigram-create/ui/EpigramCreateForm.tsx`, `src/features/epigram-create/model/useEpigramCreate.ts`)
 
 ### US3 — Pages & App Routes (의존: T049~T051)
@@ -214,9 +214,9 @@
 
 ### US6 — API 레이어
 
-- [ ] T070 [P] [US6] 월별 감정 조회 API 훅 — `useMonthlyEmotions` (year, month 파라미터) (`src/entities/emotion-log/api/useMonthlyEmotions.ts`)
+- [ ] T070 [P] [US6] 월별 감정 조회 API 훅 — `useMonthlyEmotions` (userId 필수, year, month 파라미터 — swagger `GET /emotion-logs?userId=&year=&month=`) (`src/entities/emotion-log/api/useMonthlyEmotions.ts`)
 - [ ] T071 [P] [US6] 내 에피그램 목록 API 훅 — `useMyEpigrams` (writerId 필터, cursor 기반) (`src/entities/epigram/api/useMyEpigrams.ts`)
-- [ ] T072 [P] [US6] 내 댓글 목록 API 훅 — `useMyComments` (cursor 기반) (`src/entities/comment/api/useMyComments.ts`)
+- [ ] T072 [P] [US6] 내 댓글 목록 API 훅 — `useMyComments` (cursor 기반, swagger `GET /users/{id}/comments`) (`src/entities/comment/api/useMyComments.ts`)
 - [ ] T073 [P] [US6] 프로필 수정 API 함수 — `updateMe` (닉네임, 이미지 URL) (`src/entities/user/api/updateMe.ts`)
 - [ ] T074 [P] [US6] 이미지 업로드 API 함수 — `uploadImage` (multipart/form-data, 영문 파일명 검증) (`src/shared/api/uploadImage.ts`)
 
