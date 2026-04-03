@@ -122,7 +122,7 @@
 
 ### US2 — Pages & App Routes (의존: T045~T047)
 
-- [ ] T048 [US2] 메인 페이지 구현 — 위화살표 버튼 포함 (`src/views/epigrams/ui/EpigramsPage.tsx`, `src/app/epigrams/page.tsx`)
+- [x] T048 [US2] 메인 페이지 구현 — 위화살표 버튼 포함 (`src/views/epigrams/ui/EpigramsPage.tsx`, `src/app/epigrams/page.tsx`)
 
 **체크포인트**: 감정 선택 후 컴포넌트 사라짐 → 새로고침 시 미표시 → 더보기 5개 추가 → 에피그램 클릭 → 상세 이동
 
