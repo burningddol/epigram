@@ -4,8 +4,6 @@ Auto-generated from all feature plans. Last updated: 2026-04-03
 
 ## Active Technologies
 
-
-
 ## Project Structure
 
 ```text
@@ -15,7 +13,7 @@ tests/
 
 ## Commands
 
-# Add commands for 
+# Add commands for
 
 ## Code Style
 
@@ -23,9 +21,8 @@ General: Follow standard conventions
 
 ## Recent Changes
 
-
-
 <!-- MANUAL ADDITIONS START -->
+
 ## 필수 초기화
 
 **세션 시작 시 반드시 먼저 읽어야 할 파일:**
@@ -35,7 +32,6 @@ General: Follow standard conventions
 - `specs/001-epigram-core-pages/` 하위의 관련 문서 — `spec.md`, `research.md`, `data-model.md`, `contracts/` 디렉토리 내 파일 등 태스크와 관련된 문서는 모두 읽는다.
 
 **⚠️ 위 파일들을 읽기 전까지 코드를 한 줄도 작성하지 않는다. 예외 없음.**
-
 
 ## 필수 워크플로우 (매 태스크마다 반드시 준수)
 
@@ -51,4 +47,5 @@ General: Follow standard conventions
 ```
 
 코드를 한 줄이라도 작성하기 전에 이슈와 브랜치가 먼저 존재해야 한다.
+
 <!-- MANUAL ADDITIONS END -->

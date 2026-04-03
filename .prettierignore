@@ -4,3 +4,7 @@ out/
 build/
 public/
 package-lock.json
+# 툴링 / 문서 디렉토리
+.claude/
+.specify/
+specs/
