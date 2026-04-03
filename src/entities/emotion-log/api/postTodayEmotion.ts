@@ -1,4 +1,5 @@
 import { apiClient } from "@/shared/api/client";
+
 import type { Emotion, EmotionLog } from "../model/schema";
 
 export async function postTodayEmotion(emotion: Emotion): Promise<EmotionLog> {

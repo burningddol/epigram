@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import type { ReactElement } from "react";
 
 import type { Emotion } from "@/entities/emotion-log";
 
@@ -58,7 +58,7 @@ const EMOTION_OPTIONS: EmotionOption[] = [
   },
 ];
 
-export function EmotionSelector(): React.ReactElement | null {
+export function EmotionSelector(): ReactElement | null {
   const { hasSelectedToday, isSubmitting, selectEmotion } = useEmotionSelect();
 
   if (hasSelectedToday) return null;

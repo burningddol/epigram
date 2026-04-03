@@ -1,9 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 
 import { apiClient } from "@/shared/api/client";
+
 import type { EmotionLog } from "../model/schema";
 
-export function useTodayEmotion() {
+export function useTodayEmotion(): UseQueryResult<EmotionLog | null, Error> {
   return useQuery({
     queryKey: ["emotionLogs", "today"],
     queryFn: async () => {
