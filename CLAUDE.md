@@ -54,14 +54,24 @@ General: Follow standard conventions
 
 피그마 파일 키: `tk2V6CQ7SYVsFfdIPF1EW8`
 
+**Figma MCP 대신 REST API를 사용한다.** 토큰과 파일 키는 `.env.local`에 저장되어 있다.
+
 **확인 순서:**
 
+```bash
+# 1. 토큰·파일 키 읽기
+FIGMA_TOKEN=$(grep FIGMA_TOKEN .env.local | cut -d= -f2)
+FIGMA_FILE_KEY=$(grep FIGMA_FILE_KEY .env.local | cut -d= -f2)
+
+# 2. 섹션 ID 파악 (memory/reference_figma_api.md의 섹션 ID 목록 먼저 확인)
+curl -s -H "X-Figma-Token: $FIGMA_TOKEN" \
+  "https://api.figma.com/v1/files/$FIGMA_FILE_KEY/nodes?ids=PAGE_OR_SECTION_ID" | \
+  python3 -c "..."   # 색상·타이포·간격·레이아웃 추출
+
+# 3. 추출한 값을 globals.css 디자인 토큰에 매핑하여 구현
 ```
-1. get_metadata 로 헤더/컴포넌트 노드 ID 파악
-2. get_design_context 로 색상·타이포·간격·레이아웃 상세 추출
-3. get_screenshot 으로 시각적 참조 확보
-4. 프로젝트 디자인 토큰(globals.css)에 매핑하여 구현
-```
+
+섹션 ID 전체 목록: `C:\Users\j\.claude\projects\c--Users-j-Desktop-----epigram\memory\reference_figma_api.md`
 
 **⚠️ 피그마 시안 확인 없이 임의로 스타일을 작성하지 않는다. 예외 없음.**
 
