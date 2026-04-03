@@ -34,7 +34,7 @@
 
 **⚠️ 중요**: 이 Phase가 완료되기 전까지 어떤 사용자 스토리도 시작할 수 없음
 
-- [ ] T007 환경변수 설정 — `BACKEND_URL`, `TEAM_ID`, `KAKAO_CLIENT_ID`, `KAKAO_REDIRECT_URI` (`.env.local`, `.env.example`)
+- [x] T007 환경변수 설정 — `BACKEND_URL`, `TEAM_ID`, `KAKAO_CLIENT_ID`, `KAKAO_REDIRECT_URI` (`.env.local`, `.env.example`)
 - [ ] T008 BFF 프록시 catch-all 라우트 구현 — 백엔드 요청 중계, JWT → HttpOnly 쿠키 변환, 토큰 갱신 로직 (`src/app/api/[...path]/route.ts`)
 - [ ] T009 인증 보호 미들웨어 구현 — 비로그인 보호 경로 `/epigrams`, `/addepigram`, `/mypage`, `/search` 리다이렉트 처리 (`src/app/middleware.ts`)
 - [ ] T010 [P] axios 인스턴스 생성 — BFF 클라이언트, 베이스 URL 설정, 공통 헤더 (`src/shared/api/client.ts`)
