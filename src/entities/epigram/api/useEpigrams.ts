@@ -1,6 +1,11 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  type UseInfiniteQueryResult,
+  type InfiniteData,
+} from "@tanstack/react-query";
 
 import { apiClient } from "@/shared/api/client";
+
 import type { EpigramListResponse } from "../model/schema";
 
 interface UseEpigramsParams {
@@ -9,7 +14,14 @@ interface UseEpigramsParams {
   writerId?: number;
 }
 
-export function useEpigrams({ limit, keyword, writerId }: UseEpigramsParams) {
+export function useEpigrams({
+  limit,
+  keyword,
+  writerId,
+}: UseEpigramsParams): UseInfiniteQueryResult<
+  InfiniteData<EpigramListResponse, number | undefined>,
+  Error
+> {
   return useInfiniteQuery({
     queryKey: ["epigrams", { limit, keyword, writerId }],
     queryFn: async ({ pageParam }) => {
