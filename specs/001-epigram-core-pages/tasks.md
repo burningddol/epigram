@@ -22,7 +22,7 @@
 - [x] T003 [P] ESLint, Prettier 설정 (`.eslintrc.json`, `.prettierrc`)
 - [x] T004 [P] 핵심 패키지 설치: TanStack Query v5, Zustand v4, React Hook Form v7, Zod v3, axios (`package.json`)
 - [ ] T005 [P] 시각화 패키지 설치: recharts, react-calendar (`package.json`)
-- [ ] T006 [P] 폰트 및 전역 CSS 설정 — Pretendard 등 프로젝트 폰트 적용 (`src/app/globals.css`)
+- [x] T006 [P] 폰트 및 전역 CSS 설정 — Pretendard 등 프로젝트 폰트 적용 (`src/app/globals.css`)
 
 **체크포인트**: `npm run dev` 정상 실행 확인
 

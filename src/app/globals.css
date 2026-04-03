@@ -2,6 +2,11 @@
 
 @theme {
   /* =====================
+     Font
+  ===================== */
+  --font-sans: var(--font-pretendard), ui-sans-serif, system-ui, sans-serif;
+
+  /* =====================
      Breakpoints
      Mobile: 360px (base, no prefix needed)
      Tablet: 744px  → tablet:
