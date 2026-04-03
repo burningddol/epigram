@@ -42,7 +42,7 @@
 - [ ] T012 [P] QueryProvider 설정 및 루트 레이아웃 구성 — React Query devtools 포함 (`src/app/layout.tsx`, `src/shared/api/QueryProvider.tsx`)
 - [ ] T013 [P] 공용 UI — Button 컴포넌트 (variant: primary, secondary, ghost) (`src/shared/ui/Button.tsx`)
 - [ ] T014 [P] 공용 UI — Input 컴포넌트 (에러 상태, label 포함) (`src/shared/ui/Input.tsx`)
-- [ ] T015 [P] 공용 UI — Modal 전역 제어 구현 — Zustand 모달 슬라이스로 열림/닫힘 상태 관리, `useModal()` 훅으로 사용처에서 모달 열기·닫기 (개별 컴포넌트에 모달 상태 직접 금지), ConfirmModal 기본 제공, ModalProvider 루트 레이아웃 단일 마운트, 모달 열릴 때 외부 콘텐츠에 `inert` 적용·닫힐 때 제거 및 이전 포커스 복원 (`src/shared/ui/Modal.tsx`, `src/shared/ui/ModalProvider.tsx`, `src/shared/model/modalStore.ts`, `src/shared/hooks/useModal.ts`)
+- [x] T015 [P] 공용 UI — Modal 전역 제어 구현 — Zustand 모달 슬라이스로 열림/닫힘 상태 관리, `useModal()` 훅으로 사용처에서 모달 열기·닫기 (개별 컴포넌트에 모달 상태 직접 금지), ConfirmModal 기본 제공, ModalProvider 루트 레이아웃 단일 마운트, 모달 열릴 때 외부 콘텐츠에 `inert` 적용·닫힐 때 제거 및 이전 포커스 복원 (`src/shared/ui/Modal.tsx`, `src/shared/ui/ModalProvider.tsx`, `src/shared/model/modalStore.ts`, `src/shared/hooks/useModal.ts`)
 - [ ] T016 [P] 공용 UI — Tag 컴포넌트 (`src/shared/ui/Tag.tsx`)
 - [ ] T017 [P] 공용 훅 — `useScrollToTop` (스크롤 위치 감지, 최상단 이동) (`src/shared/hooks/useScrollToTop.ts`)
 - [ ] T018 [P] 공용 훅 — `useIntersectionObserver` (무한 스크롤 트리거용) (`src/shared/hooks/useIntersectionObserver.ts`)
