@@ -1,7 +1,13 @@
-import Link from "next/link";
-import { Menu, User } from "lucide-react";
+import type { ReactElement } from "react";
 
-function Logo({ size }: { size: "sm" | "lg" }) {
+import { Menu, User } from "lucide-react";
+import Link from "next/link";
+
+interface LogoProps {
+  size: "sm" | "lg";
+}
+
+function Logo({ size }: LogoProps): ReactElement {
   const isLg = size === "lg";
   return (
     <Link href="/" className="flex items-center gap-1" aria-label="홈으로 이동">
@@ -19,7 +25,7 @@ interface UserSectionProps {
   textSize: "sm" | "md";
 }
 
-function UserSection({ iconSize, textSize }: UserSectionProps) {
+function UserSection({ iconSize, textSize }: UserSectionProps): ReactElement {
   const isLgIcon = iconSize === "lg";
   const isMdText = textSize === "md";
   return (
@@ -34,7 +40,7 @@ function UserSection({ iconSize, textSize }: UserSectionProps) {
   );
 }
 
-export function Header() {
+export function Header(): ReactElement {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-line-100 bg-white">
       {/* Mobile (base ~ 743px): 햄버거 + 로고 / 유저 */}

@@ -1,7 +1,8 @@
 "use client";
 
+import type { ReactElement } from "react";
+
 import Link from "next/link";
-import React from "react";
 
 import type { Epigram } from "@/entities/epigram";
 
@@ -11,19 +12,22 @@ interface EpigramCardProps {
   isFeatured?: boolean;
 }
 
-function EpigramAttribution({
-  author,
-  referenceTitle,
-}: {
+interface EpigramAttributionProps {
   author: string;
   referenceTitle: string | null;
-}): React.ReactElement {
+}
+
+function EpigramAttribution({ author, referenceTitle }: EpigramAttributionProps): ReactElement {
   const citation = referenceTitle ? `${author} 《${referenceTitle}》` : author;
 
   return <footer className="mt-3 text-right text-sm text-black-300">— {citation}</footer>;
 }
 
-function EpigramTagList({ tags }: { tags: Epigram["tags"] }): React.ReactElement | null {
+interface EpigramTagListProps {
+  tags: Epigram["tags"];
+}
+
+function EpigramTagList({ tags }: EpigramTagListProps): ReactElement | null {
   if (tags.length === 0) return null;
 
   return (
@@ -39,7 +43,7 @@ function EpigramTagList({ tags }: { tags: Epigram["tags"] }): React.ReactElement
   );
 }
 
-export function EpigramCard({ epigram, isFeatured = false }: EpigramCardProps): React.ReactElement {
+export function EpigramCard({ epigram, isFeatured = false }: EpigramCardProps): ReactElement {
   const baseClasses =
     "group block rounded-2xl border bg-white px-6 py-6 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2";
 
