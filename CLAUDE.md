@@ -74,4 +74,35 @@ General: Follow standard conventions
 - Figma MCP 에셋 URL로 아이콘 사용 금지
 - 커스텀 아이콘이 꼭 필요한 경우에만 별도 SVG 컴포넌트로 분리
 
+## API 작업 원칙 (예외 없음)
+
+**API 함수·타입·훅을 구현하기 전에 반드시 백엔드 swagger를 먼저 확인한다.**
+
+백엔드 Swagger URL: `https://fe-project-epigram-api.vercel.app/docs/#/`
+(spec.md 상단에도 기재되어 있음)
+
+**확인 순서:**
+
+```
+1. swagger-ui-init.js 에서 실제 스펙 파싱
+   curl https://fe-project-epigram-api.vercel.app/docs/swagger-ui-init.js
+2. 엔드포인트 경로, request body 필드, response 스키마 확인
+3. contracts/ 문서와 불일치 시 → swagger 우선
+4. 확인 후 구현
+```
+
+**⚠️ contracts/ 나 spec.md 기술 내용이 실제 swagger와 다를 수 있다. 반드시 swagger를 정답으로 삼는다. 예외 없음.**
+
+## 커밋 전 필수 체크
+
+```
+1. 파일 구현
+2. npm run format     (prettier --write .)
+3. npm run build      (TypeScript 타입 에러 + 빌드 에러 확인)
+4. git add <files>
+5. git commit
+6. git push
+7. PR 생성
+```
+
 <!-- MANUAL ADDITIONS END -->
