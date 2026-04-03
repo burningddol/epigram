@@ -25,7 +25,7 @@ export default function RootLayout({
     <html lang="ko" className={`${pretendard.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <main id="main-content" className="flex flex-1 flex-col">
-           <QueryProvider>{children}</QueryProvider>
+          <QueryProvider>{children}</QueryProvider>
         </main>
         <ModalProvider />
       </body>
