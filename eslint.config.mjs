@@ -8,12 +8,7 @@ const eslintConfig = defineConfig([
   ...nextTs,
   prettier,
   // Override default ignores of eslint-config-next.
-  globalIgnores([
-    ".next/**",
-    "out/**",
-    "build/**",
-    "next-env.d.ts",
-  ]),
+  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
   {
     rules: {
       // Constitution: any 금지
@@ -43,13 +38,7 @@ const eslintConfig = defineConfig([
       "import/order": [
         "warn",
         {
-          groups: [
-            "builtin",
-            "external",
-            "internal",
-            ["parent", "sibling", "index"],
-            "type",
-          ],
+          groups: ["builtin", "external", "internal", ["parent", "sibling", "index"], "type"],
           pathGroups: [
             {
               pattern: "react",
