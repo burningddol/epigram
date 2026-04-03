@@ -61,12 +61,12 @@
 
 ### US1 — 엔티티 & 모델
 
-- [ ] T021 [P] [US1] User 엔티티 Zod 스키마 정의 (`src/entities/user/model/schema.ts`)
-- [ ] T022 [P] [US1] Auth 응답 타입 정의 — SignUpResponse, SignInResponse (`src/entities/user/model/types.ts`)
+- [x] T021 [P] [US1] User 엔티티 Zod 스키마 정의 (`src/entities/user/model/schema.ts`)
+- [x] T022 [P] [US1] Auth 응답 타입 정의 — SignUpResponse, SignInResponse (`src/entities/user/model/types.ts`)
 
 ### US1 — API 레이어
 
-- [ ] T023 [P] [US1] 인증 API 함수 구현 — `signUp`, `signIn`, `logout` (`src/entities/user/api/auth.ts`)
+- [x] T023 [P] [US1] 인증 API 함수 구현 — `signUp`, `signIn`, `logout` (`src/entities/user/api/auth.ts`)
 - [ ] T024 [P] [US1] 카카오 OAuth API 함수 구현 — `signInKakao` (`src/entities/user/api/kakao.ts`)
 - [ ] T025 [P] [US1] 내 프로필 조회 API 함수 구현 — `getMe` (`src/entities/user/api/user.ts`)
 - [ ] T026 [US1] User 엔티티 index.ts 퍼블릭 API 정의 (`src/entities/user/index.ts`)
