@@ -21,7 +21,7 @@ export interface KakaoSignInNeedsSignupResponse {
 export type KakaoSignInResponse = SignInResponse | KakaoSignInNeedsSignupResponse;
 
 export function isNeedsSignup(
-  response: KakaoSignInResponse,
+  response: KakaoSignInResponse
 ): response is KakaoSignInNeedsSignupResponse {
   return "needsSignup" in response && response.needsSignup === true;
 }
