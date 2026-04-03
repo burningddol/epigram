@@ -14,9 +14,26 @@ export function LandingPage() {
 
 function HeroSection() {
   return (
-    <section className="relative flex min-h-[calc(100dvh-52px)] flex-col items-center justify-center gap-6 px-6 py-16 text-center">
-      <div className="flex flex-col items-center gap-6">
-        <div className="flex flex-col gap-2">
+    <section className="relative flex min-h-[calc(100dvh-52px)] flex-col items-center justify-center gap-6 overflow-hidden px-6 py-16 text-center">
+      {/* 배경 depth — 중앙으로 갈수록 밝아지는 radial gradient */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: "radial-gradient(ellipse 80% 60% at 50% 40%, #eceff4 0%, #f5f7fa 100%)",
+        }}
+        aria-hidden="true"
+      />
+
+      {/* 장식용 대형 인용부호 */}
+      <span
+        className="pointer-events-none absolute left-2 top-8 select-none font-serif text-[140px] leading-none text-blue-300 opacity-40 tablet:left-10 tablet:text-[220px]"
+        aria-hidden="true"
+      >
+        "
+      </span>
+
+      <div className="relative flex flex-col items-center gap-6 animate-fade-in-up">
+        <div className="flex flex-col gap-3">
           <h1 className="font-serif text-2xl font-normal leading-tight text-black-500 tablet:text-4xl desktop:text-5xl">
             나만 갖고 있기엔
             <br />
@@ -28,7 +45,7 @@ function HeroSection() {
         </div>
         <Link
           href="/epigrams"
-          className="inline-flex h-12 w-28 items-center justify-center rounded-xl bg-black-500 text-base font-semibold text-white transition-colors hover:bg-black-600"
+          className="inline-flex h-12 w-32 items-center justify-center rounded-xl bg-black-500 text-base font-semibold text-white shadow-sm transition-all duration-200 hover:bg-black-600 hover:shadow-md active:scale-95"
         >
           시작하기
         </Link>
@@ -36,7 +53,7 @@ function HeroSection() {
 
       <div className="absolute bottom-8 flex flex-col items-center gap-1">
         <span className="text-xs font-semibold text-blue-400">더 알아보기</span>
-        <ChevronDown size={24} className="text-blue-400" aria-hidden="true" />
+        <ChevronDown size={24} className="animate-bounce text-blue-400" aria-hidden="true" />
       </div>
     </section>
   );
@@ -56,7 +73,7 @@ function EmotionSection() {
         <div className="flex justify-center gap-2">
           {EMOTION_BADGES.map(({ emoji, label }) => (
             <div key={label} className="flex flex-col items-center gap-2">
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-400 text-2xl">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-400 text-2xl transition-transform duration-200 hover:-translate-y-1">
                 {emoji}
               </div>
               <span className="text-xs font-semibold text-gray-400">{label}</span>
@@ -77,15 +94,19 @@ function EpigramsSection() {
         인용한 에피그램들
       </h2>
       <ul className="flex flex-col gap-4">
-        {SAMPLE_EPIGRAMS.map((item) => (
-          <li key={item.id} className="flex flex-col gap-2">
-            <div className="flex flex-col gap-1 rounded-2xl bg-white px-6 py-6">
+        {SAMPLE_EPIGRAMS.map((item, index) => (
+          <li
+            key={item.id}
+            className="animate-fade-in-up"
+            style={{ animationDelay: `${index * 0.12}s` }}
+          >
+            <div className="flex flex-col gap-1 rounded-2xl border-l-2 border-blue-500 bg-white px-6 py-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
               <p className="font-serif text-sm leading-relaxed text-black-600">{item.content}</p>
               <p className="font-serif text-sm text-blue-400">{item.author}</p>
             </div>
-            <div className="flex gap-2 px-2">
+            <div className="mt-2 flex gap-2 px-2">
               {item.tags.map((tag) => (
-                <span key={tag} className="font-serif text-sm text-blue-400">
+                <span key={tag} className="font-serif text-xs text-blue-400">
                   #{tag}
                 </span>
               ))}
@@ -99,14 +120,19 @@ function EpigramsSection() {
 
 function CtaSection() {
   return (
-    <section className="flex flex-col items-center gap-8 px-6 py-16 tablet:px-[72px]">
-      <div className="flex flex-col items-center leading-snug">
-        <span className="font-serif text-2xl font-bold text-black-600">날마다</span>
-        <span className="font-serif text-2xl font-bold text-black-600">에피그램</span>
+    <section className="flex flex-col items-center gap-8 bg-blue-950 px-6 py-20 tablet:px-[72px]">
+      <div className="flex flex-col items-center gap-2">
+        <span className="font-serif text-xs uppercase tracking-widest text-blue-500">
+          every day
+        </span>
+        <div className="flex flex-col items-center leading-snug">
+          <span className="font-serif text-3xl font-bold text-white">날마다</span>
+          <span className="font-serif text-3xl font-bold text-blue-300">에피그램</span>
+        </div>
       </div>
       <Link
         href="/epigrams"
-        className="inline-flex h-12 w-28 items-center justify-center rounded-xl bg-black-500 text-base font-semibold text-white transition-colors hover:bg-black-600"
+        className="inline-flex h-12 w-32 items-center justify-center rounded-xl border border-blue-400 text-base font-semibold text-white transition-all duration-200 hover:bg-white hover:text-blue-950 active:scale-95"
       >
         시작하기
       </Link>

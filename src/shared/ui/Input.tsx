@@ -15,12 +15,12 @@ export function Input({ label, error, id, className = "", ...props }: InputProps
       ) : null}
       <input
         id={inputId}
-        className={`h-11 w-full rounded-xl bg-blue-200 px-4 text-sm text-black-950 outline-none transition-colors placeholder:text-blue-400 focus:ring-2 focus:ring-black-500 disabled:cursor-not-allowed disabled:opacity-50 ${
-          error ? "ring-2 ring-error" : ""
+        className={`h-11 w-full rounded-xl bg-blue-200 px-4 text-sm text-black-950 outline-none transition-all duration-200 placeholder:text-blue-400 focus:bg-blue-100 focus:ring-2 focus:ring-black-500 disabled:cursor-not-allowed disabled:opacity-50 ${
+          error ? "bg-blue-100 ring-2 ring-error" : ""
         } ${className}`}
         {...props}
       />
-      {error ? <p className="text-xs text-error">{error}</p> : null}
+      {error ? <p className="animate-fade-in text-xs text-error">{error}</p> : null}
     </div>
   );
 }
