@@ -23,16 +23,8 @@ function UserSection({ iconSize, textSize }: UserSectionProps) {
   const isLgIcon = iconSize === "lg";
   const isMdText = textSize === "md";
   return (
-    <Link
-      href="/mypage"
-      className="flex items-center gap-[6px]"
-      aria-label="마이페이지"
-    >
-      <User
-        size={isLgIcon ? 24 : 16}
-        className="text-gray-300 shrink-0"
-        aria-hidden="true"
-      />
+    <Link href="/mypage" className="flex items-center gap-[6px]" aria-label="마이페이지">
+      <User size={isLgIcon ? 24 : 16} className="text-gray-300 shrink-0" aria-hidden="true" />
       <span
         className={`font-medium text-gray-300 whitespace-nowrap ${isMdText ? "text-[14px] leading-6" : "text-[13px] leading-[22px]"}`}
       >
@@ -61,16 +53,10 @@ export function Header() {
         <div className="flex items-center gap-6">
           <Logo size="sm" />
           <nav className="flex gap-6" aria-label="주요 메뉴">
-            <Link
-              href="/feed"
-              className="text-[14px] font-semibold leading-6 text-black-600"
-            >
+            <Link href="/feed" className="text-[14px] font-semibold leading-6 text-black-600">
               피드
             </Link>
-            <Link
-              href="/search"
-              className="text-[14px] font-semibold leading-6 text-black-600"
-            >
+            <Link href="/search" className="text-[14px] font-semibold leading-6 text-black-600">
               검색
             </Link>
           </nav>
@@ -83,10 +69,7 @@ export function Header() {
         <div className="flex items-center gap-9">
           <Logo size="lg" />
           <nav className="flex gap-6" aria-label="주요 메뉴">
-            <Link
-              href="/feed"
-              className="text-[16px] font-semibold leading-[26px] text-black-600"
-            >
+            <Link href="/feed" className="text-[16px] font-semibold leading-[26px] text-black-600">
               피드
             </Link>
             <Link
