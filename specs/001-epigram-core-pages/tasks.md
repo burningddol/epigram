@@ -68,7 +68,7 @@
 
 - [x] T023 [P] [US1] 인증 API 함수 구현 — `signUp`, `signIn`, `logout` (`src/entities/user/api/auth.ts`)
 - [x] T024 [P] [US1] 카카오 OAuth API 함수 구현 — `signInKakao` (`src/entities/user/api/kakao.ts`)
-- [ ] T025 [P] [US1] 내 프로필 조회 API 함수 구현 — `getMe` (`src/entities/user/api/user.ts`)
+- [x] T025 [P] [US1] 내 프로필 조회 API 함수 구현 — `getMe` (`src/entities/user/api/user.ts`)
 - [ ] T026 [US1] User 엔티티 index.ts 퍼블릭 API 정의 (`src/entities/user/index.ts`)
 
 ### US1 — Features (의존: T021~T026)
