@@ -14,22 +14,54 @@ export async function LoginPage() {
   const kakaoOauthUrl = process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID ?? "";
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center px-6 py-16">
-      <div className="flex w-full max-w-sm flex-col gap-[50px]">
-        <EpigramLogo />
-        <div className="flex flex-col gap-[50px]">
-          <div className="flex flex-col gap-[10px]">
-            <LoginForm />
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-blue-400">회원이 아니신가요?</span>
-              <Link href="/signup" className="text-sm font-medium text-black-600 hover:underline">
-                가입하기
-              </Link>
-            </div>
+    <div className="flex flex-1 flex-col tablet:flex-row">
+      <AuthLeftPanel />
+
+      <div className="flex flex-1 flex-col items-center justify-center px-6 py-16">
+        <div className="flex w-full max-w-sm flex-col gap-[50px]">
+          <div className="tablet:hidden">
+            <EpigramLogo />
           </div>
-          <SocialLoginSection kakaoOauthUrl={kakaoOauthUrl} />
+          <div className="flex flex-col gap-[50px]">
+            <div className="flex flex-col gap-[10px]">
+              <LoginForm />
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-blue-400">회원이 아니신가요?</span>
+                <Link href="/signup" className="text-sm font-medium text-black-600 hover:underline">
+                  가입하기
+                </Link>
+              </div>
+            </div>
+            <SocialLoginSection kakaoOauthUrl={kakaoOauthUrl} />
+          </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function AuthLeftPanel() {
+  return (
+    <div className="hidden tablet:flex tablet:w-[380px] desktop:w-[460px] flex-col justify-between bg-blue-950 p-12">
+      <span className="font-serif text-xl font-black text-white tracking-tight">Epigram</span>
+
+      <div className="flex flex-col gap-5">
+        <span
+          className="font-serif leading-none text-blue-400"
+          style={{ fontSize: "80px" }}
+          aria-hidden="true"
+        >
+          {"\u201C"}
+        </span>
+        <p className="font-serif text-xl leading-relaxed text-blue-100">
+          나만 갖고 있기엔
+          <br />
+          아까운 글이 있지 않나요?
+        </p>
+        <p className="font-serif text-sm text-blue-500">— Epigram</p>
+      </div>
+
+      <p className="text-xs tracking-wide text-blue-600">다른 사람들과 감정을 공유해 보세요</p>
     </div>
   );
 }
@@ -52,7 +84,7 @@ function SocialLoginSection({ kakaoOauthUrl }: SocialLoginSectionProps) {
           label="네이버로 로그인"
           bgColor="#03C75A"
         >
-          <span className="text-white font-bold text-sm leading-none">N</span>
+          <span className="text-sm font-bold leading-none text-white">N</span>
         </SocialIconButton>
         <SocialIconButton
           href="https://accounts.google.com/o/oauth2/v2/auth"
@@ -60,10 +92,10 @@ function SocialLoginSection({ kakaoOauthUrl }: SocialLoginSectionProps) {
           bgColor="#ffffff"
           className="border border-line-200"
         >
-          <span className="text-[#4285F4] font-bold text-sm leading-none">G</span>
+          <span className="text-sm font-bold leading-none text-[#4285F4]">G</span>
         </SocialIconButton>
         <SocialIconButton href={kakaoOauthUrl} label="카카오로 로그인" bgColor="#FEE500">
-          <span className="text-[#191919] font-bold text-sm leading-none">K</span>
+          <span className="text-sm font-bold leading-none text-[#191919]">K</span>
         </SocialIconButton>
       </div>
     </div>
@@ -89,7 +121,7 @@ function SocialIconButton({
     <a
       href={href}
       aria-label={label}
-      className={`flex h-10 w-10 items-center justify-center rounded-full transition-opacity hover:opacity-80 ${className}`}
+      className={`flex h-10 w-10 items-center justify-center rounded-full transition-all duration-150 hover:scale-110 hover:opacity-90 active:scale-95 ${className}`}
       style={{ backgroundColor: bgColor }}
     >
       {children}
