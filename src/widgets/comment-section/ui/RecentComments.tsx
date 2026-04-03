@@ -1,19 +1,26 @@
 "use client";
 
+import type { ReactElement } from "react";
+import { useState } from "react";
+
 import { ChevronDown, User } from "lucide-react";
 import Image from "next/image";
-import React, { useState } from "react";
 
 import type { Comment, Writer } from "@/entities/comment";
 import { useRecentComments } from "@/entities/comment";
 import { formatRelativeTime } from "@/shared/lib/date";
+import { Button } from "@/shared/ui/Button";
 import { Modal } from "@/shared/ui/Modal";
 
 const COMMENTS_PAGE_SIZE = 4;
 
 const SKELETON_ITEMS = Array.from({ length: COMMENTS_PAGE_SIZE });
 
-function WriterAvatar({ writer }: { writer: Writer }): React.ReactElement {
+interface WriterAvatarProps {
+  writer: Writer;
+}
+
+function WriterAvatar({ writer }: WriterAvatarProps): ReactElement {
   if (writer.image) {
     return (
       <Image
@@ -33,13 +40,12 @@ function WriterAvatar({ writer }: { writer: Writer }): React.ReactElement {
   );
 }
 
-function WriterProfileModal({
-  writer,
-  onClose,
-}: {
+interface WriterProfileModalProps {
   writer: Writer;
   onClose: () => void;
-}): React.ReactElement {
+}
+
+function WriterProfileModal({ writer, onClose }: WriterProfileModalProps): ReactElement {
   return (
     <Modal onClose={onClose}>
       <div className="flex flex-col items-center gap-4 py-2">
@@ -48,19 +54,19 @@ function WriterProfileModal({
           <p className="text-lg font-semibold text-black-800">{writer.nickname}</p>
           <p className="mt-1 text-sm text-black-300">ID: {writer.id}</p>
         </div>
-        <button
-          type="button"
-          onClick={onClose}
-          className="mt-2 rounded-xl bg-blue-200 px-6 py-2 text-sm font-medium text-blue-800 transition-colors hover:bg-blue-300 active:scale-95"
-        >
+        <Button variant="secondary" onClick={onClose} className="mt-2">
           닫기
-        </button>
+        </Button>
       </div>
     </Modal>
   );
 }
 
-function CommentItem({ comment }: { comment: Comment }): React.ReactElement {
+interface CommentItemProps {
+  comment: Comment;
+}
+
+function CommentItem({ comment }: CommentItemProps): ReactElement {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -93,13 +99,12 @@ function CommentItem({ comment }: { comment: Comment }): React.ReactElement {
   );
 }
 
-function LoadMoreButton({
-  isFetchingNextPage,
-  onClick,
-}: {
+interface LoadMoreButtonProps {
   isFetchingNextPage: boolean;
   onClick: () => void;
-}): React.ReactElement {
+}
+
+function LoadMoreButton({ isFetchingNextPage, onClick }: LoadMoreButtonProps): ReactElement {
   return (
     <button
       type="button"
@@ -120,7 +125,7 @@ function LoadMoreButton({
   );
 }
 
-export function RecentComments(): React.ReactElement {
+export function RecentComments(): ReactElement {
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } = useRecentComments({
     limit: COMMENTS_PAGE_SIZE,
   });
