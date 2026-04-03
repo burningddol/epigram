@@ -103,6 +103,51 @@ curl -s -H "X-Figma-Token: $FIGMA_TOKEN" \
 
 **⚠️ contracts/ 나 spec.md 기술 내용이 실제 swagger와 다를 수 있다. 반드시 swagger를 정답으로 삼는다. 예외 없음.**
 
+## 캐싱 전략 원칙 (Next.js ISR 우선)
+
+**데이터를 fetch하는 페이지·컴포넌트를 구현할 때는 반드시 ISR(Incremental Static Regeneration)을 먼저 고려한다.**
+
+### 기본 원칙
+
+- **정적 생성 가능한 데이터는 ISR로** — 에피그램 목록, 에피그램 상세, 검색 결과 등 서버에서 fetch하는 모든 데이터가 대상
+- **`revalidate`는 데이터 변경 빈도에 맞게** — 자주 바뀌지 않는 데이터는 길게, 실시간성이 중요한 데이터는 짧게
+- **`dynamic = "force-dynamic"`은 최후 수단** — 쿠키·헤더·searchParams에 의존하거나 사용자별로 완전히 달라지는 페이지에만 사용
+
+### 구현 패턴
+
+```ts
+// 1. 페이지 단위 revalidate (page.tsx 또는 layout.tsx 상단에 선언)
+export const revalidate = 60; // 60초마다 백그라운드 재생성
+
+// 2. fetch 단위 revalidate
+const data = await fetch(url, { next: { revalidate: 60 } });
+
+// 3. 태그 기반 on-demand revalidation (데이터 변경 시 즉시 무효화)
+const data = await fetch(url, { next: { tags: ["epigrams"] } });
+// 변경 발생 시: revalidateTag("epigrams")
+
+// 4. 완전 정적 (변경이 거의 없는 데이터)
+export const revalidate = false; // 빌드 시 생성 후 영구 캐시
+```
+
+### 페이지별 권장 전략
+
+| 페이지 | 전략 | 이유 |
+|--------|------|------|
+| `/` 랜딩 | `revalidate = false` (정적) | 하드코딩 데이터, 변경 없음 |
+| `/epigrams` 목록 | `revalidate = 60` | 새 에피그램이 자주 추가됨 |
+| `/epigrams/[id]` 상세 | `revalidate = 60` | 좋아요·댓글 수 변동 |
+| `/search` | `dynamic = "force-dynamic"` | searchParams 의존 |
+| `/mypage` | `dynamic = "force-dynamic"` | 사용자 인증 쿠키 의존 |
+
+### 금지 사항
+
+- 아무 이유 없이 `dynamic = "force-dynamic"` 선언 금지
+- ISR 적용 가능한 페이지에 `cache: "no-store"` fetch 금지
+- `revalidate = 0` 은 `force-dynamic` 과 동일 — 남용 금지
+
+**⚠️ 새 페이지나 데이터 fetch를 구현할 때마다 위 표를 참고해 캐싱 전략을 명시적으로 결정한다. 기본값(Next.js 자동 판단)에 의존하지 않는다.**
+
 ## 커밋 전 필수 체크
 
 ```
