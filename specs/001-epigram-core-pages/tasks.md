@@ -98,17 +98,17 @@
 
 ### US2 — 엔티티 & 모델 (의존: Phase 2)
 
-- [ ] T036 [P] [US2] Epigram 엔티티 Zod 스키마 정의 — `isLiked`는 상세 조회(`GET /epigrams/{id}`) 응답에만 존재, 목록(`GET /epigrams`) 응답에는 없음 (`src/entities/epigram/model/schema.ts`)
-- [ ] T037 [P] [US2] EmotionLog 엔티티 Zod 스키마 정의 — Emotion enum: `MOVED | HAPPY | WORRIED | SAD | ANGRY` (영문, swagger 기준) (`src/entities/emotion-log/model/schema.ts`)
+- [x] T036 [P] [US2] Epigram 엔티티 Zod 스키마 정의 — `isLiked`는 상세 조회(`GET /epigrams/{id}`) 응답에만 존재, 목록(`GET /epigrams`) 응답에는 없음 (`src/entities/epigram/model/schema.ts`)
+- [x] T037 [P] [US2] EmotionLog 엔티티 Zod 스키마 정의 — Emotion enum: `MOVED | HAPPY | WORRIED | SAD | ANGRY` (영문, swagger 기준) (`src/entities/emotion-log/model/schema.ts`)
 
 ### US2 — API 레이어
 
-- [ ] T038 [P] [US2] 에피그램 목록 API 훅 — `useEpigrams` (cursor 기반 페이지네이션) (`src/entities/epigram/api/useEpigrams.ts`)
-- [ ] T039 [P] [US2] 오늘의 에피그램 API 훅 — `useTodayEpigram` (`src/entities/epigram/api/useTodayEpigram.ts`)
-- [ ] T040 [P] [US2] 최근 댓글 목록 API 훅 — `useRecentComments` (`src/entities/comment/api/useRecentComments.ts`)
-- [ ] T041 [P] [US2] 오늘의 감정 조회 API 훅 — `useTodayEmotion` (`src/entities/emotion-log/api/useTodayEmotion.ts`)
-- [ ] T042 [P] [US2] 오늘의 감정 등록 API 함수 — `postTodayEmotion` (`src/entities/emotion-log/api/postTodayEmotion.ts`)
-- [ ] T043 [US2] Epigram, Comment, EmotionLog 엔티티 index.ts 퍼블릭 API 정의 (`src/entities/epigram/index.ts`, `src/entities/comment/index.ts`, `src/entities/emotion-log/index.ts`)
+- [x] T038 [P] [US2] 에피그램 목록 API 훅 — `useEpigrams` (cursor 기반 페이지네이션) (`src/entities/epigram/api/useEpigrams.ts`)
+- [x] T039 [P] [US2] 오늘의 에피그램 API 훅 — `useTodayEpigram` (`src/entities/epigram/api/useTodayEpigram.ts`)
+- [x] T040 [P] [US2] 최근 댓글 목록 API 훅 — `useRecentComments` (`src/entities/comment/api/useRecentComments.ts`)
+- [x] T041 [P] [US2] 오늘의 감정 조회 API 훅 — `useTodayEmotion` (`src/entities/emotion-log/api/useTodayEmotion.ts`)
+- [x] T042 [P] [US2] 오늘의 감정 등록 API 함수 — `postTodayEmotion` (`src/entities/emotion-log/api/postTodayEmotion.ts`)
+- [x] T043 [US2] Epigram, Comment, EmotionLog 엔티티 index.ts 퍼블릭 API 정의 (`src/entities/epigram/index.ts`, `src/entities/comment/index.ts`, `src/entities/emotion-log/index.ts`)
 
 ### US2 — Features (의존: T036~T043)
 
