@@ -46,7 +46,7 @@
 - [x] T016 [P] 공용 UI — Tag 컴포넌트 (`src/shared/ui/Tag.tsx`)
 - [x] T017 [P] 공용 훅 — `useScrollToTop` (스크롤 위치 감지, 최상단 이동) (`src/shared/hooks/useScrollToTop.ts`)
 - [x] T018 [P] 공용 훅 — `useIntersectionObserver` (무한 스크롤 트리거용) (`src/shared/hooks/useIntersectionObserver.ts`)
-- [ ] T019 [P] 공용 유틸 — 날짜 포맷, 클립보드 복사 (`src/shared/lib/date.ts`, `src/shared/lib/clipboard.ts`)
+- [x] T019 [P] 공용 유틸 — 날짜 포맷, 클립보드 복사 (`src/shared/lib/date.ts`, `src/shared/lib/clipboard.ts`)
 - [ ] T020 헤더 네비게이션 위젯 구현 — 로고(소개 페이지 이동), 검색 아이콘, 사람 아이콘 (`src/widgets/header/ui/Header.tsx`, `src/widgets/header/index.ts`)
 
 **체크포인트**: BFF 프록시 동작 확인 — `/api/epigrams` 요청 시 백엔드 응답 반환 확인
