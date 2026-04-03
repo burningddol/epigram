@@ -35,22 +35,24 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-      <Input
-        label="이메일"
-        type="email"
-        placeholder="이메일을 입력해 주세요"
-        error={errors.email?.message}
-        {...register("email")}
-      />
-      <Input
-        label="비밀번호"
-        type="password"
-        placeholder="비밀번호를 입력해 주세요"
-        error={errors.password?.message}
-        {...register("password")}
-      />
-      <Button type="submit" isLoading={isSubmitting} className="w-full">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+      <div className="flex flex-col gap-[10px]">
+        <Input
+          type="email"
+          placeholder="이메일"
+          error={errors.email?.message}
+          aria-label="이메일"
+          {...register("email")}
+        />
+        <Input
+          type="password"
+          placeholder="비밀번호"
+          error={errors.password?.message}
+          aria-label="비밀번호"
+          {...register("password")}
+        />
+      </div>
+      <Button type="submit" isLoading={isSubmitting} className="h-11 w-full">
         로그인
       </Button>
     </form>
