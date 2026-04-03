@@ -38,7 +38,7 @@
 - [x] T008 BFF 프록시 catch-all 라우트 구현 — 백엔드 요청 중계, JWT → HttpOnly 쿠키 변환, 토큰 갱신 로직 (`src/app/api/[...path]/route.ts`)
 - [x] T009 인증 보호 미들웨어 구현 — 비로그인 보호 경로 `/epigrams/[id]`, `/addepigram`, `/mypage` 리다이렉트 처리 (`src/middleware.ts`) — `/epigrams`, `/search`는 비회원 접근 가능
 - [ ] T010 [P] axios 인스턴스 생성 — BFF 클라이언트, 베이스 URL 설정, 공통 헤더 (`src/shared/api/client.ts`)
-- [ ] T011 [P] PaginatedResponse 공통 타입 및 Zod 스키마 정의 (`src/shared/types/pagination.ts`)
+- [x] T011 [P] PaginatedResponse 공통 타입 및 Zod 스키마 정의 (`src/shared/types/pagination.ts`)
 - [ ] T012 [P] QueryProvider 설정 및 루트 레이아웃 구성 — React Query devtools 포함 (`src/app/layout.tsx`, `src/shared/api/QueryProvider.tsx`)
 - [ ] T013 [P] 공용 UI — Button 컴포넌트 (variant: primary, secondary, ghost) (`src/shared/ui/Button.tsx`)
 - [ ] T014 [P] 공용 UI — Input 컴포넌트 (에러 상태, label 포함) (`src/shared/ui/Input.tsx`)
