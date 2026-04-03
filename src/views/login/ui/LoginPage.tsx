@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { LoginForm } from "@/features/auth/ui/LoginForm";
+import { EpigramLogo } from "@/shared/ui/EpigramLogo";
 
 export async function LoginPage() {
   const cookieStore = await cookies();
@@ -14,27 +15,84 @@ export async function LoginPage() {
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-6 py-16">
-      <div className="w-full max-w-sm">
-        <h1 className="mb-8 text-center font-serif text-2xl font-bold text-black-950">로그인</h1>
-        <LoginForm />
-        <div className="my-6 flex items-center gap-4">
-          <hr className="flex-1 border-line-200" />
-          <span className="text-sm text-black-300">또는</span>
-          <hr className="flex-1 border-line-200" />
+      <div className="flex w-full max-w-sm flex-col gap-[50px]">
+        <EpigramLogo />
+        <div className="flex flex-col gap-[50px]">
+          <div className="flex flex-col gap-[10px]">
+            <LoginForm />
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-blue-400">회원이 아니신가요?</span>
+              <Link href="/signup" className="text-sm font-medium text-black-600 hover:underline">
+                가입하기
+              </Link>
+            </div>
+          </div>
+          <SocialLoginSection kakaoOauthUrl={kakaoOauthUrl} />
         </div>
-        <a
-          href={kakaoOauthUrl}
-          className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#FEE500] text-sm font-semibold text-[#191919] transition-colors hover:bg-[#F0D800]"
-        >
-          카카오로 로그인
-        </a>
-        <p className="mt-6 text-center text-sm text-black-300">
-          계정이 없으신가요?{" "}
-          <Link href="/signup" className="font-semibold text-blue-700 hover:underline">
-            회원가입
-          </Link>
-        </p>
       </div>
     </div>
+  );
+}
+
+interface SocialLoginSectionProps {
+  kakaoOauthUrl: string;
+}
+
+function SocialLoginSection({ kakaoOauthUrl }: SocialLoginSectionProps) {
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="flex items-center gap-[14px]">
+        <hr className="flex-1 border-line-200" />
+        <span className="text-xs text-blue-400">SNS 계정으로 로그인하기</span>
+        <hr className="flex-1 border-line-200" />
+      </div>
+      <div className="flex justify-center gap-4">
+        <SocialIconButton
+          href="https://nid.naver.com/oauth2.0/authorize"
+          label="네이버로 로그인"
+          bgColor="#03C75A"
+        >
+          <span className="text-white font-bold text-sm leading-none">N</span>
+        </SocialIconButton>
+        <SocialIconButton
+          href="https://accounts.google.com/o/oauth2/v2/auth"
+          label="구글로 로그인"
+          bgColor="#ffffff"
+          className="border border-line-200"
+        >
+          <span className="text-[#4285F4] font-bold text-sm leading-none">G</span>
+        </SocialIconButton>
+        <SocialIconButton href={kakaoOauthUrl} label="카카오로 로그인" bgColor="#FEE500">
+          <span className="text-[#191919] font-bold text-sm leading-none">K</span>
+        </SocialIconButton>
+      </div>
+    </div>
+  );
+}
+
+interface SocialIconButtonProps {
+  href: string;
+  label: string;
+  bgColor: string;
+  className?: string;
+  children: React.ReactNode;
+}
+
+function SocialIconButton({
+  href,
+  label,
+  bgColor,
+  className = "",
+  children,
+}: SocialIconButtonProps) {
+  return (
+    <a
+      href={href}
+      aria-label={label}
+      className={`flex h-10 w-10 items-center justify-center rounded-full transition-opacity hover:opacity-80 ${className}`}
+      style={{ backgroundColor: bgColor }}
+    >
+      {children}
+    </a>
   );
 }
