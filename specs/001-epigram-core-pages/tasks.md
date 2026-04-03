@@ -117,7 +117,7 @@
 ### US2 — Widgets (의존: T044)
 
 - [x] T045 [US2] 에피그램 피드 위젯 구현 — 오늘의 에피그램 + 에피그램 카드 + 더보기 버튼(5개씩) (`src/widgets/epigram-feed/ui/EpigramFeed.tsx`, `src/widgets/epigram-feed/index.ts`)
-- [ ] T046 [US2] 에피그램 카드 위젯 구현 — 내용, 저자, 태그 표시, 클릭 → 상세 이동 (`src/widgets/epigram-card/ui/EpigramCard.tsx`, `src/widgets/epigram-card/index.ts`)
+- [x] T046 [US2] 에피그램 카드 위젯 구현 — 내용, 저자, 태그 표시, 클릭 → 상세 이동 (`src/widgets/epigram-card/ui/EpigramCard.tsx`, `src/widgets/epigram-card/index.ts`)
 - [ ] T047 [US2] 최근 댓글 위젯 구현 — 댓글 목록, 더보기 버튼(4개씩), 댓글 작성자 클릭 → 유저 프로필 모달 (`src/widgets/comment-section/ui/RecentComments.tsx`)
 
 ### US2 — Pages & App Routes (의존: T045~T047)
