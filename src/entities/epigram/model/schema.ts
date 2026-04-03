@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { buildPaginatedSchema } from "@/shared/types/pagination";
+
 export const epigramTagSchema = z.object({
   id: z.number().int().positive(),
   name: z.string().min(1).max(10),
@@ -23,11 +25,7 @@ export const epigramDetailSchema = epigramSchema.extend({
   isLiked: z.boolean(),
 });
 
-export const epigramListResponseSchema = z.object({
-  totalCount: z.number(),
-  nextCursor: z.number().nullable(),
-  list: z.array(epigramSchema),
-});
+export const epigramListResponseSchema = buildPaginatedSchema(epigramSchema);
 
 export type EpigramTag = z.infer<typeof epigramTagSchema>;
 export type Epigram = z.infer<typeof epigramSchema>;
