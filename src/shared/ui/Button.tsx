@@ -1,4 +1,6 @@
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+import type { ButtonHTMLAttributes, ReactElement } from "react";
+
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "ghost";
   isLoading?: boolean;
 }
@@ -19,7 +21,7 @@ export function Button({
   children,
   className = "",
   ...props
-}: ButtonProps) {
+}: ButtonProps): ReactElement {
   return (
     <button
       disabled={disabled || isLoading}

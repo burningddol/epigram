@@ -1,13 +1,16 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import type { MouseEvent, ReactElement, ReactNode } from "react";
+import { useEffect, useRef } from "react";
+
+import { Button } from "@/shared/ui/Button";
 
 interface ModalProps {
   onClose: () => void;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
-export function Modal({ onClose, children }: ModalProps): React.ReactElement {
+export function Modal({ onClose, children }: ModalProps): ReactElement {
   const previousFocusRef = useRef<HTMLElement | null>(null);
   const mainContentRef = useRef<HTMLElement | null>(null);
 
@@ -27,7 +30,7 @@ export function Modal({ onClose, children }: ModalProps): React.ReactElement {
     };
   }, []);
 
-  function handleBackdropClick(e: React.MouseEvent<HTMLDivElement>): void {
+  function handleBackdropClick(e: MouseEvent<HTMLDivElement>): void {
     if (e.target === e.currentTarget) {
       onClose();
     }
@@ -61,7 +64,7 @@ export function ConfirmModal({
   cancelLabel = "취소",
   onConfirm,
   onClose,
-}: ConfirmModalProps): React.ReactElement {
+}: ConfirmModalProps): ReactElement {
   function handleConfirm(): void {
     onConfirm();
     onClose();
@@ -72,20 +75,12 @@ export function ConfirmModal({
       <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
       {description && <p className="mt-2 text-sm text-gray-600">{description}</p>}
       <div className="mt-6 flex justify-end gap-3">
-        <button
-          type="button"
-          onClick={onClose}
-          className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-        >
+        <Button variant="secondary" onClick={onClose}>
           {cancelLabel}
-        </button>
-        <button
-          type="button"
-          onClick={handleConfirm}
-          className="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-800"
-        >
+        </Button>
+        <Button variant="primary" onClick={handleConfirm}>
           {confirmLabel}
-        </button>
+        </Button>
       </div>
     </Modal>
   );

@@ -1,8 +1,10 @@
+import type { ReactNode } from "react";
+
 import { create } from "zustand";
 
 interface ModalConfig {
   id: string;
-  render: (onClose: () => void) => React.ReactNode;
+  render: (onClose: () => void) => ReactNode;
 }
 
 interface ModalState {
