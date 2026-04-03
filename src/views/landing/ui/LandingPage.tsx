@@ -1,11 +1,6 @@
-import { cookies } from "next/headers";
 import Link from "next/link";
 
-export async function LandingPage() {
-  const cookieStore = await cookies();
-  const isLoggedIn = cookieStore.has("accessToken");
-  const ctaHref = isLoggedIn ? "/epigrams" : "/login";
-
+export function LandingPage() {
   return (
     <div className="flex flex-col">
       {/* Hero */}
@@ -21,7 +16,7 @@ export async function LandingPage() {
           </p>
         </div>
         <Link
-          href={ctaHref}
+          href="/epigrams"
           className="inline-flex h-12 w-28 items-center justify-center rounded-xl bg-black-500 text-base font-semibold text-white transition-colors hover:bg-black-600"
         >
           시작하기
