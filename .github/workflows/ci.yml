@@ -31,8 +31,7 @@ jobs:
         run: npm run lint
 
       - name: Format check
-        # prettier가 설치된 경우에만 실행 (T003 이후 활성화)
-        run: npm run format:check --if-present
+        run: npm run format:check
 
       - name: Build
         run: npm run build
