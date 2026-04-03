@@ -20,7 +20,7 @@
 - [x] T001 Next.js 14 App Router + TypeScript 5.x 프로젝트 FSD 디렉토리 구조 생성 (`src/app/`, `src/views/`, `src/widgets/`, `src/features/`, `src/entities/`, `src/shared/`)
 - [x] T002 [P] Tailwind CSS, PostCSS 설정 (`tailwind.config.ts`, `postcss.config.js`)
 - [x] T003 [P] ESLint, Prettier 설정 (`.eslintrc.json`, `.prettierrc`)
-- [ ] T004 [P] 핵심 패키지 설치: TanStack Query v5, Zustand v4, React Hook Form v7, Zod v3, axios (`package.json`)
+- [x] T004 [P] 핵심 패키지 설치: TanStack Query v5, Zustand v4, React Hook Form v7, Zod v3, axios (`package.json`)
 - [ ] T005 [P] 시각화 패키지 설치: recharts, react-calendar (`package.json`)
 - [ ] T006 [P] 폰트 및 전역 CSS 설정 — Pretendard 등 프로젝트 폰트 적용 (`src/app/globals.css`)
 
