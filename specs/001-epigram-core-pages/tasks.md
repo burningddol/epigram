@@ -73,20 +73,15 @@
 
 ### US1 — Features (의존: T021~T026)
 
-<<<<<<< feat/#60-signup-form
-- [ ] T027 [US1] 로그인 폼 feature 구현 — RHF + Zod 검증, blur 에러 처리, 로그인 API 호출 (`src/features/auth/ui/LoginForm.tsx`, `src/features/auth/model/loginSchema.ts`)
-- [x] T028 [US1] 회원가입 폼 feature 구현 — 이메일·닉네임·비밀번호·비밀번호 확인 검증, 닉네임 중복(500) 에러 처리 (`src/features/auth/ui/SignUpForm.tsx`, `src/features/auth/model/signUpSchema.ts`)
-=======
 - [x] T027 [US1] 로그인 폼 feature 구현 — RHF + Zod 검증, blur 에러 처리, 로그인 API 호출 (`src/features/auth/ui/LoginForm.tsx`, `src/features/auth/model/loginSchema.ts`)
-- [ ] T028 [US1] 회원가입 폼 feature 구현 — 이메일·닉네임·비밀번호·비밀번호 확인 검증, 닉네임 중복(500) 에러 처리 (`src/features/auth/ui/SignUpForm.tsx`, `src/features/auth/model/signUpSchema.ts`)
->>>>>>> main
+- [x] T028 [US1] 회원가입 폼 feature 구현 — 이메일·닉네임·비밀번호·비밀번호 확인 검증, 닉네임 중복(500) 에러 처리 (`src/features/auth/ui/SignUpForm.tsx`, `src/features/auth/model/signUpSchema.ts`)
 - [N/A] T029 [US1] ~~카카오 OAuth 간편 가입 폼 feature 구현~~ — swagger `signIn/{provider}` 응답에 `needsSignup` 필드 없음. 별도 가입 폼 불필요. 삭제됨.
 - [x] T030 [US1] 로그아웃 기능 구현 — `/api/auth/logout` 호출, 쿠키 삭제 후 홈 이동 (`src/features/auth/api/logout.ts`)
 
 ### US1 — Pages & App Routes (의존: T027~T030)
 
-- [ ] T031 [P] [US1] 랜딩 페이지 구현 — 시작하기 버튼 (로그인 여부에 따라 분기) (`src/views/landing/ui/LandingPage.tsx`, `src/app/page.tsx`)
-- [ ] T032 [P] [US1] 로그인 페이지 구현 — 이미 로그인 시 `/` 리다이렉트, 카카오 로그인 버튼 포함 (`src/views/login/ui/LoginPage.tsx`, `src/app/login/page.tsx`)
+- [x] T031 [P] [US1] 랜딩 페이지 구현 — 시작하기 버튼 (로그인 여부에 따라 분기) (`src/views/landing/ui/LandingPage.tsx`, `src/app/page.tsx`)
+- [x] T032 [P] [US1] 로그인 페이지 구현 — 이미 로그인 시 `/` 리다이렉트, 카카오 로그인 버튼 포함 (`src/views/login/ui/LoginPage.tsx`, `src/app/login/page.tsx`)
 - [x] T033 [P] [US1] 일반 회원가입 페이지 구현 (`src/views/signup/ui/SignUpPage.tsx`, `src/app/signup/page.tsx`)
 - [ ] T034 [US1] 카카오 OAuth 콜백 처리 — 인가 코드 → BFF 전달(`/api/auth/signIn/kakao`), 성공 시 `/epigrams` 이동. needsSignup 분기 없음 (`src/app/oauth/callback/kakao/page.tsx`)
 - [N/A] T035 [US1] ~~카카오 간편 회원가입 페이지 구현~~ — swagger 기준 불필요. T029 와 함께 삭제됨.
