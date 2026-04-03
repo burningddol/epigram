@@ -1,13 +1,23 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  type UseInfiniteQueryResult,
+  type InfiniteData,
+} from "@tanstack/react-query";
 
 import { apiClient } from "@/shared/api/client";
+
 import type { CommentListResponse } from "../model/schema";
 
 interface UseRecentCommentsParams {
   limit: number;
 }
 
-export function useRecentComments({ limit }: UseRecentCommentsParams) {
+export function useRecentComments({
+  limit,
+}: UseRecentCommentsParams): UseInfiniteQueryResult<
+  InfiniteData<CommentListResponse, number | undefined>,
+  Error
+> {
   return useInfiniteQuery({
     queryKey: ["comments", { limit }],
     queryFn: async ({ pageParam }) => {
