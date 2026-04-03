@@ -1,5 +1,7 @@
 "use client";
 
+import type { ReactElement } from "react";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { isAxiosError } from "axios";
 import { useRouter } from "next/navigation";
@@ -11,7 +13,7 @@ import { Input } from "@/shared/ui/Input";
 
 import { signUpSchema, type SignUpFormValues } from "../model/signUpSchema";
 
-export function SignUpForm() {
+export function SignUpForm(): ReactElement {
   const router = useRouter();
 
   const {

@@ -1,12 +1,13 @@
 "use client";
 
+import type { ReactElement } from "react";
 import { Suspense, useEffect } from "react";
 
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { signInKakao } from "@/entities/user";
 
-function KakaoCallbackHandler() {
+function KakaoCallbackHandler(): null {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -27,7 +28,7 @@ function KakaoCallbackHandler() {
   return null;
 }
 
-export default function KakaoCallbackPage() {
+export default function KakaoCallbackPage(): ReactElement {
   return (
     <div className="flex flex-1 items-center justify-center">
       <p className="text-sm text-black-300">카카오 로그인 처리 중...</p>

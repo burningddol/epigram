@@ -1,11 +1,14 @@
+import type { ReactElement, ReactNode } from "react";
+
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { AuthLeftPanel } from "@/features/auth/ui/AuthLeftPanel";
 import { LoginForm } from "@/features/auth/ui/LoginForm";
 import { EpigramLogo } from "@/shared/ui/EpigramLogo";
 
-export async function LoginPage() {
+export async function LoginPage(): Promise<ReactElement> {
   const cookieStore = await cookies();
   if (cookieStore.has("accessToken")) {
     redirect("/epigrams");
@@ -40,37 +43,11 @@ export async function LoginPage() {
   );
 }
 
-function AuthLeftPanel() {
-  return (
-    <div className="hidden tablet:flex tablet:w-[380px] desktop:w-[460px] flex-col justify-between bg-blue-950 p-12">
-      <span className="font-serif text-xl font-black text-white tracking-tight">Epigram</span>
-
-      <div className="flex flex-col gap-5">
-        <span
-          className="font-serif leading-none text-blue-400"
-          style={{ fontSize: "80px" }}
-          aria-hidden="true"
-        >
-          {"\u201C"}
-        </span>
-        <p className="font-serif text-xl leading-relaxed text-blue-100">
-          나만 갖고 있기엔
-          <br />
-          아까운 글이 있지 않나요?
-        </p>
-        <p className="font-serif text-sm text-blue-500">— Epigram</p>
-      </div>
-
-      <p className="text-xs tracking-wide text-blue-600">다른 사람들과 감정을 공유해 보세요</p>
-    </div>
-  );
-}
-
 interface SocialLoginSectionProps {
   kakaoOauthUrl: string;
 }
 
-function SocialLoginSection({ kakaoOauthUrl }: SocialLoginSectionProps) {
+function SocialLoginSection({ kakaoOauthUrl }: SocialLoginSectionProps): ReactElement {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-[14px]">
@@ -107,7 +84,7 @@ interface SocialIconButtonProps {
   label: string;
   bgColor: string;
   className?: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 function SocialIconButton({
@@ -116,7 +93,7 @@ function SocialIconButton({
   bgColor,
   className = "",
   children,
-}: SocialIconButtonProps) {
+}: SocialIconButtonProps): ReactElement {
   return (
     <a
       href={href}

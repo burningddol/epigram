@@ -1,5 +1,7 @@
 "use client";
 
+import type { ReactElement } from "react";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -10,7 +12,7 @@ import { Input } from "@/shared/ui/Input";
 
 import { loginSchema, type LoginFormValues } from "../model/loginSchema";
 
-export function LoginForm() {
+export function LoginForm(): ReactElement {
   const router = useRouter();
 
   const {
