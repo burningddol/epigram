@@ -4,7 +4,11 @@ import { useRouter } from "next/navigation";
 
 import { logout } from "@/entities/user";
 
-export function useLogout() {
+interface UseLogoutReturn {
+  handleLogout: () => Promise<void>;
+}
+
+export function useLogout(): UseLogoutReturn {
   const router = useRouter();
 
   async function handleLogout(): Promise<void> {
