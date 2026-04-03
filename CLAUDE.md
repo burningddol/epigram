@@ -43,9 +43,8 @@ General: Follow standard conventions
 3. 브랜치 생성: feat/#이슈번호-설명 / chore/#이슈번호-설명 / fix/#이슈번호-설명
 4. 작업 수행
 5. 커밋 메시지: "type: 설명 (#이슈번호)"
-6. PR 생성 — 본문에 반드시 `Closes #이슈번호` 포함 → 사용자가 merge
-7. PR의 코드를 code-review스킬을 사용하여 리뷰하고 comment 작성
-8. 코드리뷰 comment를 참고하여 simplify 스킬을 사용하여 리팩토링 후 커밋 및 푸쉬
+6. 작업한 내용을 simplify 스킬을 사용하여 리팩토링 후 커밋 및 푸쉬
+7. PR 생성 — 본문에 반드시 `Closes #이슈번호` 포함 → PR의 CI통과하면 머지 (불통과시 해결 후 머지)
 ```
 
 코드를 한 줄이라도 작성하기 전에 이슈와 브랜치가 먼저 존재해야 한다.
@@ -297,11 +296,12 @@ export default async function EpigramsPage() {
 ```
 1. 파일 구현
 2. npm run format     (prettier --write .)
-3. npm run build      (TypeScript 타입 에러 + 빌드 에러 확인)
-4. git add <files>
-5. git commit
-6. git push
-7. PR 생성
+3. npm run lint       (ESLint 에러 0개 확인 — 에러 있으면 수정 후 재확인)
+4. npm run build      (TypeScript 타입 에러 + 빌드 에러 확인)
+5. git add <files>
+6. git commit
+7. git push
+8. PR 생성
 ```
 
 <!-- MANUAL ADDITIONS END -->
