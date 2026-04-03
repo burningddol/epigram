@@ -1,13 +1,15 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { postTodayEmotion, useTodayEmotion } from "@/entities/emotion-log";
 import type { Emotion } from "@/entities/emotion-log";
+import { postTodayEmotion, useTodayEmotion } from "@/entities/emotion-log";
 
-export function useEmotionSelect(): {
+interface UseEmotionSelectReturn {
   hasSelectedToday: boolean;
   isSubmitting: boolean;
   selectEmotion: (emotion: Emotion) => void;
-} {
+}
+
+export function useEmotionSelect(): UseEmotionSelectReturn {
   const queryClient = useQueryClient();
   const { data: todayEmotion } = useTodayEmotion();
 
@@ -19,7 +21,7 @@ export function useEmotionSelect(): {
   });
 
   return {
-    hasSelectedToday: todayEmotion !== null && todayEmotion !== undefined,
+    hasSelectedToday: todayEmotion != null,
     isSubmitting: isPending,
     selectEmotion: mutate,
   };
