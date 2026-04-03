@@ -1,26 +1,24 @@
-import React from "react";
+import type { ReactElement } from "react";
 
 interface TagProps {
   label: string;
   onClick?: (label: string) => void;
 }
 
-export function Tag({ label, onClick }: TagProps): React.ReactElement {
+const TAG_CLASS = "rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-600";
+
+export function Tag({ label, onClick }: TagProps): ReactElement {
   if (onClick) {
     return (
       <button
         type="button"
         onClick={() => onClick(label)}
-        className="rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-600 hover:bg-blue-100 transition-colors"
+        className={`${TAG_CLASS} hover:bg-blue-100 transition-colors`}
       >
         #{label}
       </button>
     );
   }
 
-  return (
-    <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-600">
-      #{label}
-    </span>
-  );
+  return <span className={TAG_CLASS}>#{label}</span>;
 }

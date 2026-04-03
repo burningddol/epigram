@@ -4,7 +4,6 @@ export async function copyToClipboard(text: string): Promise<void> {
     return;
   }
 
-  // fallback for non-secure contexts
   const textarea = document.createElement("textarea");
   textarea.value = text;
   textarea.style.position = "fixed";

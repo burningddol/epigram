@@ -1,4 +1,6 @@
-import React, { useCallback } from "react";
+import type { ReactNode } from "react";
+import { useCallback } from "react";
+
 import { useModalStore } from "@/shared/model/modalStore";
 
 let idCounter = 0;
@@ -9,7 +11,7 @@ function generateId(): string {
 }
 
 interface UseModalReturn {
-  open: (render: (onClose: () => void) => React.ReactNode) => string;
+  open: (render: (onClose: () => void) => ReactNode) => string;
   close: (id: string) => void;
   closeAll: () => void;
 }
@@ -18,7 +20,7 @@ export function useModal(): UseModalReturn {
   const { openModal, closeModal, closeAll } = useModalStore();
 
   const open = useCallback(
-    (render: (onClose: () => void) => React.ReactNode): string => {
+    (render: (onClose: () => void) => ReactNode): string => {
       const id = generateId();
       openModal({ id, render });
       return id;
@@ -26,12 +28,5 @@ export function useModal(): UseModalReturn {
     [openModal]
   );
 
-  const close = useCallback(
-    (id: string): void => {
-      closeModal(id);
-    },
-    [closeModal]
-  );
-
-  return { open, close, closeAll };
+  return { open, close: closeModal, closeAll };
 }

@@ -1,9 +1,11 @@
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+import type { InputHTMLAttributes, ReactElement } from "react";
+
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
 }
 
-export function Input({ label, error, id, className = "", ...props }: InputProps) {
+export function Input({ label, error, id, className = "", ...props }: InputProps): ReactElement {
   const inputId = id ?? label;
 
   return (
