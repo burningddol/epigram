@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { QueryProvider } from "@/shared/api/QueryProvider";
+import { Header } from "@/widgets/header";
 import "./globals.css";
 import { ModalProvider } from "@/shared/ui/ModalProvider";
 
@@ -24,6 +25,7 @@ export default function RootLayout({
   return (
     <html lang="ko" className={`${pretendard.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
+        <Header />
         <main id="main-content" className="flex flex-1 flex-col">
           <QueryProvider>{children}</QueryProvider>
         </main>
