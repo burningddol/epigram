@@ -7,20 +7,20 @@ export function Input({ label, error, id, className = "", ...props }: InputProps
   const inputId = id ?? label;
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-2">
       {label ? (
-        <label htmlFor={inputId} className="text-sm font-medium text-gray-700">
+        <label htmlFor={inputId} className="text-sm font-medium text-blue-900">
           {label}
         </label>
       ) : null}
       <input
         id={inputId}
-        className={`rounded-lg border px-4 py-2 text-sm outline-none transition-colors placeholder:text-gray-400 focus:ring-2 focus:ring-black disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-400 ${
-          error ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:border-black"
+        className={`h-11 w-full rounded-xl bg-blue-200 px-4 text-sm text-black-950 outline-none transition-colors placeholder:text-blue-400 focus:ring-2 focus:ring-black-500 disabled:cursor-not-allowed disabled:opacity-50 ${
+          error ? "ring-2 ring-error" : ""
         } ${className}`}
         {...props}
       />
-      {error ? <p className="text-xs text-red-500">{error}</p> : null}
+      {error ? <p className="text-xs text-error">{error}</p> : null}
     </div>
   );
 }
