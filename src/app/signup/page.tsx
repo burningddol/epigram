@@ -1,3 +1,5 @@
+import { SignUpPage } from "@/views/signup";
+
 export default function Page() {
-  return null;
+  return <SignUpPage />;
 }
