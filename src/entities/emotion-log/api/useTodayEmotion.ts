@@ -1,0 +1,14 @@
+import { useQuery } from "@tanstack/react-query";
+
+import { apiClient } from "@/shared/api/client";
+import type { EmotionLog } from "../model/schema";
+
+export function useTodayEmotion() {
+  return useQuery({
+    queryKey: ["emotionLogs", "today"],
+    queryFn: async () => {
+      const response = await apiClient.get<EmotionLog | null>("/api/emotionLogs/today");
+      return response.data;
+    },
+  });
+}
