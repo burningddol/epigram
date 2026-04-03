@@ -51,7 +51,7 @@ function AuthLeftPanel() {
           style={{ fontSize: "80px" }}
           aria-hidden="true"
         >
-          "
+          {'\u201C'}
         </span>
         <p className="font-serif text-xl leading-relaxed text-blue-100">
           나만 갖고 있기엔
