@@ -6,16 +6,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 
-import { Button } from "@/shared/ui/Button";
-import { Input } from "@/shared/ui/Input";
-
-import { useEpigramEdit } from "../model/useEpigramEdit";
 import {
   AUTHOR_TYPE,
   epigramCreateFormSchema,
   type AuthorType,
   type EpigramCreateFormValues,
 } from "@/features/epigram-create/model/schema";
+import { Button } from "@/shared/ui/Button";
+import { Input } from "@/shared/ui/Input";
+
+import { useEpigramEdit } from "../model/useEpigramEdit";
 
 interface AuthorRadioOption {
   value: AuthorType;
@@ -82,11 +82,7 @@ export function EpigramEditForm({ epigramId, defaultValues }: EpigramEditFormPro
   }
 
   return (
-    <form
-      onSubmit={handleSubmit((values) => submit(values))}
-      className="flex flex-col gap-8"
-      noValidate
-    >
+    <form onSubmit={handleSubmit(submit)} className="flex flex-col gap-8" noValidate>
       <fieldset className="flex flex-col gap-2">
         <label htmlFor="content" className="text-sm font-semibold text-blue-900">
           내용 <span className="text-error">*</span>

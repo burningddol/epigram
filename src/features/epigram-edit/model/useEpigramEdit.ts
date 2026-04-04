@@ -2,17 +2,14 @@
 
 import { useState } from "react";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
-import { apiClient } from "@/shared/api/client";
-import type { Epigram } from "@/entities/epigram";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import {
-  AUTHOR_TYPE,
-  type AuthorType,
-  type EpigramCreateFormValues,
-} from "@/features/epigram-create/model/schema";
+import { AUTHOR_TYPE, type EpigramCreateFormValues } from "@/features/epigram-create/model/schema";
+import { apiClient } from "@/shared/api/client";
+
+import type { Epigram } from "@/entities/epigram";
 
 interface UpdateEpigramBody {
   content?: string;
@@ -35,9 +32,9 @@ interface UseEpigramEditReturn {
 
 const MAX_TAG_LENGTH = 10;
 
-function resolveAuthor(values: EpigramCreateFormValues, authorType: AuthorType): string {
-  if (authorType === AUTHOR_TYPE.UNKNOWN) return "알 수 없음";
-  if (authorType === AUTHOR_TYPE.SELF) return values.authorName ?? "본인";
+function resolveAuthor(values: EpigramCreateFormValues): string {
+  if (values.authorType === AUTHOR_TYPE.UNKNOWN) return "알 수 없음";
+  if (values.authorType === AUTHOR_TYPE.SELF) return values.authorName ?? "본인";
   return values.authorName ?? "";
 }
 
@@ -85,7 +82,7 @@ export function useEpigramEdit(epigramId: number): UseEpigramEditReturn {
   function submit(values: EpigramCreateFormValues): void {
     mutate({
       content: values.content,
-      author: resolveAuthor(values, values.authorType),
+      author: resolveAuthor(values),
       referenceTitle: values.referenceTitle?.trim() || null,
       referenceUrl: values.referenceUrl?.trim() || null,
       tags: values.tags,
