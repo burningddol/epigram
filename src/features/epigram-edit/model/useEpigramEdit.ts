@@ -1,13 +1,12 @@
 "use client";
 
-import { useState } from "react";
-
 import { useRouter } from "next/navigation";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { AUTHOR_TYPE, type EpigramCreateFormValues } from "@/features/epigram-create/model/schema";
 import { apiClient } from "@/shared/api/client";
+import { useTagInput } from "@/shared/hooks/useTagInput";
 
 import type { Epigram } from "@/entities/epigram";
 
@@ -30,8 +29,6 @@ interface UseEpigramEditReturn {
   submit: (values: EpigramCreateFormValues) => void;
 }
 
-const MAX_TAG_LENGTH = 10;
-
 function resolveAuthor(values: EpigramCreateFormValues): string {
   if (values.authorType === AUTHOR_TYPE.UNKNOWN) return "알 수 없음";
   if (values.authorType === AUTHOR_TYPE.SELF) return values.authorName ?? "본인";
@@ -41,7 +38,7 @@ function resolveAuthor(values: EpigramCreateFormValues): string {
 export function useEpigramEdit(epigramId: number): UseEpigramEditReturn {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [tagInput, setTagInput] = useState("");
+  const { tagInput, handleTagInputChange, handleAddTag, handleRemoveTag } = useTagInput();
 
   const {
     mutate,
@@ -55,25 +52,6 @@ export function useEpigramEdit(epigramId: number): UseEpigramEditReturn {
       router.push(`/epigrams/${epigram.id}`);
     },
   });
-
-  function handleTagInputChange(value: string): void {
-    setTagInput(value.slice(0, MAX_TAG_LENGTH));
-  }
-
-  function handleAddTag(currentTags: string[], onChange: (tags: string[]) => void): void {
-    const trimmed = tagInput.trim();
-    if (!trimmed || currentTags.length >= 3 || currentTags.includes(trimmed)) return;
-    onChange([...currentTags, trimmed]);
-    setTagInput("");
-  }
-
-  function handleRemoveTag(
-    tag: string,
-    currentTags: string[],
-    onChange: (tags: string[]) => void
-  ): void {
-    onChange(currentTags.filter((t) => t !== tag));
-  }
 
   function handleCancel(): void {
     router.push(`/epigrams/${epigramId}`);
