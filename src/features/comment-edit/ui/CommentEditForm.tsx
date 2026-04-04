@@ -29,7 +29,7 @@ export function CommentEditForm({
     isSubmitting,
     hasError,
     canSubmit,
-    setContent,
+    handleContentChange,
     handlePrivateToggle,
     handleSubmit,
     handleCancel,
@@ -44,7 +44,7 @@ export function CommentEditForm({
     <div className="flex flex-col gap-2 rounded-2xl border border-blue-400 bg-white p-3 shadow-sm">
       <textarea
         value={content}
-        onChange={(e) => setContent(e.target.value)}
+        onChange={(e) => handleContentChange(e.target.value)}
         onKeyDown={handleKeyDown}
         maxLength={100}
         rows={2}

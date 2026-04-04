@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { apiClient } from "@/shared/api/client";
+
 import type { Comment } from "@/entities/comment";
 
 interface UpdateCommentBody {
@@ -26,7 +27,7 @@ interface UseCommentEditReturn {
   isSubmitting: boolean;
   hasError: boolean;
   canSubmit: boolean;
-  setContent: (value: string) => void;
+  handleContentChange: (value: string) => void;
   handlePrivateToggle: () => void;
   handleSubmit: () => void;
   handleCancel: () => void;
@@ -42,21 +43,27 @@ export function useCommentEdit({
   const queryClient = useQueryClient();
   const [content, setContent] = useState(initialContent);
   const [isPrivate, setIsPrivate] = useState(initialIsPrivate);
+  const [hasSubmitError, setHasSubmitError] = useState(false);
 
-  const {
-    mutate,
-    isPending: isSubmitting,
-    isError: hasError,
-  } = useMutation({
+  const { mutate, isPending: isSubmitting } = useMutation({
     mutationFn: (body: UpdateCommentBody) =>
       apiClient.patch<Comment>(`/api/comments/${commentId}`, body).then((res) => res.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["epigrams", epigramId, "comments"] });
+      setHasSubmitError(false);
       onCancel();
+    },
+    onError: () => {
+      setHasSubmitError(true);
     },
   });
 
   const canSubmit = content.trim().length > 0;
+
+  function handleContentChange(value: string): void {
+    setContent(value);
+    if (hasSubmitError) setHasSubmitError(false);
+  }
 
   function handlePrivateToggle(): void {
     setIsPrivate((prev) => !prev);
@@ -71,6 +78,7 @@ export function useCommentEdit({
   function handleCancel(): void {
     setContent(initialContent);
     setIsPrivate(initialIsPrivate);
+    setHasSubmitError(false);
     onCancel();
   }
 
@@ -78,9 +86,9 @@ export function useCommentEdit({
     content,
     isPrivate,
     isSubmitting,
-    hasError,
+    hasError: hasSubmitError,
     canSubmit,
-    setContent,
+    handleContentChange,
     handlePrivateToggle,
     handleSubmit,
     handleCancel,
