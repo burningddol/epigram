@@ -136,13 +136,13 @@
 
 ### US3 — Features (의존: T036, T026)
 
-- [ ] T049 [US3] 에피그램 작성 API 함수 구현 — `createEpigram` (`src/entities/epigram/api/createEpigram.ts`)
-- [ ] T050 [US3] 에피그램 작성 폼 Zod 스키마 정의 — content(최대 500자), author, tags(최대 3개, 각 10자), referenceTitle, referenceUrl. 전송 시 tags는 `string[]`, 응답의 tags는 `{ id: number; name: string }[]` (`src/features/epigram-create/model/schema.ts`)
-- [ ] T051 [US3] 에피그램 작성 feature 구현 — 저자 라디오 버튼(직접입력/알 수 없음/본인), 태그 입력·삭제, URL 형식 검증 (`src/features/epigram-create/ui/EpigramCreateForm.tsx`, `src/features/epigram-create/model/useEpigramCreate.ts`)
+- [x] T049 [US3] 에피그램 작성 API 함수 구현 — `createEpigram` (`src/entities/epigram/api/createEpigram.ts`)
+- [x] T050 [US3] 에피그램 작성 폼 Zod 스키마 정의 — content(최대 500자), author, tags(최대 3개, 각 10자), referenceTitle, referenceUrl. 전송 시 tags는 `string[]`, 응답의 tags는 `{ id: number; name: string }[]` (`src/features/epigram-create/model/schema.ts`)
+- [x] T051 [US3] 에피그램 작성 feature 구현 — 저자 라디오 버튼(직접입력/알 수 없음/본인), 태그 입력·삭제, URL 형식 검증 (`src/features/epigram-create/ui/EpigramCreateForm.tsx`, `src/features/epigram-create/model/useEpigramCreate.ts`)
 
 ### US3 — Pages & App Routes (의존: T049~T051)
 
-- [ ] T052 [US3] 에피그램 작성 페이지 구현 (`src/views/add-epigram/ui/AddEpigramPage.tsx`, `src/app/addepigram/page.tsx`)
+- [x] T052 [US3] 에피그램 작성 페이지 구현 (`src/views/add-epigram/ui/AddEpigramPage.tsx`, `src/app/addepigram/page.tsx`)
 
 **체크포인트**: 내용 501자 입력 시 경고 표시 → 태그 3개 후 추가 불가 → 저장 → 상세 페이지 이동
 
