@@ -3,6 +3,7 @@
 import type { ReactElement, KeyboardEvent } from "react";
 
 import { Lock, Unlock } from "lucide-react";
+import Image from "next/image";
 
 import { Button } from "@/shared/ui/Button";
 
@@ -18,7 +19,9 @@ export function CommentForm({ epigramId, userImage }: CommentFormProps): ReactEl
     content,
     isPrivate,
     isSubmitting,
-    handleContentChange,
+    hasError,
+    canSubmit,
+    setContent,
     handlePrivateToggle,
     handleSubmit,
   } = useCommentCreate(epigramId);
@@ -31,26 +34,30 @@ export function CommentForm({ epigramId, userImage }: CommentFormProps): ReactEl
 
   return (
     <div className="flex gap-3">
-      <div className="h-9 w-9 shrink-0 overflow-hidden rounded-full bg-blue-200">
+      <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full bg-blue-200">
         {userImage ? (
-          <img src={userImage} alt="내 프로필" className="h-full w-full object-cover" />
+          <Image src={userImage} alt="내 프로필" fill className="object-cover" />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-xs text-blue-400">
+          <span className="flex h-full w-full items-center justify-center text-xs text-blue-400">
             ?
-          </div>
+          </span>
         )}
       </div>
 
-      <div className="flex flex-1 flex-col gap-2 rounded-2xl border border-blue-200 bg-white p-3 transition-shadow focus-within:shadow-sm focus-within:border-blue-400">
+      <div className="flex flex-1 flex-col gap-2 rounded-2xl border border-blue-200 bg-white p-3 transition-all focus-within:border-blue-400 focus-within:shadow-sm">
         <textarea
           value={content}
-          onChange={(e) => handleContentChange(e.target.value)}
+          onChange={(e) => setContent(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="100자 이내로 입력해주세요."
           maxLength={100}
           rows={2}
           className="w-full resize-none text-sm text-black-700 outline-none placeholder:text-blue-300"
         />
+
+        {hasError && (
+          <p className="text-xs text-error">댓글 저장에 실패했습니다. 다시 시도해주세요.</p>
+        )}
 
         <div className="flex items-center justify-between">
           <button
@@ -66,7 +73,7 @@ export function CommentForm({ epigramId, userImage }: CommentFormProps): ReactEl
           <Button
             onClick={handleSubmit}
             isLoading={isSubmitting}
-            disabled={!content.trim()}
+            disabled={!canSubmit}
             className="h-7 px-3 text-xs"
           >
             저장

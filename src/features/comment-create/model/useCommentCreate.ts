@@ -17,7 +17,9 @@ interface UseCommentCreateReturn {
   content: string;
   isPrivate: boolean;
   isSubmitting: boolean;
-  handleContentChange: (value: string) => void;
+  hasError: boolean;
+  canSubmit: boolean;
+  setContent: (value: string) => void;
   handlePrivateToggle: () => void;
   handleSubmit: () => void;
 }
@@ -27,18 +29,21 @@ export function useCommentCreate(epigramId: number): UseCommentCreateReturn {
   const [content, setContent] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
 
-  const { mutate, isPending: isSubmitting } = useMutation({
+  const {
+    mutate,
+    isPending: isSubmitting,
+    isError: hasError,
+  } = useMutation({
     mutationFn: (body: CreateCommentBody) =>
       apiClient.post<Comment>("/api/comments", body).then((res) => res.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["epigrams", epigramId, "comments"] });
       setContent("");
+      setIsPrivate(false);
     },
   });
 
-  function handleContentChange(value: string): void {
-    setContent(value);
-  }
+  const canSubmit = content.trim().length > 0;
 
   function handlePrivateToggle(): void {
     setIsPrivate((prev) => !prev);
@@ -54,7 +59,9 @@ export function useCommentCreate(epigramId: number): UseCommentCreateReturn {
     content,
     isPrivate,
     isSubmitting,
-    handleContentChange,
+    hasError,
+    canSubmit,
+    setContent,
     handlePrivateToggle,
     handleSubmit,
   };
