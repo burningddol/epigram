@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { apiClient } from "@/shared/api/client";
+
 import type { Comment } from "@/entities/comment";
 
 interface CreateCommentBody {

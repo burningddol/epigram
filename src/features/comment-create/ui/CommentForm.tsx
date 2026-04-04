@@ -2,8 +2,9 @@
 
 import type { ReactElement, KeyboardEvent } from "react";
 
-import { Lock, Unlock } from "lucide-react";
 import Image from "next/image";
+
+import { Lock, Unlock } from "lucide-react";
 
 import { Button } from "@/shared/ui/Button";
 
