@@ -1,5 +1,7 @@
 "use client";
 
+import { useCallback, useMemo } from "react";
+
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { apiClient } from "@/shared/api/client";
@@ -13,7 +15,7 @@ interface UseEpigramLikeReturn {
 
 export function useEpigramLike(epigramId: number): UseEpigramLikeReturn {
   const queryClient = useQueryClient();
-  const queryKey = ["epigrams", epigramId];
+  const queryKey = useMemo(() => ["epigrams", epigramId], [epigramId]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (isCurrentlyLiked: boolean) => {
@@ -44,16 +46,17 @@ export function useEpigramLike(epigramId: number): UseEpigramLikeReturn {
         queryClient.setQueryData(queryKey, context.previous);
       }
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey });
+    onSuccess: (data) => {
+      // 서버 응답으로 캐시 직접 갱신 — 불필요한 재요청 방지
+      queryClient.setQueryData(queryKey, data);
     },
   });
 
-  function toggle(): void {
+  const toggle = useCallback(() => {
     const current = queryClient.getQueryData<EpigramDetail>(queryKey);
     if (!current) return;
     mutate(current.isLiked);
-  }
+  }, [queryClient, queryKey, mutate]);
 
   return { toggle, isPending };
 }
