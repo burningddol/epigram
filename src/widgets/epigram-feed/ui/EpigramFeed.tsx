@@ -1,15 +1,20 @@
 "use client";
 
-import { ChevronDown, BookOpenText } from "lucide-react";
-import Link from "next/link";
-import React from "react";
+import type { ReactElement } from "react";
 
-import { useTodayEpigram, useEpigrams } from "@/entities/epigram";
+import { BookOpenText, ChevronDown } from "lucide-react";
+import Link from "next/link";
+
 import type { Epigram } from "@/entities/epigram";
+import { useEpigrams, useTodayEpigram } from "@/entities/epigram";
 
 const FEED_PAGE_SIZE = 5;
 
-function EpigramTagList({ tags }: { tags: Epigram["tags"] }): React.ReactElement {
+interface EpigramTagListProps {
+  tags: Epigram["tags"];
+}
+
+function EpigramTagList({ tags }: EpigramTagListProps): ReactElement {
   return (
     <ul className="mt-3 flex flex-wrap gap-2" aria-label="태그 목록">
       {tags.map((tag) => (
@@ -23,7 +28,11 @@ function EpigramTagList({ tags }: { tags: Epigram["tags"] }): React.ReactElement
   );
 }
 
-function EpigramCard({ epigram }: { epigram: Epigram }): React.ReactElement {
+interface FeedEpigramCardProps {
+  epigram: Epigram;
+}
+
+function FeedEpigramCard({ epigram }: FeedEpigramCardProps): ReactElement {
   return (
     <Link
       href={`/epigrams/${epigram.id}`}
@@ -43,7 +52,7 @@ function EpigramCard({ epigram }: { epigram: Epigram }): React.ReactElement {
   );
 }
 
-function TodayEpigramSection(): React.ReactElement {
+function TodayEpigramSection(): ReactElement {
   const { data: todayEpigram, isLoading } = useTodayEpigram();
 
   if (isLoading) {
@@ -70,12 +79,12 @@ function TodayEpigramSection(): React.ReactElement {
   return (
     <section aria-label="오늘의 에피그램">
       <h2 className="mb-4 text-xl font-bold text-black-900">오늘의 에피그램</h2>
-      <EpigramCard epigram={todayEpigram} />
+      <FeedEpigramCard epigram={todayEpigram} />
     </section>
   );
 }
 
-function EpigramFeedList(): React.ReactElement {
+function EpigramFeedList(): ReactElement {
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } = useEpigrams({
     limit: FEED_PAGE_SIZE,
   });
@@ -104,7 +113,7 @@ function EpigramFeedList(): React.ReactElement {
   return (
     <div className="flex flex-col gap-4">
       {epigrams.map((epigram) => (
-        <EpigramCard key={epigram.id} epigram={epigram} />
+        <FeedEpigramCard key={epigram.id} epigram={epigram} />
       ))}
       {hasNextPage && (
         <button
@@ -128,7 +137,7 @@ function EpigramFeedList(): React.ReactElement {
   );
 }
 
-export function EpigramFeed(): React.ReactElement {
+export function EpigramFeed(): ReactElement {
   return (
     <div className="flex flex-col gap-10">
       <TodayEpigramSection />
