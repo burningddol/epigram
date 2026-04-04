@@ -6,12 +6,13 @@ import type { ReactElement } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { MoreVertical, Pencil, Trash2 } from "lucide-react";
 
-import { WriterAvatar, useEpigramComments } from "@/entities/comment";
+import { UserProfileModal, WriterAvatar, useEpigramComments } from "@/entities/comment";
 import { getMe } from "@/entities/user";
 import { CommentForm } from "@/features/comment-create";
 import { useCommentDelete } from "@/features/comment-delete";
 import { CommentEditForm } from "@/features/comment-edit";
 import { useIntersectionObserver } from "@/shared/hooks/useIntersectionObserver";
+import { useModal } from "@/shared/hooks/useModal";
 import { formatRelativeTime } from "@/shared/lib/date";
 
 import type { Comment } from "@/entities/comment";
@@ -32,9 +33,14 @@ interface CommentItemProps {
 function CommentItem({ comment, epigramId, currentUserId }: CommentItemProps): ReactElement {
   const [isEditing, setIsEditing] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { open } = useModal();
   const { handleDeleteClick } = useCommentDelete(comment.id, epigramId);
 
   const isOwnComment = currentUserId !== undefined && comment.writer.id === currentUserId;
+
+  function handleProfileClick(): void {
+    open((onClose) => <UserProfileModal writer={comment.writer} onClose={onClose} />);
+  }
 
   if (isEditing) {
     return (
@@ -52,9 +58,14 @@ function CommentItem({ comment, epigramId, currentUserId }: CommentItemProps): R
 
   return (
     <li className="flex gap-3 rounded-2xl border border-line-200 bg-white px-5 py-4 shadow-sm transition-all duration-200 hover:border-blue-200 hover:shadow-md">
-      <div className="flex-shrink-0">
+      <button
+        type="button"
+        onClick={handleProfileClick}
+        className="flex-shrink-0 rounded-full transition-transform duration-150 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2"
+        aria-label={`${comment.writer.nickname} 프로필 보기`}
+      >
         <WriterAvatar writer={comment.writer} />
-      </div>
+      </button>
 
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-2">

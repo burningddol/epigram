@@ -5,3 +5,4 @@ export { useRecentComments } from "./api/useRecentComments";
 export { useEpigramComments } from "./api/useEpigramComments";
 
 export { WriterAvatar } from "./ui/WriterAvatar";
+export { UserProfileModal } from "./ui/UserProfileModal";
