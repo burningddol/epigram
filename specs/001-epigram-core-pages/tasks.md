@@ -158,7 +158,7 @@
 
 - [x] T053 [P] [US4] Comment 엔티티 Zod 스키마 정의 (`src/entities/comment/model/schema.ts`)
 - [x] T054 [P] [US4] 에피그램 상세 조회 API 훅 — `useEpigramDetail` (`src/entities/epigram/api/useEpigramDetail.ts`)
-- [ ] T055 [P] [US4] 에피그램 댓글 목록 API 훅 — `useEpigramComments` (무한 스크롤, cursor 기반) (`src/entities/comment/api/useEpigramComments.ts`)
+- [x] T055 [P] [US4] 에피그램 댓글 목록 API 훅 — `useEpigramComments` (무한 스크롤, cursor 기반) (`src/entities/comment/api/useEpigramComments.ts`)
 
 ### US4 — Features (의존: T053~T055)
 
