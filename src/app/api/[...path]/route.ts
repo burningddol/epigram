@@ -3,25 +3,36 @@ import { NextRequest, NextResponse } from "next/server";
 // 인증 엔드포인트: 백엔드 응답의 토큰을 HttpOnly 쿠키로 변환해야 하는 경로
 const AUTH_TOKEN_ENDPOINTS = new Set(["auth/signUp", "auth/signIn", "auth/signIn/kakao"]);
 
-const COOKIE_BASE = "HttpOnly; SameSite=Strict";
+const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
-function buildSecureFlag(): string {
-  return process.env.NODE_ENV === "production" ? " Secure;" : "";
+function setAccessTokenCookie(response: NextResponse, value: string): void {
+  response.cookies.set({
+    name: "accessToken",
+    value,
+    httpOnly: true,
+    sameSite: "strict",
+    secure: IS_PRODUCTION,
+    path: "/",
+    maxAge: 3600,
+  });
 }
 
-function buildAccessTokenCookie(value: string): string {
-  return `accessToken=${value}; ${COOKIE_BASE};${buildSecureFlag()} Path=/; Max-Age=3600`;
+function setRefreshTokenCookie(response: NextResponse, value: string): void {
+  // Path=/api: BFF의 모든 API 요청 시 브라우저가 쿠키를 전송해야 401 자동 갱신이 동작
+  response.cookies.set({
+    name: "refreshToken",
+    value,
+    httpOnly: true,
+    sameSite: "strict",
+    secure: IS_PRODUCTION,
+    path: "/api",
+    maxAge: 604800,
+  });
 }
 
-function buildRefreshTokenCookie(value: string): string {
-  return `refreshToken=${value}; ${COOKIE_BASE};${buildSecureFlag()} Path=/api/auth/refresh-token; Max-Age=604800`;
-}
-
-function buildDeleteCookies(): string[] {
-  return [
-    `accessToken=; ${COOKIE_BASE}; Path=/; Max-Age=0`,
-    `refreshToken=; ${COOKIE_BASE}; Path=/api/auth/refresh-token; Max-Age=0`,
-  ];
+function clearAuthCookies(response: NextResponse): void {
+  response.cookies.set({ name: "accessToken", value: "", path: "/", maxAge: 0 });
+  response.cookies.set({ name: "refreshToken", value: "", path: "/api", maxAge: 0 });
 }
 
 function buildBackendUrl(path: string, searchParams: URLSearchParams): string {
@@ -74,10 +85,10 @@ async function handleAuthEndpointResponse(backendResponse: Response): Promise<Ne
   const response = NextResponse.json(rest, { status: backendResponse.status });
 
   if (accessToken) {
-    response.headers.append("Set-Cookie", buildAccessTokenCookie(accessToken));
+    setAccessTokenCookie(response, accessToken);
   }
   if (refreshToken) {
-    response.headers.append("Set-Cookie", buildRefreshTokenCookie(refreshToken));
+    setRefreshTokenCookie(response, refreshToken);
   }
 
   return response;
@@ -103,9 +114,9 @@ async function attemptTokenRefresh(refreshToken: string): Promise<string | null>
   }
 }
 
-function buildClearedCookiesResponse(): NextResponse {
+function buildUnauthorizedResponse(): NextResponse {
   const response = NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  buildDeleteCookies().forEach((cookie) => response.headers.append("Set-Cookie", cookie));
+  clearAuthCookies(response);
   return response;
 }
 
@@ -119,7 +130,7 @@ async function handler(
   // 로그아웃: 백엔드 호출 없이 쿠키만 삭제
   if (path === "auth/logout" && request.method === "POST") {
     const response = NextResponse.json({ success: true }, { status: 200 });
-    buildDeleteCookies().forEach((cookie) => response.headers.append("Set-Cookie", cookie));
+    clearAuthCookies(response);
     return response;
   }
 
@@ -141,12 +152,12 @@ async function handler(
   if (backendResponse.status === 401) {
     const refreshToken = request.cookies.get("refreshToken")?.value;
     if (!refreshToken) {
-      return buildClearedCookiesResponse();
+      return buildUnauthorizedResponse();
     }
 
     const newAccessToken = await attemptTokenRefresh(refreshToken);
     if (!newAccessToken) {
-      return buildClearedCookiesResponse();
+      return buildUnauthorizedResponse();
     }
 
     // 새 토큰으로 재시도
@@ -158,7 +169,7 @@ async function handler(
       contentType
     );
 
-    const responseData =
+    const retryResponse =
       AUTH_TOKEN_ENDPOINTS.has(path) && backendResponse.ok
         ? await handleAuthEndpointResponse(backendResponse)
         : new NextResponse(backendResponse.body, {
@@ -169,8 +180,8 @@ async function handler(
           });
 
     // 새 accessToken을 쿠키에 갱신
-    responseData.headers.append("Set-Cookie", buildAccessTokenCookie(newAccessToken));
-    return responseData;
+    setAccessTokenCookie(retryResponse, newAccessToken);
+    return retryResponse;
   }
 
   // 인증 엔드포인트 성공: 토큰 → 쿠키 변환
