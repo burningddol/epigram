@@ -9,7 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { MoreVertical, Pencil, Trash2, User } from "lucide-react";
 
 import { useEpigramComments } from "@/entities/comment";
-import { getMe } from "@/entities/user/api/user";
+import { getMe } from "@/entities/user";
 import { CommentForm } from "@/features/comment-create";
 import { useCommentDelete } from "@/features/comment-delete";
 import { CommentEditForm } from "@/features/comment-edit";
@@ -176,7 +176,10 @@ export function CommentSection({ epigramId }: CommentSectionProps): ReactElement
   return (
     <section aria-label="댓글">
       <h2 className="mb-4 text-xl font-bold text-black-900">
-        댓글 <span className="text-blue-400">{data?.pages[0]?.totalCount ?? ""}</span>
+        댓글{" "}
+        {data?.pages[0]?.totalCount !== undefined && (
+          <span className="text-blue-400">{data.pages[0].totalCount}</span>
+        )}
       </h2>
 
       <div className="mb-6">
