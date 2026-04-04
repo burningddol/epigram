@@ -162,22 +162,22 @@
 
 ### US4 — Features (의존: T053~T055)
 
-- [ ] T056 [P] [US4] 좋아요 feature 구현 — 토글(추가/취소), 낙관적 업데이트 (`src/features/epigram-like/ui/LikeButton.tsx`, `src/features/epigram-like/model/useEpigramLike.ts`)
-- [ ] T057 [P] [US4] 댓글 작성 feature 구현 — 내용 입력, 공개/비공개 토글, 저장 API 호출 (`src/features/comment-create/ui/CommentForm.tsx`, `src/features/comment-create/model/useCommentCreate.ts`)
-- [ ] T058 [P] [US4] 댓글 인라인 수정 feature 구현 — textarea 활성화, 저장/취소 버튼, API 호출 (`src/features/comment-edit/ui/CommentEditForm.tsx`, `src/features/comment-edit/model/useCommentEdit.ts`)
-- [ ] T059 [P] [US4] 댓글 삭제 feature 구현 — 삭제 확인 모달, API 호출 (`src/features/comment-delete/model/useCommentDelete.ts`)
-- [ ] T060 [P] [US4] 에피그램 수정 feature 구현 — 기존 데이터 프리필, 수정 API 호출, 취소 시 상세 페이지 이동 (`src/features/epigram-edit/ui/EpigramEditForm.tsx`, `src/features/epigram-edit/model/useEpigramEdit.ts`)
-- [ ] T061 [P] [US4] 에피그램 삭제 feature 구현 — 확인 모달, 삭제 후 `/epigrams` 이동 (`src/features/epigram-delete/model/useEpigramDelete.ts`)
+- [x] T056 [P] [US4] 좋아요 feature 구현 — 토글(추가/취소), 낙관적 업데이트 (`src/features/epigram-like/ui/LikeButton.tsx`, `src/features/epigram-like/model/useEpigramLike.ts`)
+- [x] T057 [P] [US4] 댓글 작성 feature 구현 — 내용 입력, 공개/비공개 토글, 저장 API 호출 (`src/features/comment-create/ui/CommentForm.tsx`, `src/features/comment-create/model/useCommentCreate.ts`)
+- [x] T058 [P] [US4] 댓글 인라인 수정 feature 구현 — textarea 활성화, 저장/취소 버튼, API 호출 (`src/features/comment-edit/ui/CommentEditForm.tsx`, `src/features/comment-edit/model/useCommentEdit.ts`)
+- [x] T059 [P] [US4] 댓글 삭제 feature 구현 — 삭제 확인 모달, API 호출 (`src/features/comment-delete/model/useCommentDelete.ts`)
+- [x] T060 [P] [US4] 에피그램 수정 feature 구현 — 기존 데이터 프리필, 수정 API 호출, 취소 시 상세 페이지 이동 (`src/features/epigram-edit/ui/EpigramEditForm.tsx`, `src/features/epigram-edit/model/useEpigramEdit.ts`)
+- [x] T061 [P] [US4] 에피그램 삭제 feature 구현 — 확인 모달, 삭제 후 `/epigrams` 이동 (`src/features/epigram-delete/model/useEpigramDelete.ts`)
 
 ### US4 — Widgets & UI (의존: T056~T061)
 
-- [ ] T062 [US4] 댓글 섹션 위젯 구현 — 댓글 목록, 무한 스크롤(IntersectionObserver), 프로필 클릭 → 유저 모달 (`src/widgets/comment-section/ui/CommentSection.tsx`, `src/widgets/comment-section/index.ts`)
-- [ ] T063 [US4] 사용자 프로필 모달 구현 — 특정 사용자 프로필 조회, 모달 표시 (`src/shared/ui/UserProfileModal.tsx`)
-- [ ] T064 [US4] 에피그램 수정 페이지 구현 (`src/views/epigram-edit/ui/EpigramEditPage.tsx`, `src/app/epigrams/[id]/edit/page.tsx`)
+- [x] T062 [US4] 댓글 섹션 위젯 구현 — 댓글 목록, 무한 스크롤(IntersectionObserver), 프로필 클릭 → 유저 모달 (`src/widgets/comment-section/ui/CommentSection.tsx`, `src/widgets/comment-section/index.ts`)
+- [x] T063 [US4] 사용자 프로필 모달 구현 — 특정 사용자 프로필 조회, 모달 표시 (`src/shared/ui/UserProfileModal.tsx`)
+- [x] T064 [US4] 에피그램 수정 페이지 구현 (`src/views/epigram-edit/ui/EpigramEditPage.tsx`, `src/app/epigrams/[id]/edit/page.tsx`)
 
 ### US4 — Pages & App Routes (의존: T062~T064)
 
-- [ ] T065 [US4] 에피그램 상세 페이지 구현 — 공유 버튼(URL 복사), 새창 버튼, 본인 글 "…" 메뉴, 태그 클릭 → 검색 이동 (`src/views/epigram-detail/ui/EpigramDetailPage.tsx`, `src/app/epigrams/[id]/page.tsx`)
+- [x] T065 [US4] 에피그램 상세 페이지 구현 — 공유 버튼(URL 복사), 새창 버튼, 본인 글 "…" 메뉴, 태그 클릭 → 검색 이동 (`src/views/epigram-detail/ui/EpigramDetailPage.tsx`, `src/app/epigrams/[id]/page.tsx`)
 
 **체크포인트**: 좋아요 토글 → 카운트 즉시 반영 → 댓글 작성 → 목록 갱신 → 스크롤 무한 로드 → 인라인 수정 → 삭제 후 `/epigrams` 이동
 
