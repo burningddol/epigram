@@ -3,6 +3,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { apiClient } from "@/shared/api/client";
+
 import type { EpigramDetail } from "@/entities/epigram";
 
 interface UseEpigramLikeReturn {
@@ -31,7 +32,7 @@ export function useEpigramLike(epigramId: number): UseEpigramLikeReturn {
         if (!old) return old;
         return {
           ...old,
-          isLiked: !isCurrentlyLiked,
+          isLiked: !old.isLiked,
           likeCount: isCurrentlyLiked ? old.likeCount - 1 : old.likeCount + 1,
         };
       });

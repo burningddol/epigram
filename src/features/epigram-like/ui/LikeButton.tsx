@@ -27,7 +27,7 @@ export function LikeButton({ epigramId, likeCount, isLiked }: LikeButtonProps): 
         isLiked
           ? "bg-black-500 text-white hover:bg-black-600"
           : "border border-blue-300 text-blue-600 hover:border-blue-500 hover:text-blue-700",
-        isPending ? "opacity-60 cursor-not-allowed" : "",
+        isPending ? "opacity-60 cursor-not-allowed" : "cursor-pointer",
       ].join(" ")}
     >
       <Heart
