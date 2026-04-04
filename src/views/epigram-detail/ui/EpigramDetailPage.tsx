@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactElement } from "react";
+import { useEffect, useState, type ReactElement } from "react";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -97,10 +97,15 @@ export function EpigramDetailPage({ epigramId }: EpigramDetailPageProps): ReactE
   const isOwner =
     !isLoading && epigram !== undefined && me !== undefined && epigram.writerId === me.id;
 
+  useEffect(() => {
+    if (!isCopied) return;
+    const timer = setTimeout(() => setIsCopied(false), 2000);
+    return () => clearTimeout(timer);
+  }, [isCopied]);
+
   async function handleShare(): Promise<void> {
     await copyToClipboard(window.location.href);
     setIsCopied(true);
-    setTimeout(() => setIsCopied(false), 2000);
   }
 
   if (isLoading || !epigram) {
@@ -109,7 +114,6 @@ export function EpigramDetailPage({ epigramId }: EpigramDetailPageProps): ReactE
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-10 tablet:max-w-3xl tablet:px-6 pc:max-w-screen-xl pc:px-16 pc:py-16">
-      {/* 헤더 영역 */}
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-black-950 tablet:text-3xl pc:text-4xl">에피그램</h1>
         <div className="flex items-center gap-2">
@@ -132,17 +136,13 @@ export function EpigramDetailPage({ epigramId }: EpigramDetailPageProps): ReactE
         </div>
       </div>
 
-      {/* 에피그램 카드 */}
       <div className="mb-8 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-blue-200 tablet:p-8 pc:p-10">
-        {/* 내용 */}
         <blockquote className="mb-6 text-lg leading-relaxed text-black-800 tablet:text-xl pc:text-2xl">
           {epigram.content}
         </blockquote>
 
-        {/* 작성자 */}
         <p className="mb-4 text-right text-sm font-medium text-black-500">— {epigram.author}</p>
 
-        {/* 출처 */}
         {epigram.referenceTitle && (
           <div className="mb-4 flex items-center justify-end gap-1.5">
             {epigram.referenceUrl ? (
@@ -161,7 +161,6 @@ export function EpigramDetailPage({ epigramId }: EpigramDetailPageProps): ReactE
           </div>
         )}
 
-        {/* 태그 */}
         {epigram.tags.length > 0 && (
           <div className="mb-6 flex flex-wrap gap-2">
             {epigram.tags.map((tag) => (
@@ -176,7 +175,6 @@ export function EpigramDetailPage({ epigramId }: EpigramDetailPageProps): ReactE
           </div>
         )}
 
-        {/* 좋아요 */}
         <div className="flex justify-center">
           <LikeButton
             epigramId={epigramId}
@@ -186,7 +184,6 @@ export function EpigramDetailPage({ epigramId }: EpigramDetailPageProps): ReactE
         </div>
       </div>
 
-      {/* 댓글 섹션 */}
       <CommentSection epigramId={epigramId} />
     </div>
   );
