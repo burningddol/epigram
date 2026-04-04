@@ -2,3 +2,4 @@ export { writerSchema, commentSchema, commentListResponseSchema } from "./model/
 export type { Writer, Comment, CommentListResponse } from "./model/schema";
 
 export { useRecentComments } from "./api/useRecentComments";
+export { useEpigramComments } from "./api/useEpigramComments";
