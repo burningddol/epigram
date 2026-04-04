@@ -1,15 +1,16 @@
 "use client";
 
+import type { ReactElement } from "react";
+
 import { ArrowUp, Plus } from "lucide-react";
 import Link from "next/link";
-import React from "react";
 
 import { EmotionSelector } from "@/features/emotion-select";
 import { useScrollToTop } from "@/shared/hooks/useScrollToTop";
 import { RecentComments } from "@/widgets/comment-section";
 import { EpigramFeed } from "@/widgets/epigram-feed";
 
-function ScrollToTopButton(): React.ReactElement | null {
+function ScrollToTopButton(): ReactElement | null {
   const { isVisible, scrollToTop } = useScrollToTop();
 
   if (!isVisible) return null;
@@ -26,7 +27,7 @@ function ScrollToTopButton(): React.ReactElement | null {
   );
 }
 
-function CreateEpigramFab(): React.ReactElement {
+function CreateEpigramFab(): ReactElement {
   return (
     <Link
       href="/addepigram"
@@ -42,7 +43,7 @@ function CreateEpigramFab(): React.ReactElement {
   );
 }
 
-export function EpigramsPage(): React.ReactElement {
+export function EpigramsPage(): ReactElement {
   return (
     <main
       id="main-content"

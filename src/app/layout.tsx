@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import type { ReactNode } from "react";
+
 import { Nanum_Myeongjo } from "next/font/google";
+import localFont from "next/font/local";
+
 import { QueryProvider } from "@/shared/api/QueryProvider";
-import { Header } from "@/widgets/header";
-import "./globals.css";
 import { ModalProvider } from "@/shared/ui/ModalProvider";
+import { Header } from "@/widgets/header";
+
+import "./globals.css";
 
 const pretendard = localFont({
   src: "../../node_modules/pretendard/dist/web/variable/woff2/PretendardVariable.woff2",
@@ -26,11 +30,7 @@ export const metadata: Metadata = {
   description: "짧은 글귀를 공유하는 커뮤니티",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: ReactNode }>): ReactNode {
   return (
     <html
       lang="ko"

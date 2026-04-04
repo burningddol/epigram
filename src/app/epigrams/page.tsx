@@ -1,7 +1,7 @@
-import React from "react";
+import type { ReactElement } from "react";
 
 import { EpigramsPage } from "@/views/epigrams";
 
-export default function Page(): React.ReactElement {
+export default function Page(): ReactElement {
   return <EpigramsPage />;
 }
