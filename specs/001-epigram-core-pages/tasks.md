@@ -191,7 +191,7 @@
 
 ### US5 — API 레이어
 
-- [ ] T066 [P] [US5] 검색 API 훅 — `useSearchEpigrams` (keyword + cursor 기반 무한 스크롤) (`src/entities/epigram/api/useSearchEpigrams.ts`)
+- [x] T066 [P] [US5] 검색 API 훅 — `useSearchEpigrams` (keyword + cursor 기반 무한 스크롤) (`src/entities/epigram/api/useSearchEpigrams.ts`)
 
 ### US5 — Features (의존: T066)
 
