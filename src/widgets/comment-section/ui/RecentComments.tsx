@@ -1,79 +1,52 @@
 "use client";
 
 import type { ReactElement } from "react";
-import { useState } from "react";
 
 import { ChevronDown } from "lucide-react";
 
-import { WriterAvatar } from "@/entities/comment";
-import { useRecentComments } from "@/entities/comment";
+import { UserProfileModal, WriterAvatar, useRecentComments } from "@/entities/comment";
+import { useIntersectionObserver } from "@/shared/hooks/useIntersectionObserver";
+import { useModal } from "@/shared/hooks/useModal";
 import { formatRelativeTime } from "@/shared/lib/date";
-import { Button } from "@/shared/ui/Button";
-import { Modal } from "@/shared/ui/Modal";
 
-import type { Comment, Writer } from "@/entities/comment";
+import type { Comment } from "@/entities/comment";
 
 const COMMENTS_PAGE_SIZE = 4;
-
 const SKELETON_ITEMS = Array.from({ length: COMMENTS_PAGE_SIZE });
-
-
-interface WriterProfileModalProps {
-  writer: Writer;
-  onClose: () => void;
-}
-
-function WriterProfileModal({ writer, onClose }: WriterProfileModalProps): ReactElement {
-  return (
-    <Modal onClose={onClose}>
-      <div className="flex flex-col items-center gap-4 py-2">
-        <WriterAvatar writer={writer} />
-        <div className="text-center">
-          <p className="text-lg font-semibold text-black-800">{writer.nickname}</p>
-          <p className="mt-1 text-sm text-black-300">ID: {writer.id}</p>
-        </div>
-        <Button variant="secondary" onClick={onClose} className="mt-2">
-          닫기
-        </Button>
-      </div>
-    </Modal>
-  );
-}
 
 interface CommentItemProps {
   comment: Comment;
 }
 
 function CommentItem({ comment }: CommentItemProps): ReactElement {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { open } = useModal();
+
+  function handleProfileClick(): void {
+    open((onClose) => <UserProfileModal writer={comment.writer} onClose={onClose} />);
+  }
 
   return (
-    <>
-      <li className="group flex gap-3 rounded-2xl border border-line-200 bg-white px-5 py-4 shadow-sm transition-all duration-200 hover:border-blue-200 hover:shadow-md">
-        <button
-          type="button"
-          onClick={() => setIsModalOpen(true)}
-          className="flex-shrink-0 rounded-full transition-transform duration-150 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2"
-          aria-label={`${comment.writer.nickname} 프로필 보기`}
-        >
-          <WriterAvatar writer={comment.writer} />
-        </button>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-baseline gap-2">
-            <span className="truncate text-sm font-semibold text-black-700">
-              {comment.writer.nickname}
-            </span>
-            <span className="flex-shrink-0 text-xs text-black-300">
-              {formatRelativeTime(comment.createdAt)}
-            </span>
-          </div>
-          <p className="mt-1 text-sm leading-relaxed text-black-500">{comment.content}</p>
+    <li className="group flex gap-3 rounded-2xl border border-line-200 bg-white px-5 py-4 shadow-sm transition-all duration-200 hover:border-blue-200 hover:shadow-md">
+      <button
+        type="button"
+        onClick={handleProfileClick}
+        className="flex-shrink-0 rounded-full transition-transform duration-150 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2"
+        aria-label={`${comment.writer.nickname} 프로필 보기`}
+      >
+        <WriterAvatar writer={comment.writer} />
+      </button>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-baseline gap-2">
+          <span className="truncate text-sm font-semibold text-black-700">
+            {comment.writer.nickname}
+          </span>
+          <span className="flex-shrink-0 text-xs text-black-300">
+            {formatRelativeTime(comment.createdAt)}
+          </span>
         </div>
-      </li>
-      {isModalOpen && (
-        <WriterProfileModal writer={comment.writer} onClose={() => setIsModalOpen(false)} />
-      )}
-    </>
+        <p className="mt-1 text-sm leading-relaxed text-black-500">{comment.content}</p>
+      </div>
+    </li>
   );
 }
 
@@ -108,6 +81,13 @@ export function RecentComments(): ReactElement {
     limit: COMMENTS_PAGE_SIZE,
   });
 
+  const sentinelRef = useIntersectionObserver(
+    () => {
+      if (hasNextPage && !isFetchingNextPage) fetchNextPage();
+    },
+    { rootMargin: "200px" }
+  );
+
   const comments = data?.pages.flatMap((page) => page.list) ?? [];
 
   return (
@@ -137,6 +117,7 @@ export function RecentComments(): ReactElement {
           )}
         </>
       )}
+      <div ref={sentinelRef} className="h-1" />
     </section>
   );
 }

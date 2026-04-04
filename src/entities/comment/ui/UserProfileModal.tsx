@@ -17,9 +17,7 @@ export function UserProfileModal({ writer, onClose }: UserProfileModalProps): Re
     <Modal onClose={onClose}>
       <div className="flex flex-col items-center gap-5 px-2 py-4">
         <WriterAvatar writer={writer} size={64} />
-        <div className="text-center">
-          <p className="text-lg font-semibold text-black-800">{writer.nickname}</p>
-        </div>
+        <p className="text-center text-lg font-semibold text-black-800">{writer.nickname}</p>
         <Button variant="secondary" onClick={onClose} className="w-full">
           닫기
         </Button>
