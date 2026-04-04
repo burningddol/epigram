@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactElement } from "react";
+import { useEffect, type ReactElement } from "react";
 
 import { useRouter } from "next/navigation";
 
@@ -11,18 +11,28 @@ import { getMe } from "@/entities/user";
 import { AUTHOR_TYPE, type EpigramCreateFormValues } from "@/features/epigram-create/model/schema";
 import { EpigramEditForm } from "@/features/epigram-edit";
 
+const UNKNOWN_AUTHOR = "알 수 없음";
+
 interface EpigramEditPageProps {
   epigramId: number;
 }
 
-function resolveDefaultValues(
-  content: string,
-  author: string,
-  referenceTitle: string | null,
-  referenceUrl: string | null,
-  tagNames: string[]
-): EpigramCreateFormValues {
-  const isUnknown = author === "알 수 없음";
+interface ResolveDefaultValuesParams {
+  content: string;
+  author: string;
+  referenceTitle: string | null;
+  referenceUrl: string | null;
+  tagNames: string[];
+}
+
+function resolveDefaultValues({
+  content,
+  author,
+  referenceTitle,
+  referenceUrl,
+  tagNames,
+}: ResolveDefaultValuesParams): EpigramCreateFormValues {
+  const isUnknown = author === UNKNOWN_AUTHOR;
 
   return {
     content,
@@ -39,14 +49,18 @@ export function EpigramEditPage({ epigramId }: EpigramEditPageProps): ReactEleme
   const { data: epigram, isLoading: isEpigramLoading } = useEpigramDetail(epigramId);
   const { data: me, isLoading: isMeLoading } = useQuery({ queryKey: ["me"], queryFn: getMe });
 
+  const isUnauthorized =
+    !isMeLoading && me !== undefined && epigram !== undefined && epigram.writerId !== me.id;
+
+  useEffect(() => {
+    if (isUnauthorized) {
+      router.replace(`/epigrams/${epigramId}`);
+    }
+  }, [isUnauthorized, epigramId, router]);
+
   const isLoading = isEpigramLoading || isMeLoading;
 
-  if (!isLoading && epigram && me && epigram.writerId !== me.id) {
-    router.replace(`/epigrams/${epigramId}`);
-    return <></>;
-  }
-
-  if (isLoading || !epigram) {
+  if (isLoading || !epigram || isUnauthorized) {
     return (
       <div className="mx-auto w-full max-w-2xl px-4 py-10 tablet:max-w-3xl tablet:px-6 pc:max-w-screen-xl pc:px-16 pc:py-16">
         <div className="mb-8">
@@ -57,13 +71,13 @@ export function EpigramEditPage({ epigramId }: EpigramEditPageProps): ReactEleme
     );
   }
 
-  const defaultValues = resolveDefaultValues(
-    epigram.content,
-    epigram.author,
-    epigram.referenceTitle,
-    epigram.referenceUrl,
-    epigram.tags.map((t) => t.name)
-  );
+  const defaultValues = resolveDefaultValues({
+    content: epigram.content,
+    author: epigram.author,
+    referenceTitle: epigram.referenceTitle,
+    referenceUrl: epigram.referenceUrl,
+    tagNames: epigram.tags.map((t) => t.name),
+  });
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-10 tablet:max-w-3xl tablet:px-6 pc:max-w-screen-xl pc:px-16 pc:py-16">
