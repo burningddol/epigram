@@ -3,42 +3,20 @@
 import type { ReactElement } from "react";
 import { useState } from "react";
 
-import { ChevronDown, User } from "lucide-react";
-import Image from "next/image";
+import { ChevronDown } from "lucide-react";
 
-import type { Comment, Writer } from "@/entities/comment";
+import { WriterAvatar } from "@/entities/comment";
 import { useRecentComments } from "@/entities/comment";
 import { formatRelativeTime } from "@/shared/lib/date";
 import { Button } from "@/shared/ui/Button";
 import { Modal } from "@/shared/ui/Modal";
 
+import type { Comment, Writer } from "@/entities/comment";
+
 const COMMENTS_PAGE_SIZE = 4;
 
 const SKELETON_ITEMS = Array.from({ length: COMMENTS_PAGE_SIZE });
 
-interface WriterAvatarProps {
-  writer: Writer;
-}
-
-function WriterAvatar({ writer }: WriterAvatarProps): ReactElement {
-  if (writer.image) {
-    return (
-      <Image
-        src={writer.image}
-        alt={writer.nickname}
-        width={36}
-        height={36}
-        className="rounded-full object-cover ring-2 ring-white"
-      />
-    );
-  }
-
-  return (
-    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-200 ring-2 ring-white">
-      <User className="h-4 w-4 text-blue-600" aria-hidden="true" />
-    </div>
-  );
-}
 
 interface WriterProfileModalProps {
   writer: Writer;
