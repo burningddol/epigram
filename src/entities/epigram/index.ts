@@ -8,3 +8,4 @@ export type { EpigramTag, Epigram, EpigramDetail, EpigramListResponse } from "./
 
 export { useEpigrams } from "./api/useEpigrams";
 export { useTodayEpigram } from "./api/useTodayEpigram";
+export { useEpigramDetail } from "./api/useEpigramDetail";
