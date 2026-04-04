@@ -114,16 +114,16 @@ curl -s -H "X-Figma-Token: $FIGMA_TOKEN" \
 
 ### 페이지별 전략
 
-| 페이지 | ISR/SSG 부분 | CSR 부분 |
-| --- | --- | --- |
-| `/` (랜딩) | 전체 (`force-static`) | 없음 |
-| `/epigrams` | 에피그램 목록 (`revalidate: 30`) | 없음 |
-| `/epigrams/[id]` | 에피그램 본문 (`revalidate: 60`) | 좋아요 상태, 댓글 목록·작성 |
-| `/search` | 없음 (`force-dynamic`) | 검색 결과 |
-| `/addepigram` | 없음 | 전체 (폼, 인증 필요) |
-| `/epigrams/[id]/edit` | 없음 | 전체 (폼, 인증 필요) |
-| `/mypage` | 없음 | 전체 (인증 필요, 개인화 데이터) |
-| `/login`, `/signup` | 전체 (`force-static`) | 없음 |
+| 페이지                | ISR/SSG 부분                     | CSR 부분                        |
+| --------------------- | -------------------------------- | ------------------------------- |
+| `/` (랜딩)            | 전체 (`force-static`)            | 없음                            |
+| `/epigrams`           | 에피그램 목록 (`revalidate: 30`) | 없음                            |
+| `/epigrams/[id]`      | 에피그램 본문 (`revalidate: 60`) | 좋아요 상태, 댓글 목록·작성     |
+| `/search`             | 없음 (`force-dynamic`)           | 검색 결과                       |
+| `/addepigram`         | 없음                             | 전체 (폼, 인증 필요)            |
+| `/epigrams/[id]/edit` | 없음                             | 전체 (폼, 인증 필요)            |
+| `/mypage`             | 없음                             | 전체 (인증 필요, 개인화 데이터) |
+| `/login`, `/signup`   | 전체 (`force-static`)            | 없음                            |
 
 ---
 
@@ -185,8 +185,8 @@ export async function fetchEpigramByIdServer(id: string): Promise<Epigram> {
 // 에피그램 mutate 후 캐시 즉시 무효화
 import { revalidateTag, revalidatePath } from "next/cache";
 
-revalidateTag("epigrams");       // 관련 캐시 전체 무효화
-revalidatePath("/epigrams");     // 목록 페이지 재생성
+revalidateTag("epigrams"); // 관련 캐시 전체 무효화
+revalidatePath("/epigrams"); // 목록 페이지 재생성
 ```
 
 ---
@@ -210,10 +210,10 @@ export function LikeButton({ epigramId }: { epigramId: number }) {
 
 ### fetch 위치 구분
 
-| 컨텍스트 | fetch 방식 | 파일 위치 |
-| --- | --- | --- |
-| 서버 컴포넌트 (ISR/SSG) | `fetch(BACKEND_URL/...)` + `next.revalidate` | `entities/*/api/server.ts` |
-| 클라이언트 컴포넌트 (CSR) | `apiClient` (axios, `/api/...` BFF 경유) | `entities/*/api/client.ts` |
+| 컨텍스트                  | fetch 방식                                   | 파일 위치                  |
+| ------------------------- | -------------------------------------------- | -------------------------- |
+| 서버 컴포넌트 (ISR/SSG)   | `fetch(BACKEND_URL/...)` + `next.revalidate` | `entities/*/api/server.ts` |
+| 클라이언트 컴포넌트 (CSR) | `apiClient` (axios, `/api/...` BFF 경유)     | `entities/*/api/client.ts` |
 
 - 서버 전용 파일 최상단: `// Server-only: DO NOT import in client components`
 
