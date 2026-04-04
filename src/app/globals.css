@@ -14,6 +14,7 @@
      Desktop: 1920px → desktop:
   ===================== */
   --breakpoint-tablet: 744px;
+  --breakpoint-pc: 1280px;
   --breakpoint-desktop: 1920px;
 
   /* =====================
