@@ -1,7 +1,9 @@
-import Link from "next/link";
-import { ChevronDown } from "lucide-react";
+import type { ReactElement } from "react";
 
-export function LandingPage() {
+import { ChevronDown } from "lucide-react";
+import Link from "next/link";
+
+export function LandingPage(): ReactElement {
   return (
     <div className="flex flex-col">
       <HeroSection />
@@ -12,7 +14,7 @@ export function LandingPage() {
   );
 }
 
-function HeroSection() {
+function HeroSection(): ReactElement {
   return (
     <section className="relative flex min-h-[calc(100dvh-52px)] flex-col items-center justify-center gap-6 overflow-hidden px-6 py-16 text-center">
       {/* 배경 depth — 중앙으로 갈수록 밝아지는 radial gradient */}
@@ -59,7 +61,7 @@ function HeroSection() {
   );
 }
 
-function EmotionSection() {
+function EmotionSection(): ReactElement {
   return (
     <section className="flex flex-col items-center gap-10 px-6 py-16 tablet:px-[72px]">
       <div className="w-full max-w-sm rounded-2xl bg-blue-200 px-6 py-8">
@@ -85,7 +87,7 @@ function EmotionSection() {
   );
 }
 
-function EpigramsSection() {
+function EpigramsSection(): ReactElement {
   return (
     <section className="flex flex-col gap-10 px-6 py-16 tablet:px-[72px]">
       <h2 className="text-2xl font-bold text-black-950 tablet:text-3xl">
@@ -118,7 +120,7 @@ function EpigramsSection() {
   );
 }
 
-function CtaSection() {
+function CtaSection(): ReactElement {
   return (
     <section className="flex flex-col items-center gap-8 bg-blue-950 px-6 py-20 tablet:px-[72px]">
       <div className="flex flex-col items-center gap-2">
