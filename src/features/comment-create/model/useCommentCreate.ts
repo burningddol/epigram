@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { apiClient } from "@/shared/api/client";
+
 import type { Comment } from "@/entities/comment";
 
 interface CreateCommentBody {
@@ -19,7 +20,7 @@ interface UseCommentCreateReturn {
   isSubmitting: boolean;
   hasError: boolean;
   canSubmit: boolean;
-  setContent: (value: string) => void;
+  handleContentChange: (value: string) => void;
   handlePrivateToggle: () => void;
   handleSubmit: () => void;
 }
@@ -28,22 +29,28 @@ export function useCommentCreate(epigramId: number): UseCommentCreateReturn {
   const queryClient = useQueryClient();
   const [content, setContent] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
+  const [hasSubmitError, setHasSubmitError] = useState(false);
 
-  const {
-    mutate,
-    isPending: isSubmitting,
-    isError: hasError,
-  } = useMutation({
+  const { mutate, isPending: isSubmitting } = useMutation({
     mutationFn: (body: CreateCommentBody) =>
       apiClient.post<Comment>("/api/comments", body).then((res) => res.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["epigrams", epigramId, "comments"] });
       setContent("");
       setIsPrivate(false);
+      setHasSubmitError(false);
+    },
+    onError: () => {
+      setHasSubmitError(true);
     },
   });
 
   const canSubmit = content.trim().length > 0;
+
+  function handleContentChange(value: string): void {
+    setContent(value);
+    if (hasSubmitError) setHasSubmitError(false);
+  }
 
   function handlePrivateToggle(): void {
     setIsPrivate((prev) => !prev);
@@ -59,9 +66,9 @@ export function useCommentCreate(epigramId: number): UseCommentCreateReturn {
     content,
     isPrivate,
     isSubmitting,
-    hasError,
+    hasError: hasSubmitError,
     canSubmit,
-    setContent,
+    handleContentChange,
     handlePrivateToggle,
     handleSubmit,
   };
