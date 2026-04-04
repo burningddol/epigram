@@ -28,7 +28,7 @@ export function useCommentDelete(commentId: number, epigramId: number): UseComme
         title: "댓글을 삭제할까요?",
         confirmLabel: "삭제",
         cancelLabel: "취소",
-        onConfirm: () => mutate(),
+        onConfirm: mutate,
         onClose,
       })
     );
