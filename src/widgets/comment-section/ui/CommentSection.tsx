@@ -3,12 +3,10 @@
 import { useState } from "react";
 import type { ReactElement } from "react";
 
-import Image from "next/image";
-
 import { useQuery } from "@tanstack/react-query";
-import { MoreVertical, Pencil, Trash2, User } from "lucide-react";
+import { MoreVertical, Pencil, Trash2 } from "lucide-react";
 
-import { useEpigramComments } from "@/entities/comment";
+import { WriterAvatar, useEpigramComments } from "@/entities/comment";
 import { getMe } from "@/entities/user";
 import { CommentForm } from "@/features/comment-create";
 import { useCommentDelete } from "@/features/comment-delete";
@@ -16,41 +14,13 @@ import { CommentEditForm } from "@/features/comment-edit";
 import { useIntersectionObserver } from "@/shared/hooks/useIntersectionObserver";
 import { formatRelativeTime } from "@/shared/lib/date";
 
-import type { Comment, Writer } from "@/entities/comment";
+import type { Comment } from "@/entities/comment";
 
 const COMMENTS_PAGE_SIZE = 5;
 const SKELETON_COUNT = 3;
 
 interface CommentSectionProps {
   epigramId: number;
-}
-
-interface WriterAvatarProps {
-  writer: Writer;
-  size?: number;
-}
-
-function WriterAvatar({ writer, size = 36 }: WriterAvatarProps): ReactElement {
-  if (writer.image) {
-    return (
-      <Image
-        src={writer.image}
-        alt={writer.nickname}
-        width={size}
-        height={size}
-        className="rounded-full object-cover"
-      />
-    );
-  }
-
-  return (
-    <div
-      className="flex items-center justify-center rounded-full bg-blue-200"
-      style={{ width: size, height: size }}
-    >
-      <User className="h-4 w-4 text-blue-600" aria-hidden="true" />
-    </div>
-  );
 }
 
 interface CommentItemProps {
@@ -172,14 +142,12 @@ export function CommentSection({ epigramId }: CommentSectionProps): ReactElement
   );
 
   const comments = data?.pages.flatMap((page) => page.list) ?? [];
+  const totalCount = data?.pages[0]?.totalCount;
 
   return (
     <section aria-label="댓글">
       <h2 className="mb-4 text-xl font-bold text-black-900">
-        댓글{" "}
-        {data?.pages[0]?.totalCount !== undefined && (
-          <span className="text-blue-400">{data.pages[0].totalCount}</span>
-        )}
+        댓글{totalCount !== undefined && <span className="ml-1 text-blue-400">{totalCount}</span>}
       </h2>
 
       <div className="mb-6">
