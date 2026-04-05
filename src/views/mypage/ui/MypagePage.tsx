@@ -2,53 +2,164 @@
 
 import type { ReactElement } from "react";
 
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { LogOut } from "lucide-react";
 
+import { postTodayEmotion, useTodayEmotion } from "@/entities/emotion-log";
+import type { Emotion } from "@/entities/emotion-log";
 import { getMe } from "@/entities/user";
-import { ProfileImageUpload } from "@/features/auth";
-import { useLogout } from "@/features/auth";
+import { ProfileImageUpload, useLogout } from "@/features/auth";
 import { MypageActivity } from "@/widgets/mypage-activity";
+
+const EMOTION_OPTIONS: { value: Emotion; emoji: string; label: string }[] = [
+  { value: "MOVED", emoji: "🥹", label: "감동" },
+  { value: "HAPPY", emoji: "😊", label: "기쁨" },
+  { value: "WORRIED", emoji: "😟", label: "고민" },
+  { value: "SAD", emoji: "😔", label: "슬픔" },
+  { value: "ANGRY", emoji: "😡", label: "분노" },
+];
+
+// Computed once at module load — date does not change during a session
+const TODAY_LABEL = new Date().toLocaleDateString("ko-KR", {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+
+// ─── Skeletons ────────────────────────────────────────────────────────────────
 
 function ProfileSkeleton(): ReactElement {
   return (
-    <div className="animate-pulse">
-      <div className="mx-auto h-20 w-20 rounded-full bg-blue-200" />
-      <div className="mx-auto mt-3 h-5 w-24 rounded-lg bg-blue-200" />
+    <div className="animate-pulse flex flex-col items-center gap-3">
+      <div className="h-[100px] w-[100px] rounded-full bg-blue-200" />
+      <div className="h-5 w-28 rounded-lg bg-blue-200" />
+      <div className="h-7 w-20 rounded-full bg-blue-200" />
     </div>
   );
 }
 
+// ─── Emotion Selector ─────────────────────────────────────────────────────────
+
+interface EmotionSelectorProps {
+  selectedEmotion: Emotion | null;
+  onSelect: (emotion: Emotion) => void;
+  isPending: boolean;
+}
+
+function EmotionSelector({
+  selectedEmotion,
+  onSelect,
+  isPending,
+}: EmotionSelectorProps): ReactElement {
+  return (
+    <div className="w-full rounded-2xl bg-white px-5 py-5 shadow-sm ring-1 ring-line-200">
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-sm font-semibold text-black-600">오늘의 감정</h2>
+        <span className="text-xs text-black-300">{TODAY_LABEL}</span>
+      </div>
+
+      <div className="flex items-center justify-around gap-1">
+        {EMOTION_OPTIONS.map(({ value, emoji, label }) => {
+          const isSelected = selectedEmotion === value;
+          return (
+            <button
+              key={value}
+              type="button"
+              onClick={() => onSelect(value)}
+              disabled={isPending}
+              aria-label={`${label} 감정 선택`}
+              aria-pressed={isSelected}
+              className={[
+                "group flex flex-col items-center gap-1.5 rounded-xl px-3 py-2.5",
+                "transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50",
+                isSelected
+                  ? "bg-blue-200 ring-2 ring-blue-500 scale-105 shadow-sm"
+                  : "hover:bg-sub-gray-3 hover:scale-105 active:scale-95",
+              ].join(" ")}
+            >
+              <span
+                className={[
+                  "text-2xl leading-none transition-transform duration-200",
+                  isSelected ? "scale-110" : "group-hover:scale-110",
+                ].join(" ")}
+              >
+                {emoji}
+              </span>
+              <span
+                className={[
+                  "text-xs font-medium transition-colors",
+                  isSelected ? "text-blue-700" : "text-black-400",
+                ].join(" ")}
+              >
+                {label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ─── MypagePage ───────────────────────────────────────────────────────────────
+
 export function MypagePage(): ReactElement {
+  const queryClient = useQueryClient();
   const { data: me, isLoading } = useQuery({ queryKey: ["me"], queryFn: getMe });
   const { handleLogout } = useLogout();
+  const { data: todayEmotion } = useTodayEmotion();
+
+  const { mutate: selectEmotion, isPending } = useMutation({
+    mutationFn: postTodayEmotion,
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["emotionLogs", "today"] });
+      void queryClient.invalidateQueries({ queryKey: ["emotionLogs"] });
+    },
+  });
+
+  const selectedEmotion = todayEmotion?.emotion ?? null;
 
   return (
     <main
       id="main-content"
-      className="mx-auto min-h-screen max-w-2xl px-4 py-10 tablet:px-6 desktop:max-w-3xl"
+      className="mx-auto min-h-screen w-full max-w-xl px-4 pb-24 pt-10
+        tablet:max-w-2xl tablet:px-8 tablet:pt-14
+        pc:max-w-4xl pc:px-12 pc:pt-16"
     >
-      <section className="mb-8 flex flex-col items-center gap-3">
+      <section className="mb-6 flex flex-col items-center gap-3 animate-fade-in-up">
         {isLoading || !me ? (
           <ProfileSkeleton />
         ) : (
           <>
             <ProfileImageUpload currentImageUrl={me.image} nickname={me.nickname} />
-            <p className="text-lg font-semibold text-black-700">{me.nickname}</p>
+            <p className="text-xl font-bold text-black-800">{me.nickname}</p>
+            <button
+              type="button"
+              onClick={() => void handleLogout()}
+              className="flex items-center gap-1.5 rounded-full border border-line-200 px-4 py-1.5
+                text-xs text-black-400 transition-all duration-200
+                hover:border-error/40 hover:bg-red-50 hover:text-error active:scale-95"
+            >
+              <LogOut className="h-3.5 w-3.5" aria-hidden="true" />
+              로그아웃
+            </button>
           </>
         )}
-
-        <button
-          type="button"
-          onClick={() => void handleLogout()}
-          className="mt-1 flex items-center gap-1.5 rounded-full border border-line-200 px-4 py-1.5 text-sm text-black-400 transition-colors hover:border-red-300 hover:text-red-500"
-        >
-          <LogOut className="h-4 w-4" aria-hidden="true" />
-          로그아웃
-        </button>
       </section>
 
-      {me && <MypageActivity userId={me.id} />}
+      <div className="mb-5 animate-fade-in-up" style={{ animationDelay: "80ms" }}>
+        <EmotionSelector
+          selectedEmotion={selectedEmotion}
+          onSelect={selectEmotion}
+          isPending={isPending}
+        />
+      </div>
+
+      {me && (
+        <div className="animate-fade-in-up" style={{ animationDelay: "160ms" }}>
+          <MypageActivity userId={me.id} />
+        </div>
+      )}
     </main>
   );
 }

@@ -7,6 +7,7 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
 import { useMonthlyEmotions } from "@/entities/emotion-log/api/useMonthlyEmotions";
+
 import type { Emotion } from "@/entities/emotion-log/model/schema";
 
 const EMOTION_EMOJI: Record<Emotion, string> = {
@@ -86,17 +87,18 @@ export function EmotionCalendar({ userId }: EmotionCalendarProps): React.ReactEl
   }
 
   return (
-    <section className="w-full rounded-2xl bg-white px-6 py-5">
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-base font-semibold text-black-700">
-          {year}년 {month}월
+    <section className="w-full rounded-2xl bg-white px-5 py-5 shadow-sm ring-1 ring-line-200">
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="text-sm font-semibold text-black-700">
+          {year}년 {String(month).padStart(2, "0")}월
         </h2>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5">
           <button
             type="button"
             aria-label="이전 달"
             onClick={handlePrevMonth}
-            className="flex h-8 w-8 items-center justify-center rounded-full text-black-300 transition-colors hover:bg-blue-200 hover:text-black-600"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-black-400
+              transition-all duration-150 hover:bg-blue-200 hover:text-blue-700 active:scale-90"
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
@@ -104,7 +106,8 @@ export function EmotionCalendar({ userId }: EmotionCalendarProps): React.ReactEl
             type="button"
             aria-label="다음 달"
             onClick={handleNextMonth}
-            className="flex h-8 w-8 items-center justify-center rounded-full text-black-300 transition-colors hover:bg-blue-200 hover:text-black-600"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-black-400
+              transition-all duration-150 hover:bg-blue-200 hover:text-blue-700 active:scale-90"
           >
             <ChevronRight className="h-4 w-4" />
           </button>
