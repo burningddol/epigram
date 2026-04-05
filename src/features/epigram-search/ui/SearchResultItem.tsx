@@ -57,7 +57,7 @@ function TagList({ tags, keyword }: TagListProps): ReactElement | null {
     <ul className="flex flex-wrap justify-end gap-1.5" aria-label="태그 목록">
       {tags.map((tag) => (
         <li key={tag.id}>
-          <span className="text-xs text-blue-500 transition-colors duration-150">
+          <span className="text-xs text-blue-500 transition-colors duration-150 pc:text-sm">
             #<HighlightedText text={tag.name} keyword={keyword} />
           </span>
         </li>
@@ -74,14 +74,22 @@ export function SearchResultItem({ epigram, keyword }: SearchResultItemProps): R
   return (
     <Link
       href={`/epigrams/${epigram.id}`}
-      className="group block border-b border-line-100 px-1 py-6 transition-colors duration-150 last:border-0 hover:bg-blue-100/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-inset"
+      className="group block border-b border-line-100 px-2 py-6 transition-colors duration-150 last:border-0 hover:bg-blue-100/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-inset
+        tablet:px-3 tablet:py-7
+        pc:px-4 pc:py-9"
     >
-      <article className="space-y-3">
+      <article className="space-y-3 pc:space-y-4">
         <blockquote>
-          <p className="font-serif text-sm leading-relaxed text-black-700 transition-colors duration-150 group-hover:text-black-950 tablet:text-base">
+          <p
+            className="font-serif text-sm leading-relaxed text-black-700 transition-colors duration-150 group-hover:text-black-950
+            tablet:text-base tablet:leading-loose
+            pc:text-lg pc:leading-loose"
+          >
             <HighlightedText text={epigram.content} keyword={keyword} />
           </p>
-          <footer className="mt-2 text-right text-xs text-black-300 italic">— {authorLine}</footer>
+          <footer className="mt-2 text-right text-xs text-black-300 italic pc:mt-3 pc:text-sm">
+            — {authorLine}
+          </footer>
         </blockquote>
 
         <TagList tags={epigram.tags} keyword={keyword} />
