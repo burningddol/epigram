@@ -239,7 +239,7 @@
 
 **목적**: 전체 사용자 스토리에 걸친 품질 개선
 
-- [ ] T080 [P] 반응형 스타일 전체 점검 — 모바일(360px), 태블릿(744px), 데스크탑(1920px) 브레이크포인트 검증
+- [x] T080 [P] 반응형 스타일 전체 점검 — 모바일(360px), 태블릿(744px), 데스크탑(1920px) 브레이크포인트 검증
 - [ ] T081 [P] 에러 상태 UI — 네트워크 에러, 404, 빈 목록 EmptyState 컴포넌트 (`src/shared/ui/EmptyState.tsx`, `src/app/not-found.tsx`)
 - [ ] T082 [P] ErrorBoundary 적용 — 페이지 레벨 렌더링 에러 선언적 처리 (`src/shared/ui/ErrorBoundary.tsx`, 각 `src/app/*/error.tsx`)
 - [ ] T083 quickstart.md 체크포인트 전체 수동 검증 실행
