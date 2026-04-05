@@ -196,11 +196,11 @@
 ### US5 — Features (의존: T066)
 
 - [x] T067 [US5] 검색 feature 구현 — 검색어 입력, URL 쿼리 파라미터 동기화(`?keyword=`), 로컬스토리지 최근 검색어 저장·삭제·모두 지우기 (`src/features/epigram-search/ui/SearchBar.tsx`, `src/features/epigram-search/model/useSearch.ts`, `src/features/epigram-search/model/useRecentSearches.ts`)
-- [ ] T068 [US5] 검색 결과 아이템 구현 — 키워드 하이라이팅(태그·에피그램 내용), 클릭 → 상세 이동 (`src/features/epigram-search/ui/SearchResultItem.tsx`)
+- [x] T068 [US5] 검색 결과 아이템 구현 — 키워드 하이라이팅(태그·에피그램 내용), 클릭 → 상세 이동 (`src/features/epigram-search/ui/SearchResultItem.tsx`)
 
 ### US5 — Pages & App Routes (의존: T067~T068)
 
-- [ ] T069 [US5] 검색 페이지 구현 — 무한 스크롤(IntersectionObserver), 최근 검색어 섹션 표시, 새로고침 시 URL에서 keyword 복원 (`src/views/search/ui/SearchPage.tsx`, `src/app/search/page.tsx`)
+- [x] T069 [US5] 검색 페이지 구현 — 무한 스크롤(IntersectionObserver), 최근 검색어 섹션 표시, 새로고침 시 URL에서 keyword 복원 (`src/views/search/ui/SearchPage.tsx`, `src/app/search/page.tsx`)
 
 **체크포인트**: 검색어 입력 → URL `?keyword=` 반영 → 새로고침 시 결과 유지 → 스크롤 무한 로드 → 최근 검색어 로컬스토리지 저장 → 모두 지우기
 
