@@ -33,7 +33,7 @@ function FeedsGrid(): ReactElement {
 
   if (epigrams.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-line-200">
+      <div className="rounded-2xl border border-dashed border-line-200 bg-white">
         <EmptyState
           icon={
             <BookOpenText className="h-7 w-7 text-blue-400" strokeWidth={1.5} aria-hidden="true" />
@@ -55,15 +55,15 @@ function FeedsGrid(): ReactElement {
 
   return (
     <div className="flex flex-col gap-6">
-      <ul className="grid grid-cols-1 gap-4 tablet:grid-cols-2">
+      <ul className="grid min-w-0 grid-cols-1 gap-4 tablet:grid-cols-2">
         {epigrams.map((epigram) => (
-          <li key={epigram.id}>
+          <li key={epigram.id} className="min-w-0">
             <EpigramCard epigram={epigram} />
           </li>
         ))}
       </ul>
       {hasNextPage && (
-        <div className="flex justify-center">
+        <div className="flex justify-center pt-2">
           <button
             type="button"
             onClick={() => fetchNextPage()}
@@ -93,28 +93,32 @@ export function FeedsPage(): ReactElement {
   const { isVisible, scrollToTop } = useScrollToTop();
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10 tablet:px-[72px] desktop:px-[120px]">
-      <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-black-900">피드</h1>
-        <Link
-          href="/addepigram"
-          className="flex items-center gap-1.5 rounded-xl bg-blue-950 px-4 py-2 text-sm font-semibold text-white transition-all duration-200 hover:bg-blue-800 active:scale-95"
-        >
-          <Plus size={16} aria-hidden="true" />
-          에피그램 만들기
-        </Link>
+    <main className="min-h-screen bg-gray-50">
+      <div className="mx-auto w-full max-w-5xl px-6 py-10 tablet:px-[72px] desktop:px-[120px]">
+        <h1 className="mb-8 text-2xl font-bold text-black-900">피드</h1>
+
+        <ErrorBoundary fallback={(_, reset) => <SectionErrorFallback reset={reset} />}>
+          <FeedsGrid />
+        </ErrorBoundary>
       </div>
 
-      <ErrorBoundary fallback={(_, reset) => <SectionErrorFallback reset={reset} />}>
-        <FeedsGrid />
-      </ErrorBoundary>
+      {/* fixed FAB — 에피그램 만들기 */}
+      <Link
+        href="/addepigram"
+        aria-label="에피그램 만들기"
+        className="fixed bottom-8 right-6 flex items-center gap-2 rounded-full bg-blue-950 px-5 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:bg-blue-800 active:scale-95 tablet:right-[72px]"
+      >
+        <Plus size={16} aria-hidden="true" />
+        에피그램 만들기
+      </Link>
 
+      {/* 스크롤 위 버튼 — FAB 바로 위 */}
       {isVisible && (
         <button
           type="button"
           onClick={scrollToTop}
           aria-label="맨 위로 이동"
-          className="fixed bottom-8 right-6 flex h-11 w-11 items-center justify-center rounded-full bg-blue-950 text-white shadow-lg transition-all duration-200 hover:bg-blue-800 active:scale-95 tablet:right-[72px]"
+          className="fixed bottom-24 right-6 flex h-11 w-11 items-center justify-center rounded-full bg-white text-black-500 shadow-md transition-all duration-200 hover:bg-gray-100 active:scale-95 tablet:right-[72px]"
         >
           <ChevronUp size={20} aria-hidden="true" />
         </button>
