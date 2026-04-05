@@ -8,4 +8,5 @@ export { signUp, signIn, logout } from "./api/auth";
 export type { SignUpBody, SignInBody } from "./api/auth";
 export { signInKakao } from "./api/kakao";
 export type { SignInKakaoBody } from "./api/kakao";
-export { getMe } from "./api/user";
+export { getMe, updateMe } from "./api/user";
+export type { UpdateMeBody } from "./api/user";

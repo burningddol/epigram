@@ -217,7 +217,7 @@
 - [x] T070 [P] [US6] 월별 감정 조회 API 훅 — `useMonthlyEmotions` (userId 필수, year, month 파라미터 — swagger `GET /emotion-logs?userId=&year=&month=`) (`src/entities/emotion-log/api/useMonthlyEmotions.ts`)
 - [N/A] T071 [P] [US6] ~~내 에피그램 목록 API 훅 — `useMyEpigrams`~~ — `useEpigrams({ writerId })` 로 동일 기능 처리 가능. 별도 훅 불필요.
 - [x] T072 [P] [US6] 내 댓글 목록 API 훅 — `useMyComments` (cursor 기반, swagger `GET /users/{id}/comments`) (`src/entities/comment/api/useMyComments.ts`)
-- [ ] T073 [P] [US6] 프로필 수정 API 함수 — `updateMe` (닉네임, 이미지 URL) (`src/entities/user/api/updateMe.ts`)
+- [x] T073 [P] [US6] 프로필 수정 API 함수 — `updateMe` (닉네임, 이미지 URL) (`src/entities/user/api/user.ts` 에 통합)
 - [ ] T074 [P] [US6] 이미지 업로드 API 함수 — `uploadImage` (multipart/form-data, 영문 파일명 검증) (`src/shared/api/uploadImage.ts`)
 
 ### US6 — Features (의존: T070~T074)
