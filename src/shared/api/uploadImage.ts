@@ -3,16 +3,9 @@ import { apiClient } from "./client";
 // Only ASCII printable characters allowed — the backend rejects non-English filenames
 const ASCII_ONLY = /^[\x20-\x7E]+$/;
 
-export class NonAsciiFilenameError extends Error {
-  constructor(filename: string) {
-    super(`Image filename must contain only English characters: "${filename}"`);
-    this.name = "NonAsciiFilenameError";
-  }
-}
-
 export async function uploadImage(file: File): Promise<string> {
   if (!ASCII_ONLY.test(file.name)) {
-    throw new NonAsciiFilenameError(file.name);
+    throw new Error(`이미지 파일명은 영문만 사용할 수 있습니다: "${file.name}"`);
   }
 
   const formData = new FormData();
