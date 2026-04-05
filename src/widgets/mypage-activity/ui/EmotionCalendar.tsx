@@ -1,14 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactElement } from "react";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
-import { useMonthlyEmotions } from "@/entities/emotion-log/api/useMonthlyEmotions";
+import { useMonthlyEmotions } from "@/entities/emotion-log";
 
-import type { Emotion } from "@/entities/emotion-log/model/schema";
+import type { Emotion } from "@/entities/emotion-log";
 
 const EMOTION_EMOJI: Record<Emotion, string> = {
   MOVED: "🥹",
@@ -28,7 +28,7 @@ interface EmotionCalendarProps {
   userId: number;
 }
 
-export function EmotionCalendar({ userId }: EmotionCalendarProps): React.ReactElement {
+export function EmotionCalendar({ userId }: EmotionCalendarProps): ReactElement {
   const [year, setYear] = useState(TODAY.getFullYear());
   const [month, setMonth] = useState(TODAY.getMonth() + 1);
 
@@ -66,13 +66,7 @@ export function EmotionCalendar({ userId }: EmotionCalendarProps): React.ReactEl
     }
   }
 
-  function renderTileContent({
-    date,
-    view,
-  }: {
-    date: Date;
-    view: string;
-  }): React.ReactElement | null {
+  function renderTileContent({ date, view }: { date: Date; view: string }): ReactElement | null {
     if (view !== "month") return null;
 
     const dateKey = date.toLocaleDateString("sv");

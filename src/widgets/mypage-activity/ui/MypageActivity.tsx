@@ -7,15 +7,17 @@ import Link from "next/link";
 import { ChevronDown } from "lucide-react";
 
 import { useMyComments } from "@/entities/comment";
-import type { Comment } from "@/entities/comment";
 import { useMonthlyEmotions } from "@/entities/emotion-log";
 import { useEpigrams } from "@/entities/epigram";
-import type { Epigram } from "@/entities/epigram";
 
 import { EmotionCalendar } from "./EmotionCalendar";
 import { EmotionPieChart } from "./EmotionPieChart";
 
+import type { Comment } from "@/entities/comment";
+import type { Epigram } from "@/entities/epigram";
+
 const PAGE_SIZE = 3;
+// Computed once at module load — date does not change during a session
 const NOW = new Date();
 
 interface MypageActivityProps {
