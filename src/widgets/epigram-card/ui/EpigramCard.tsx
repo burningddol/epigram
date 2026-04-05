@@ -56,7 +56,7 @@ export function EpigramCard({ epigram, isFeatured = false }: EpigramCardProps): 
       <article>
         <blockquote>
           <p
-            className={`font-serif leading-relaxed transition-colors duration-200 group-hover:text-black-900 ${
+            className={`break-words font-serif leading-relaxed transition-colors duration-200 group-hover:text-black-900 ${
               isFeatured ? "text-lg text-black-800" : "text-base text-black-700"
             }`}
           >
