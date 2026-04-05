@@ -54,10 +54,13 @@ function TagList({ tags, keyword }: TagListProps): ReactElement | null {
   if (tags.length === 0) return null;
 
   return (
-    <ul className="flex flex-wrap justify-end gap-1.5" aria-label="태그 목록">
+    <ul
+      className="flex flex-wrap items-center justify-end gap-x-2.5 gap-y-1"
+      aria-label="태그 목록"
+    >
       {tags.map((tag) => (
         <li key={tag.id}>
-          <span className="text-xs text-blue-500 transition-colors duration-150 pc:text-sm">
+          <span className="text-xs font-medium text-blue-500 transition-colors duration-150 group-hover:text-blue-600 pc:text-sm">
             #<HighlightedText text={tag.name} keyword={keyword} />
           </span>
         </li>
@@ -67,32 +70,33 @@ function TagList({ tags, keyword }: TagListProps): ReactElement | null {
 }
 
 export function SearchResultItem({ epigram, keyword }: SearchResultItemProps): ReactElement {
-  const authorLine = epigram.referenceTitle
+  // 피그마 시안: "- 저자 -" 혹은 "- 저자 《출처》 -" 형식, 좌측 배치
+  const authorLabel = epigram.referenceTitle
     ? `${epigram.author} 《${epigram.referenceTitle}》`
     : epigram.author;
 
   return (
     <Link
       href={`/epigrams/${epigram.id}`}
-      className="group block border-b border-line-100 px-2 py-6 transition-colors duration-150 last:border-0 hover:bg-blue-100/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-inset
-        tablet:px-3 tablet:py-7
-        pc:px-4 pc:py-9"
+      className="group block border-b border-line-100 px-1 py-6 transition-colors duration-150 last:border-0 hover:bg-blue-100/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-inset
+        tablet:px-2 tablet:py-7
+        pc:px-3 pc:py-9"
     >
-      <article className="space-y-3 pc:space-y-4">
-        <blockquote>
-          <p
-            className="font-serif text-sm leading-relaxed text-black-700 transition-colors duration-150 group-hover:text-black-950
+      <article className="flex flex-col gap-3 pc:gap-4">
+        {/* 에피그램 본문 */}
+        <p
+          className="font-serif text-sm leading-relaxed text-black-700 transition-colors duration-150 group-hover:text-black-950
             tablet:text-base tablet:leading-loose
             pc:text-lg pc:leading-loose"
-          >
-            <HighlightedText text={epigram.content} keyword={keyword} />
-          </p>
-          <footer className="mt-2 text-right text-xs text-black-300 italic pc:mt-3 pc:text-sm">
-            — {authorLine}
-          </footer>
-        </blockquote>
+        >
+          <HighlightedText text={epigram.content} keyword={keyword} />
+        </p>
 
-        <TagList tags={epigram.tags} keyword={keyword} />
+        {/* 피그마 레이아웃: 좌측 저자 / 우측 태그 한 행 */}
+        <div className="flex items-start justify-between gap-4">
+          <footer className="shrink-0 text-xs text-black-300 pc:text-sm">- {authorLabel} -</footer>
+          <TagList tags={epigram.tags} keyword={keyword} />
+        </div>
       </article>
     </Link>
   );
