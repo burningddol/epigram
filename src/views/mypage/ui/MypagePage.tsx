@@ -107,7 +107,7 @@ export function MypagePage(): ReactElement {
   const queryClient = useQueryClient();
   const { data: me, isLoading } = useQuery({ queryKey: ["me"], queryFn: getMe });
   const { handleLogout } = useLogout();
-  const { data: todayEmotion } = useTodayEmotion();
+  const { data: todayEmotion } = useTodayEmotion(me?.id ?? 0);
 
   const { mutate: selectEmotion, isPending } = useMutation({
     mutationFn: postTodayEmotion,
