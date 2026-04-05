@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { useQuery } from "@tanstack/react-query";
-import { ExternalLink, MoreVertical, Share2 } from "lucide-react";
+import { ArrowLeft, ExternalLink, MoreVertical, Share2 } from "lucide-react";
 
 import { useEpigramDetail } from "@/entities/epigram";
 import { getMe } from "@/entities/user";
@@ -90,6 +90,7 @@ function SkeletonLoader(): ReactElement {
 
 export function EpigramDetailPage({ epigramId }: EpigramDetailPageProps): ReactElement {
   const [isCopied, setIsCopied] = useState(false);
+  const router = useRouter();
 
   const { data: epigram, isLoading: isEpigramLoading } = useEpigramDetail(epigramId);
   const { data: me, isLoading: isMeLoading } = useQuery({ queryKey: ["me"], queryFn: getMe });
@@ -117,9 +118,15 @@ export function EpigramDetailPage({ epigramId }: EpigramDetailPageProps): ReactE
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-10 tablet:max-w-3xl tablet:px-6 pc:max-w-screen-xl pc:px-16 pc:py-16 desktop:max-w-screen-2xl desktop:px-24">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-black-950 tablet:text-3xl pc:text-4xl desktop:text-5xl">
-          에피그램
-        </h1>
+        <button
+          type="button"
+          onClick={() => router.back()}
+          aria-label="뒤로 가기"
+          className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm font-medium text-black-400 transition-colors duration-150 hover:bg-blue-50 hover:text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+        >
+          <ArrowLeft size={16} aria-hidden="true" />
+          돌아가기
+        </button>
         <div className="flex items-center gap-2">
           <div className="relative">
             <button
@@ -141,11 +148,13 @@ export function EpigramDetailPage({ epigramId }: EpigramDetailPageProps): ReactE
       </div>
 
       <div className="mb-8 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-blue-200 tablet:p-8 pc:p-10">
-        <blockquote className="mb-6 text-lg leading-relaxed text-black-800 tablet:text-xl pc:text-2xl desktop:text-3xl">
+        <blockquote className="mb-6 font-serif text-lg leading-relaxed text-black-800 tablet:text-xl pc:text-2xl desktop:text-3xl">
           {epigram.content}
         </blockquote>
 
-        <p className="mb-4 text-right text-sm font-medium text-black-500">— {epigram.author}</p>
+        <p className="mb-4 text-right font-serif text-sm font-medium text-black-400">
+          — {epigram.author}
+        </p>
 
         {epigram.referenceTitle && (
           <div className="mb-4 flex items-center justify-end gap-1.5">

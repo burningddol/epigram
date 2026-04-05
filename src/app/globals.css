@@ -92,6 +92,8 @@
   --animate-fade-in-up: fadeInUp 0.55s ease-out both;
   --animate-fade-in: fadeIn 0.4s ease-out both;
   --animate-float: float 4s ease-in-out infinite;
+  --animate-slide-up: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-scale-in: scaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes fadeInUp {
@@ -124,9 +126,37 @@
   }
 }
 
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 body {
   background-color: var(--color-background);
   color: var(--color-black-600);
+  scrollbar-gutter: stable;
+}
+
+::selection {
+  background-color: var(--color-blue-300);
+  color: var(--color-blue-950);
 }
 
 /* =====================
