@@ -214,15 +214,15 @@
 
 ### US6 — API 레이어
 
-- [ ] T070 [P] [US6] 월별 감정 조회 API 훅 — `useMonthlyEmotions` (userId 필수, year, month 파라미터 — swagger `GET /emotion-logs?userId=&year=&month=`) (`src/entities/emotion-log/api/useMonthlyEmotions.ts`)
-- [ ] T071 [P] [US6] 내 에피그램 목록 API 훅 — `useMyEpigrams` (writerId 필터, cursor 기반) (`src/entities/epigram/api/useMyEpigrams.ts`)
+- [x] T070 [P] [US6] 월별 감정 조회 API 훅 — `useMonthlyEmotions` (userId 필수, year, month 파라미터 — swagger `GET /emotion-logs?userId=&year=&month=`) (`src/entities/emotion-log/api/useMonthlyEmotions.ts`)
+- [x] T071 [P] [US6] 내 에피그램 목록 API 훅 — `useMyEpigrams` (writerId 필터, cursor 기반) (`src/entities/epigram/api/useMyEpigrams.ts`)
 - [x] T072 [P] [US6] 내 댓글 목록 API 훅 — `useMyComments` (cursor 기반, swagger `GET /users/{id}/comments`) (`src/entities/comment/api/useMyComments.ts`)
 - [x] T073 [P] [US6] 프로필 수정 API 함수 — `updateMe` (닉네임, 이미지 URL) (`src/entities/user/api/user.ts` 에 통합)
 - [x] T074 [P] [US6] 이미지 업로드 API 함수 — `uploadImage` (multipart/form-data, 영문 파일명 검증) (`src/shared/api/uploadImage.ts`)
 
 ### US6 — Features (의존: T070~T074)
 
-- [ ] T075 [P] [US6] 프로필 이미지 변경 feature 구현 — 파일 선택 → 업로드 → 프로필 수정 API 호출, 한글 파일명 경고 (`src/features/auth/ui/ProfileImageUpload.tsx`)
+- [x] T075 [P] [US6] 프로필 이미지 변경 feature 구현 — 파일 선택 → 업로드 → 프로필 수정 API 호출, 한글 파일명 경고 (`src/features/auth/ui/ProfileImageUpload.tsx`)
 - [ ] T076 [P] [US6] 감정 달력 컴포넌트 구현 — react-calendar 활용, 월별 날짜에 감정 이모지 표시, 월 이동 (`src/widgets/mypage-activity/ui/EmotionCalendar.tsx`)
 - [ ] T077 [P] [US6] 감정 파이 차트 컴포넌트 구현 — recharts 활용, 5가지 감정 비율 집계 및 시각화 (`src/widgets/mypage-activity/ui/EmotionPieChart.tsx`)
 
