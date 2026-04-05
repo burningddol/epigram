@@ -8,7 +8,7 @@ import { usePathname } from "next/navigation";
 import { Menu, User } from "lucide-react";
 
 const NAV_LINKS = [
-  { href: "/epigrams", label: "피드" },
+  { href: "/feeds", label: "피드" },
   { href: "/search", label: "검색" },
 ] as const;
 
