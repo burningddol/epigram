@@ -10,6 +10,9 @@ import { useMyComments } from "@/entities/comment";
 import { useMonthlyEmotions } from "@/entities/emotion-log";
 import { useEpigrams } from "@/entities/epigram";
 
+import { ErrorBoundary } from "@/shared/ui/ErrorBoundary";
+import { SectionErrorFallback } from "@/shared/ui/SectionErrorFallback";
+
 import { EmotionCalendar } from "./EmotionCalendar";
 import { EmotionPieChart } from "./EmotionPieChart";
 
@@ -205,8 +208,12 @@ export function MypageActivity({ userId }: MypageActivityProps): ReactElement {
   return (
     <div className="flex flex-col gap-4">
       <div className="grid gap-4 tablet:grid-cols-2">
-        <EmotionCalendar userId={userId} />
-        <EmotionPieChart emotionLogs={monthlyLogs} />
+        <ErrorBoundary fallback={(_, reset) => <SectionErrorFallback reset={reset} />}>
+          <EmotionCalendar userId={userId} />
+        </ErrorBoundary>
+        <ErrorBoundary fallback={(_, reset) => <SectionErrorFallback reset={reset} />}>
+          <EmotionPieChart emotionLogs={monthlyLogs} />
+        </ErrorBoundary>
       </div>
 
       <div className="grid gap-4 pc:grid-cols-2">

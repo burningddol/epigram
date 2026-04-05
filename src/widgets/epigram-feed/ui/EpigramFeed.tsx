@@ -8,6 +8,8 @@ import Link from "next/link";
 import type { Epigram } from "@/entities/epigram";
 import { useEpigrams, useTodayEpigram } from "@/entities/epigram";
 import { EmptyState } from "@/shared/ui/EmptyState";
+import { ErrorBoundary } from "@/shared/ui/ErrorBoundary";
+import { SectionErrorFallback } from "@/shared/ui/SectionErrorFallback";
 
 const FEED_PAGE_SIZE = 5;
 
@@ -162,10 +164,14 @@ function EpigramFeedList(): ReactElement {
 export function EpigramFeed(): ReactElement {
   return (
     <div className="flex flex-col gap-10">
-      <TodayEpigramSection />
+      <ErrorBoundary fallback={(_, reset) => <SectionErrorFallback reset={reset} />}>
+        <TodayEpigramSection />
+      </ErrorBoundary>
       <section aria-label="최신 에피그램">
         <h2 className="mb-4 text-xl font-bold text-black-900">최신 에피그램</h2>
-        <EpigramFeedList />
+        <ErrorBoundary fallback={(_, reset) => <SectionErrorFallback reset={reset} />}>
+          <EpigramFeedList />
+        </ErrorBoundary>
       </section>
     </div>
   );
