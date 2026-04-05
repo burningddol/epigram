@@ -13,9 +13,11 @@ interface UseEmotionSelectReturn {
 
 export function useEmotionSelect(): UseEmotionSelectReturn {
   const queryClient = useQueryClient();
+  // 공개 페이지에서도 로그인 상태를 확인하므로 401 실패는 에러가 아닌 "비로그인"으로 처리
   const { data: me, isSuccess: isMeLoaded } = useQuery({
     queryKey: ["me"],
     queryFn: getMe,
+    throwOnError: false,
   });
 
   const { data: todayEmotionLog } = useTodayEmotion(me?.id ?? 0);
