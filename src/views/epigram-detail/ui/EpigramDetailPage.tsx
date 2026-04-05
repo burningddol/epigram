@@ -180,7 +180,7 @@ export function EpigramDetailPage({ epigramId }: EpigramDetailPageProps): ReactE
               <Link
                 key={tag.id}
                 href={`/search?keyword=${encodeURIComponent(tag.name)}`}
-                className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-600 transition-colors hover:bg-blue-100 hover:text-blue-800"
+                className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-600 transition-colors hover:bg-blue-100 hover:text-blue-800"
               >
                 #{tag.name}
               </Link>

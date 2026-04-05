@@ -7,7 +7,8 @@ interface TagProps {
   onClick?: (label: string) => void;
 }
 
-const TAG_CLASS = "rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-600";
+const TAG_CLASS =
+  "inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-600";
 
 export function Tag({ label, onClick }: TagProps): ReactElement {
   if (onClick) {
