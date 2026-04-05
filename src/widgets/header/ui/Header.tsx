@@ -23,7 +23,10 @@ function Logo({ size }: LogoProps): ReactElement {
   return (
     <Link href="/" className="flex items-center gap-1" aria-label="홈으로 이동">
       <span
-        className={`font-serif font-black leading-[26px] tracking-tight text-blue-950 whitespace-nowrap ${isLg ? "text-[20px]" : "text-[16px]"}`}
+        className={cn(
+          "font-serif font-black leading-[26px] tracking-tight text-blue-950 whitespace-nowrap",
+          isLg ? "text-[20px]" : "text-[16px]"
+        )}
       >
         Epigram
       </span>
@@ -71,7 +74,10 @@ function UserSection({ iconSize, textSize }: UserSectionProps): ReactElement {
     <Link href="/mypage" className="flex items-center gap-[6px]" aria-label="마이페이지">
       <User size={isLgIcon ? 24 : 16} className="text-gray-300 shrink-0" aria-hidden="true" />
       <span
-        className={`font-medium text-gray-300 whitespace-nowrap ${isMdText ? "text-[14px] leading-6" : "text-[13px] leading-[22px]"}`}
+        className={cn(
+          "font-medium text-gray-300 whitespace-nowrap",
+          isMdText ? "text-[14px] leading-6" : "text-[13px] leading-[22px]"
+        )}
       >
         김코드
       </span>
