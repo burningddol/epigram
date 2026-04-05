@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 
+import { cn } from "@/shared/lib/cn";
 import { Button } from "@/shared/ui/Button";
 import { Input } from "@/shared/ui/Input";
 
@@ -102,9 +103,10 @@ export function EpigramCreateForm({ userNickname }: EpigramCreateFormProps): Rea
             {...register("content")}
             placeholder="500자 이내로 입력해주세요."
             rows={5}
-            className={`w-full resize-none rounded-xl bg-blue-200 px-4 py-3 pb-6 text-sm text-black-950 outline-none transition-all duration-200 placeholder:text-blue-400 focus:bg-blue-100 focus:ring-2 focus:ring-black-500 ${
-              errors.content ? "bg-blue-100 ring-2 ring-error" : ""
-            }`}
+            className={cn(
+              "w-full resize-none rounded-xl bg-blue-200 px-4 py-3 pb-6 text-sm text-black-950 outline-none transition-all duration-200 placeholder:text-blue-400 focus:bg-blue-100 focus:ring-2 focus:ring-black-500",
+              errors.content && "bg-blue-100 ring-2 ring-error"
+            )}
           />
           <span
             className={`absolute bottom-3 right-4 text-xs transition-colors duration-200 ${getContentCounterClass()}`}
@@ -192,13 +194,13 @@ export function EpigramCreateForm({ userNickname }: EpigramCreateFormProps): Rea
                 onKeyDown={(e) => handleTagKeyDown(e, field.value, field.onChange)}
                 placeholder="입력하여 태그 작성 (최대 10자)"
                 disabled={field.value.length >= 3}
-                className={[
+                className={cn(
                   "h-11 w-full rounded-xl bg-blue-200 px-4 pr-20 text-sm text-black-950",
                   "outline-none transition-all duration-200 placeholder:text-blue-400",
                   "focus:bg-blue-100 focus:ring-2 focus:ring-black-500",
                   "disabled:cursor-not-allowed disabled:opacity-50",
-                  errors.tags ? "bg-blue-100 ring-2 ring-error" : "",
-                ].join(" ")}
+                  errors.tags && "bg-blue-100 ring-2 ring-error"
+                )}
               />
               <button
                 type="button"

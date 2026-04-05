@@ -1,5 +1,7 @@
 import type { ButtonHTMLAttributes, ReactElement } from "react";
 
+import { cn } from "@/shared/lib/cn";
+
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "ghost";
   isLoading?: boolean;
@@ -19,13 +21,17 @@ export function Button({
   isLoading = false,
   disabled,
   children,
-  className = "",
+  className,
   ...props
 }: ButtonProps): ReactElement {
   return (
     <button
       disabled={disabled || isLoading}
-      className={`inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black-500 focus-visible:ring-offset-1 ${VARIANT_CLASSES[variant]} ${className}`}
+      className={cn(
+        "inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black-500 focus-visible:ring-offset-1",
+        VARIANT_CLASSES[variant],
+        className
+      )}
       {...props}
     >
       {isLoading ? (

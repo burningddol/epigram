@@ -4,6 +4,8 @@ import type { ReactElement } from "react";
 
 import Link from "next/link";
 
+import { cn } from "@/shared/lib/cn";
+
 import type { Epigram } from "@/entities/epigram";
 
 interface EpigramCardProps {
@@ -52,13 +54,14 @@ export function EpigramCard({ epigram, isFeatured = false }: EpigramCardProps): 
     : "border-blue-300 hover:border-blue-500";
 
   return (
-    <Link href={`/epigrams/${epigram.id}`} className={`${baseClasses} ${featuredClasses}`}>
+    <Link href={`/epigrams/${epigram.id}`} className={cn(baseClasses, featuredClasses)}>
       <article>
         <blockquote>
           <p
-            className={`break-words font-serif leading-relaxed transition-colors duration-200 group-hover:text-black-900 ${
+            className={cn(
+              "break-words font-serif leading-relaxed transition-colors duration-200 group-hover:text-black-900",
               isFeatured ? "text-lg text-black-800" : "text-base text-black-700"
-            }`}
+            )}
           >
             {epigram.content}
           </p>

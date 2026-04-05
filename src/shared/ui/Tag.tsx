@@ -1,5 +1,7 @@
 import type { ReactElement } from "react";
 
+import { cn } from "@/shared/lib/cn";
+
 interface TagProps {
   label: string;
   onClick?: (label: string) => void;
@@ -13,7 +15,7 @@ export function Tag({ label, onClick }: TagProps): ReactElement {
       <button
         type="button"
         onClick={() => onClick(label)}
-        className={`${TAG_CLASS} hover:bg-blue-100 transition-colors`}
+        className={cn(TAG_CLASS, "hover:bg-blue-100 transition-colors")}
       >
         #{label}
       </button>
