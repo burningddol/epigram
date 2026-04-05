@@ -7,6 +7,7 @@ import Link from "next/link";
 
 import type { Epigram } from "@/entities/epigram";
 import { useEpigrams, useTodayEpigram } from "@/entities/epigram";
+import { EmptyState } from "@/shared/ui/EmptyState";
 
 const FEED_PAGE_SIZE = 5;
 
@@ -68,9 +69,17 @@ function TodayEpigramSection(): ReactElement {
     return (
       <section aria-label="오늘의 에피그램">
         <h2 className="mb-4 text-xl font-bold text-black-900">오늘의 에피그램</h2>
-        <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-line-200 py-10 text-black-300">
-          <BookOpenText className="h-8 w-8 opacity-40" aria-hidden="true" />
-          <p className="text-sm">오늘의 에피그램이 아직 없습니다.</p>
+        <div className="rounded-2xl border border-dashed border-line-200">
+          <EmptyState
+            icon={
+              <BookOpenText
+                className="h-7 w-7 text-blue-400"
+                strokeWidth={1.5}
+                aria-hidden="true"
+              />
+            }
+            title="오늘의 에피그램이 아직 없습니다"
+          />
         </div>
       </section>
     );
@@ -103,9 +112,22 @@ function EpigramFeedList(): ReactElement {
 
   if (epigrams.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-line-200 py-16 text-black-300">
-        <BookOpenText className="h-8 w-8 opacity-40" aria-hidden="true" />
-        <p className="text-sm">등록된 에피그램이 없습니다.</p>
+      <div className="rounded-2xl border border-dashed border-line-200">
+        <EmptyState
+          icon={
+            <BookOpenText className="h-7 w-7 text-blue-400" strokeWidth={1.5} aria-hidden="true" />
+          }
+          title="등록된 에피그램이 없습니다"
+          description="첫 번째 에피그램을 작성해 보세요."
+          action={
+            <Link
+              href="/addepigram"
+              className="inline-flex h-9 items-center justify-center rounded-xl border border-black-400 px-5 text-xs font-semibold text-black-500 transition-all duration-200 hover:bg-black-500 hover:text-white active:scale-95"
+            >
+              에피그램 만들기
+            </Link>
+          }
+        />
       </div>
     );
   }
