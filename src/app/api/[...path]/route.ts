@@ -15,16 +15,6 @@ function setAccessTokenCookie(response: NextResponse, value: string): void {
     path: "/",
     maxAge: 3600,
   });
-  // JS에서 로그인 여부 확인용 non-HttpOnly 플래그 쿠키 (민감 정보 없음)
-  response.cookies.set({
-    name: "isLoggedIn",
-    value: "1",
-    httpOnly: false,
-    sameSite: "strict",
-    secure: IS_PRODUCTION,
-    path: "/",
-    maxAge: 3600,
-  });
 }
 
 function setRefreshTokenCookie(response: NextResponse, value: string): void {
@@ -42,7 +32,6 @@ function setRefreshTokenCookie(response: NextResponse, value: string): void {
 function clearAuthCookies(response: NextResponse): void {
   response.cookies.set({ name: "accessToken", value: "", path: "/", maxAge: 0 });
   response.cookies.set({ name: "refreshToken", value: "", path: "/", maxAge: 0 });
-  response.cookies.set({ name: "isLoggedIn", value: "", path: "/", maxAge: 0 });
 }
 
 function buildBackendUrl(path: string, searchParams: URLSearchParams): string {
