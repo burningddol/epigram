@@ -224,7 +224,7 @@
 
 - [x] T075 [P] [US6] 프로필 이미지 변경 feature 구현 — 파일 선택 → 업로드 → 프로필 수정 API 호출, 한글 파일명 경고 (`src/features/auth/ui/ProfileImageUpload.tsx`)
 - [x] T076 [P] [US6] 감정 달력 컴포넌트 구현 — react-calendar 활용, 월별 날짜에 감정 이모지 표시, 월 이동 (`src/widgets/mypage-activity/ui/EmotionCalendar.tsx`)
-- [ ] T077 [P] [US6] 감정 파이 차트 컴포넌트 구현 — recharts 활용, 5가지 감정 비율 집계 및 시각화 (`src/widgets/mypage-activity/ui/EmotionPieChart.tsx`)
+- [x] T077 [P] [US6] 감정 파이 차트 컴포넌트 구현 — recharts 활용, 5가지 감정 비율 집계 및 시각화 (`src/widgets/mypage-activity/ui/EmotionPieChart.tsx`)
 
 ### US6 — Widgets & Pages (의존: T075~T077)
 
