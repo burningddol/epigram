@@ -2,7 +2,7 @@ import type { ReactElement } from "react";
 
 export function AuthLeftPanel(): ReactElement {
   return (
-    <div className="hidden tablet:flex tablet:w-[380px] desktop:w-[460px] flex-col justify-between bg-blue-950 p-12">
+    <div className="hidden tablet:flex tablet:w-[380px] pc:w-[420px] desktop:w-[460px] flex-col justify-between bg-blue-950 p-12">
       <span className="font-serif text-xl font-black tracking-tight text-white">Epigram</span>
 
       <div className="flex flex-col gap-5">

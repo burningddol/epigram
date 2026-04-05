@@ -124,7 +124,8 @@ export function MypagePage(): ReactElement {
       id="main-content"
       className="mx-auto min-h-screen w-full max-w-xl px-4 pb-24 pt-10
         tablet:max-w-2xl tablet:px-8 tablet:pt-14
-        pc:max-w-4xl pc:px-12 pc:pt-16"
+        pc:max-w-4xl pc:px-12 pc:pt-16
+        desktop:max-w-5xl desktop:px-16"
     >
       <section className="mb-6 flex flex-col items-center gap-3 animate-fade-in-up">
         {isLoading || !me ? (

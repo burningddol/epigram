@@ -63,7 +63,7 @@ function HeroSection(): ReactElement {
 
 function EmotionSection(): ReactElement {
   return (
-    <section className="flex flex-col items-center gap-10 px-6 py-16 tablet:px-[72px]">
+    <section className="flex flex-col items-center gap-10 px-6 py-16 tablet:px-[72px] desktop:px-[120px]">
       <div className="w-full max-w-sm rounded-2xl bg-blue-200 px-6 py-8">
         <div className="mb-6 flex flex-wrap gap-3">
           {EMOTION_TAGS.map((tag) => (
@@ -89,7 +89,7 @@ function EmotionSection(): ReactElement {
 
 function EpigramsSection(): ReactElement {
   return (
-    <section className="flex flex-col gap-10 px-6 py-16 tablet:px-[72px]">
+    <section className="mx-auto w-full max-w-5xl flex flex-col gap-10 px-6 py-16 tablet:px-[72px]">
       <h2 className="text-2xl font-bold text-black-950 tablet:text-3xl">
         사용자들이 직접
         <br />
@@ -122,7 +122,7 @@ function EpigramsSection(): ReactElement {
 
 function CtaSection(): ReactElement {
   return (
-    <section className="flex flex-col items-center gap-8 bg-blue-950 px-6 py-20 tablet:px-[72px]">
+    <section className="flex flex-col items-center gap-8 bg-blue-950 px-6 py-20 tablet:px-[72px] desktop:px-[120px]">
       <div className="flex flex-col items-center gap-2">
         <span className="font-serif text-xs uppercase tracking-widest text-blue-500">
           every day

@@ -74,7 +74,7 @@ function ActionMenu({ epigramId, onDelete }: ActionMenuProps): ReactElement {
 
 function SkeletonLoader(): ReactElement {
   return (
-    <div className="mx-auto w-full max-w-2xl animate-pulse px-4 py-10 tablet:max-w-3xl tablet:px-6 pc:max-w-screen-xl pc:px-16 pc:py-16">
+    <div className="mx-auto w-full max-w-2xl animate-pulse px-4 py-10 tablet:max-w-3xl tablet:px-6 pc:max-w-screen-xl pc:px-16 pc:py-16 desktop:max-w-screen-2xl desktop:px-24">
       <div className="mb-6 h-8 w-32 rounded-lg bg-blue-200" />
       <div className="mb-4 h-32 rounded-2xl bg-blue-100" />
       <div className="mb-8 flex gap-2">
@@ -113,9 +113,11 @@ export function EpigramDetailPage({ epigramId }: EpigramDetailPageProps): ReactE
   }
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-4 py-10 tablet:max-w-3xl tablet:px-6 pc:max-w-screen-xl pc:px-16 pc:py-16">
+    <div className="mx-auto w-full max-w-2xl px-4 py-10 tablet:max-w-3xl tablet:px-6 pc:max-w-screen-xl pc:px-16 pc:py-16 desktop:max-w-screen-2xl desktop:px-24">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-black-950 tablet:text-3xl pc:text-4xl">에피그램</h1>
+        <h1 className="text-2xl font-bold text-black-950 tablet:text-3xl pc:text-4xl desktop:text-5xl">
+          에피그램
+        </h1>
         <div className="flex items-center gap-2">
           <div className="relative">
             <button
@@ -137,7 +139,7 @@ export function EpigramDetailPage({ epigramId }: EpigramDetailPageProps): ReactE
       </div>
 
       <div className="mb-8 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-blue-200 tablet:p-8 pc:p-10">
-        <blockquote className="mb-6 text-lg leading-relaxed text-black-800 tablet:text-xl pc:text-2xl">
+        <blockquote className="mb-6 text-lg leading-relaxed text-black-800 tablet:text-xl pc:text-2xl desktop:text-3xl">
           {epigram.content}
         </blockquote>
 
