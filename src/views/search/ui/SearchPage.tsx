@@ -194,10 +194,7 @@ export function SearchPage(): ReactElement {
   return (
     <main
       id="main-content"
-      className="relative mx-auto min-h-screen w-full max-w-xl px-5 pb-20 pt-10
-        tablet:max-w-2xl tablet:px-10 tablet:pt-14
-        pc:max-w-4xl pc:px-16 pc:pt-20
-        desktop:max-w-5xl desktop:px-20"
+      className="relative mx-auto min-h-screen w-full max-w-xl px-5 pb-20 pt-10 tablet:max-w-2xl tablet:px-10 tablet:pt-14 pc:max-w-4xl pc:px-16 pc:pt-20 desktop:max-w-5xl desktop:px-20"
     >
       <div className="flex flex-col gap-10 tablet:gap-12 pc:gap-14">
         <SearchBar

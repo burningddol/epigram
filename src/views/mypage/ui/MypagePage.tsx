@@ -122,10 +122,7 @@ export function MypagePage(): ReactElement {
   return (
     <main
       id="main-content"
-      className="mx-auto min-h-screen w-full max-w-xl px-4 pb-24 pt-10
-        tablet:max-w-2xl tablet:px-8 tablet:pt-14
-        pc:max-w-4xl pc:px-12 pc:pt-16
-        desktop:max-w-5xl desktop:px-16"
+      className="mx-auto min-h-screen w-full max-w-xl px-4 pb-24 pt-10 tablet:max-w-2xl tablet:px-8 tablet:pt-14 pc:max-w-4xl pc:px-12 pc:pt-16 desktop:max-w-5xl desktop:px-16"
     >
       <section className="mb-6 flex flex-col items-center gap-3 animate-fade-in-up">
         {isLoading || !me ? (
@@ -137,9 +134,7 @@ export function MypagePage(): ReactElement {
             <button
               type="button"
               onClick={() => void handleLogout()}
-              className="flex items-center gap-1.5 rounded-full border border-line-200 px-4 py-1.5
-                text-xs text-black-400 transition-all duration-200
-                hover:border-error/40 hover:bg-red-50 hover:text-error active:scale-95"
+              className="flex items-center gap-1.5 rounded-full border border-line-200 px-4 py-1.5 text-xs text-black-400 transition-all duration-200 hover:border-error/40 hover:bg-red-50 hover:text-error active:scale-95"
             >
               <LogOut className="h-3.5 w-3.5" aria-hidden="true" />
               로그아웃

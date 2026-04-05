@@ -68,9 +68,7 @@ export function SearchBar({
           onKeyDown={handleKeyDown}
           placeholder="검색어를 입력하세요"
           autoComplete="off"
-          className="h-10 w-full bg-transparent pr-10 text-base text-black-950 outline-none placeholder:text-blue-400
-            tablet:h-12 tablet:text-lg tablet:pr-12
-            pc:h-16 pc:pr-14 pc:text-2xl"
+          className="h-10 w-full bg-transparent pr-10 text-base text-black-950 outline-none placeholder:text-blue-400 tablet:h-12 tablet:text-lg tablet:pr-12 pc:h-16 pc:pr-14 pc:text-2xl"
         />
         <button
           type="button"

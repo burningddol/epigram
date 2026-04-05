@@ -91,8 +91,7 @@ export function EmotionCalendar({ userId }: EmotionCalendarProps): ReactElement 
             type="button"
             aria-label="이전 달"
             onClick={handlePrevMonth}
-            className="flex h-8 w-8 items-center justify-center rounded-full text-black-400
-              transition-all duration-150 hover:bg-blue-200 hover:text-blue-700 active:scale-90"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-black-400 transition-all duration-150 hover:bg-blue-200 hover:text-blue-700 active:scale-90"
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
@@ -100,8 +99,7 @@ export function EmotionCalendar({ userId }: EmotionCalendarProps): ReactElement 
             type="button"
             aria-label="다음 달"
             onClick={handleNextMonth}
-            className="flex h-8 w-8 items-center justify-center rounded-full text-black-400
-              transition-all duration-150 hover:bg-blue-200 hover:text-blue-700 active:scale-90"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-black-400 transition-all duration-150 hover:bg-blue-200 hover:text-blue-700 active:scale-90"
           >
             <ChevronRight className="h-4 w-4" />
           </button>

@@ -47,10 +47,7 @@ function LoadMoreButton({
       type="button"
       onClick={onLoadMore}
       disabled={isFetchingNextPage}
-      className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-xl border
-        border-line-200 py-2.5 text-sm text-black-400 transition-all duration-200
-        hover:border-blue-400 hover:bg-blue-50 hover:text-blue-600
-        disabled:cursor-not-allowed disabled:opacity-60 active:scale-[0.98]"
+      className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-xl border border-line-200 py-2.5 text-sm text-black-400 transition-all duration-200 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-600 disabled:cursor-not-allowed disabled:opacity-60 active:scale-[0.98]"
     >
       <ChevronDown
         className={["h-4 w-4 transition-transform", isFetchingNextPage ? "animate-spin" : ""].join(
@@ -74,9 +71,7 @@ function MyEpigramItem({ epigram }: MyEpigramItemProps): ReactElement {
     <li>
       <Link
         href={`/epigrams/${epigram.id}`}
-        className="group block rounded-xl border border-line-200 bg-white px-4 py-3.5
-          transition-all duration-200 hover:border-blue-400 hover:bg-blue-100/40 hover:shadow-sm
-          active:scale-[0.99]"
+        className="group block rounded-xl border border-line-200 bg-white px-4 py-3.5 transition-all duration-200 hover:border-blue-400 hover:bg-blue-100/40 hover:shadow-sm active:scale-[0.99]"
       >
         <p className="line-clamp-2 text-sm font-medium leading-snug text-black-700 transition-colors group-hover:text-blue-800">
           {epigram.content}
@@ -141,9 +136,7 @@ function MyCommentItem({ comment }: MyCommentItemProps): ReactElement {
     <li>
       <Link
         href={`/epigrams/${comment.epigramId}`}
-        className="group block rounded-xl border border-line-200 bg-white px-4 py-3.5
-          transition-all duration-200 hover:border-blue-400 hover:bg-blue-100/40 hover:shadow-sm
-          active:scale-[0.99]"
+        className="group block rounded-xl border border-line-200 bg-white px-4 py-3.5 transition-all duration-200 hover:border-blue-400 hover:bg-blue-100/40 hover:shadow-sm active:scale-[0.99]"
       >
         <p className="line-clamp-2 text-sm leading-snug text-black-600 transition-colors group-hover:text-blue-800">
           {comment.content}
