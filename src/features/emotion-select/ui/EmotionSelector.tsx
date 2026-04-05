@@ -42,7 +42,7 @@ export function EmotionSelector(): ReactElement {
   return (
     <section>
       <h2 className="mb-6 text-xl font-semibold text-black-700">오늘의 감정은 어떤가요?</h2>
-      <ul className="flex items-center gap-4 tablet:gap-6" role="list">
+      <ul className="flex items-center justify-between" role="list">
         {EMOTION_OPTIONS.map((option) => {
           const isSelected = todayEmotion === option.value;
           // 비로그인: 버튼 활성(클릭 시 로그인 유도) / 로그인: 이미 선택했으면 선택된 것 제외 비활성
