@@ -13,6 +13,8 @@ import { getMe } from "@/entities/user";
 import { useEpigramDelete } from "@/features/epigram-delete";
 import { LikeButton } from "@/features/epigram-like";
 import { copyToClipboard } from "@/shared/lib/clipboard";
+import { ErrorBoundary } from "@/shared/ui/ErrorBoundary";
+import { SectionErrorFallback } from "@/shared/ui/SectionErrorFallback";
 import { CommentSection } from "@/widgets/comment-section";
 
 interface EpigramDetailPageProps {
@@ -186,7 +188,9 @@ export function EpigramDetailPage({ epigramId }: EpigramDetailPageProps): ReactE
         </div>
       </div>
 
-      <CommentSection epigramId={epigramId} />
+      <ErrorBoundary fallback={(_, reset) => <SectionErrorFallback reset={reset} />}>
+        <CommentSection epigramId={epigramId} />
+      </ErrorBoundary>
     </div>
   );
 }

@@ -8,6 +8,8 @@ import { useSearchEpigrams } from "@/entities/epigram";
 import { SearchBar, SearchResultItem, useSearch } from "@/features/epigram-search";
 import { useIntersectionObserver } from "@/shared/hooks/useIntersectionObserver";
 import { useScrollToTop } from "@/shared/hooks/useScrollToTop";
+import { ErrorBoundary } from "@/shared/ui/ErrorBoundary";
+import { SectionErrorFallback } from "@/shared/ui/SectionErrorFallback";
 
 const SEARCH_LIMIT = 10;
 
@@ -195,7 +197,16 @@ export function SearchPage(): ReactElement {
         />
 
         <section aria-label="검색 결과">
-          {activeKeyword ? <SearchResults keyword={activeKeyword} /> : <InitialState />}
+          {activeKeyword ? (
+            <ErrorBoundary
+              key={activeKeyword}
+              fallback={(_, reset) => <SectionErrorFallback reset={reset} />}
+            >
+              <SearchResults keyword={activeKeyword} />
+            </ErrorBoundary>
+          ) : (
+            <InitialState />
+          )}
         </section>
       </div>
 
