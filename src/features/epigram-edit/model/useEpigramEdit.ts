@@ -13,8 +13,8 @@ import type { Epigram } from "@/entities/epigram";
 interface UpdateEpigramBody {
   content?: string;
   author?: string;
-  referenceTitle?: string | null;
-  referenceUrl?: string | null;
+  referenceTitle?: string;
+  referenceUrl?: string;
   tags?: string[];
 }
 
@@ -61,8 +61,8 @@ export function useEpigramEdit(epigramId: number): UseEpigramEditReturn {
     mutate({
       content: values.content,
       author: resolveAuthor(values),
-      referenceTitle: values.referenceTitle?.trim() || null,
-      referenceUrl: values.referenceUrl?.trim() || null,
+      referenceTitle: values.referenceTitle?.trim() || undefined,
+      referenceUrl: values.referenceUrl?.trim() || undefined,
       tags: values.tags,
     });
   }
