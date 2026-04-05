@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 // /epigrams/[id], /epigrams/[id]/edit 등 하위 경로는 보호
-// /epigrams 자체(목록)와 /search는 비회원 접근 가능
+// /epigrams 자체(목록), /feeds, /search는 비회원 접근 가능
 function isProtectedPath(pathname: string): boolean {
   if (pathname.startsWith("/epigrams/")) return true;
   if (pathname.startsWith("/addepigram")) return true;
