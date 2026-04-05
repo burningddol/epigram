@@ -5,6 +5,8 @@ import type { ReactElement } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
+import { cn } from "@/shared/lib/cn";
+
 import type { Emotion } from "@/entities/emotion-log";
 
 import { useEmotionSelect } from "../model/useEmotionSelect";
@@ -60,11 +62,12 @@ export function EmotionSelector(): ReactElement {
                 className="group flex flex-col items-center gap-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <span
-                  className={`flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-200 tablet:h-[72px] tablet:w-[72px] ${
+                  className={cn(
+                    "flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-200 tablet:h-[72px] tablet:w-[72px]",
                     isSelected
                       ? "bg-blue-100 ring-2 ring-blue-300"
                       : "bg-gray-100 group-hover:bg-gray-200 group-active:bg-gray-300"
-                  }`}
+                  )}
                 >
                   <Image
                     src={option.icon}
@@ -75,9 +78,10 @@ export function EmotionSelector(): ReactElement {
                   />
                 </span>
                 <span
-                  className={`text-sm transition-colors duration-200 ${
+                  className={cn(
+                    "text-sm transition-colors duration-200",
                     isSelected ? "font-semibold text-black-700" : "font-medium text-black-300"
-                  }`}
+                  )}
                 >
                   {option.label}
                 </span>

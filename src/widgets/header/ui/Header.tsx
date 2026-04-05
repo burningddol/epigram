@@ -7,6 +7,8 @@ import { usePathname } from "next/navigation";
 
 import { Menu, User } from "lucide-react";
 
+import { cn } from "@/shared/lib/cn";
+
 const NAV_LINKS = [
   { href: "/feeds", label: "피드" },
   { href: "/search", label: "검색" },
@@ -43,11 +45,11 @@ function NavLink({ href, label, textSize }: NavLinkProps): ReactElement {
   return (
     <Link
       href={href}
-      className={[
+      className={cn(
         "relative font-semibold transition-colors duration-150",
         isMd ? "text-[16px] leading-[26px]" : "text-[14px] leading-6",
-        isActive ? "text-blue-700" : "text-black-600 hover:text-blue-700",
-      ].join(" ")}
+        isActive ? "text-blue-700" : "text-black-600 hover:text-blue-700"
+      )}
     >
       {label}
       {isActive && (
