@@ -14,9 +14,8 @@ const AUTH_ONLY_PATHS = ["/login", "/signup", "/oauth/signup/kakao"];
 
 export function middleware(request: NextRequest): NextResponse | undefined {
   const { pathname } = request.nextUrl;
-  // accessToken이 없어도 refreshToken이 있으면 BFF에서 갱신 가능하므로 통과
-  const isLoggedIn =
-    request.cookies.has("accessToken") || request.cookies.has("refreshToken");
+  // Edge Runtime에서는 쿠키 존재 여부로만 판별. 실제 유효성은 BFF에서 처리.
+  const isLoggedIn = request.cookies.has("accessToken");
 
   if (isProtectedPath(pathname) && !isLoggedIn) {
     return NextResponse.redirect(new URL("/login", request.url));

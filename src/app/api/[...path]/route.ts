@@ -139,38 +139,6 @@ async function handler(
   const body =
     request.method !== "GET" && request.method !== "HEAD" ? await request.text() : undefined;
 
-  const refreshToken = request.cookies.get("refreshToken")?.value;
-
-  // accessToken 없이 refreshToken만 있으면 바로 갱신 시도
-  if (!accessToken && refreshToken) {
-    const newAccessToken = await attemptTokenRefresh(refreshToken);
-    if (!newAccessToken) {
-      return buildUnauthorizedResponse();
-    }
-
-    const backendResponseWithNewToken = await callBackend(
-      backendUrl,
-      request.method,
-      newAccessToken,
-      body,
-      contentType
-    );
-
-    const retryResponse =
-      AUTH_TOKEN_ENDPOINTS.has(path) && backendResponseWithNewToken.ok
-        ? await handleAuthEndpointResponse(backendResponseWithNewToken)
-        : new NextResponse(backendResponseWithNewToken.body, {
-            status: backendResponseWithNewToken.status,
-            headers: {
-              "Content-Type":
-                backendResponseWithNewToken.headers.get("Content-Type") ?? "application/json",
-            },
-          });
-
-    setAccessTokenCookie(retryResponse, newAccessToken);
-    return retryResponse;
-  }
-
   let backendResponse = await callBackend(
     backendUrl,
     request.method,
@@ -181,6 +149,7 @@ async function handler(
 
   // 401: refreshToken으로 갱신 후 재시도
   if (backendResponse.status === 401) {
+    const refreshToken = request.cookies.get("refreshToken")?.value;
     if (!refreshToken) {
       return buildUnauthorizedResponse();
     }
