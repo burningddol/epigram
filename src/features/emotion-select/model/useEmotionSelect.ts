@@ -1,8 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import type { Emotion } from "@/entities/emotion-log";
 import { postTodayEmotion, useTodayEmotion } from "@/entities/emotion-log";
-import { getMe } from "@/entities/user";
+import type { User } from "@/entities/user";
 
 interface UseEmotionSelectReturn {
   isLoggedIn: boolean;
@@ -13,12 +13,8 @@ interface UseEmotionSelectReturn {
 
 export function useEmotionSelect(): UseEmotionSelectReturn {
   const queryClient = useQueryClient();
-  // 공개 페이지에서도 로그인 상태를 확인하므로 401 실패는 에러가 아닌 "비로그인"으로 처리
-  const { data: me, isSuccess: isMeLoaded } = useQuery({
-    queryKey: ["me"],
-    queryFn: getMe,
-    throwOnError: false,
-  });
+  // 네트워크 요청 없이 캐시에서만 읽음 — 로그인 후 보호 페이지 방문 시 캐시가 채워짐
+  const me = queryClient.getQueryData<User>(["me"]);
 
   const { data: todayEmotionLog } = useTodayEmotion(me?.id ?? 0);
 
@@ -30,7 +26,7 @@ export function useEmotionSelect(): UseEmotionSelectReturn {
   });
 
   return {
-    isLoggedIn: isMeLoaded && me != null,
+    isLoggedIn: me != null,
     todayEmotion: todayEmotionLog?.emotion ?? null,
     isSubmitting: isPending,
     selectEmotion: mutate,
