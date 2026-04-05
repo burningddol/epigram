@@ -60,7 +60,6 @@ export function SearchBar({
 
   return (
     <div className="flex w-full flex-col gap-6 pc:gap-8">
-      {/* 언더라인 스타일 검색 입력 */}
       <div className="group relative flex items-center border-b-2 border-blue-300 pb-2 transition-colors duration-200 focus-within:border-black-700 pc:pb-3">
         <input
           type="search"
@@ -83,7 +82,6 @@ export function SearchBar({
         </button>
       </div>
 
-      {/* 최근 검색어 */}
       {recentSearches.length > 0 && (
         <div className="animate-fade-in flex flex-col gap-3 pc:gap-4">
           <div className="flex items-center justify-between">

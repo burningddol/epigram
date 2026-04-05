@@ -24,7 +24,7 @@ function buildHighlightedSegments(text: string, regex: RegExp): ReactNode {
     index % 2 === 1 ? (
       <mark
         key={index}
-        className="font-serif rounded-sm bg-transparent px-0 font-semibold text-blue-700 not-italic"
+        className="rounded-sm bg-transparent px-0 font-semibold text-blue-700 not-italic"
       >
         {part}
       </mark>
@@ -60,7 +60,7 @@ function TagList({ tags, keyword }: TagListProps): ReactElement | null {
     >
       {tags.map((tag) => (
         <li key={tag.id}>
-          <span className="font-seriftext-xs font-medium text-blue-500 transition-colors duration-150 group-hover:text-blue-600 pc:text-sm">
+          <span className="text-xs font-medium text-blue-500 transition-colors duration-150 group-hover:text-blue-600 pc:text-sm">
             #<HighlightedText text={tag.name} keyword={keyword} />
           </span>
         </li>
@@ -70,7 +70,6 @@ function TagList({ tags, keyword }: TagListProps): ReactElement | null {
 }
 
 export function SearchResultItem({ epigram, keyword }: SearchResultItemProps): ReactElement {
-  // 피그마 시안: "- 저자 -" 혹은 "- 저자 《출처》 -" 형식, 좌측 배치
   const authorLabel = epigram.referenceTitle
     ? `${epigram.author} 《${epigram.referenceTitle}》`
     : epigram.author;
@@ -82,8 +81,7 @@ export function SearchResultItem({ epigram, keyword }: SearchResultItemProps): R
         tablet:px-2 tablet:py-7
         pc:px-3 pc:py-9"
     >
-      <article className="flex flex-col gap-3 pc:gap-2 ">
-        {/* 에피그램 본문 */}
+      <article className="flex flex-col gap-3 pc:gap-2">
         <p
           className="font-serif text-sm leading-relaxed text-black-700 transition-colors duration-150 group-hover:text-black-950
             tablet:text-base tablet:leading-loose
@@ -92,11 +90,8 @@ export function SearchResultItem({ epigram, keyword }: SearchResultItemProps): R
           <HighlightedText text={epigram.content} keyword={keyword} />
         </p>
 
-        {/* 피그마 레이아웃: 좌측 저자 / 우측 태그 한 행 */}
         <div className="flex items-start justify-between gap-4">
-          <footer className="font-sans shrink-0 text-xs text-black-300 pc:text-sm">
-            - {authorLabel} -
-          </footer>
+          <footer className="shrink-0 text-xs text-black-300 pc:text-sm">- {authorLabel} -</footer>
           <TagList tags={epigram.tags} keyword={keyword} />
         </div>
       </article>

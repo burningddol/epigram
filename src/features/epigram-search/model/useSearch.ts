@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -19,33 +19,30 @@ interface UseSearchResult {
 export function useSearch(): UseSearchResult {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialKeyword = searchParams.get("keyword") ?? "";
 
-  const [inputValue, setInputValue] = useState(initialKeyword);
-  const [activeKeyword, setActiveKeyword] = useState(initialKeyword);
+  // URL이 단일 진실 공급원 — 별도 상태 없이 직접 파생
+  const activeKeyword = searchParams.get("keyword") ?? "";
+
+  const [inputValue, setInputValue] = useState(activeKeyword);
 
   const { recentSearches, addRecentSearch, removeRecentSearch, clearAllRecentSearches } =
     useRecentSearches();
 
-  const handleInputChange = useCallback((value: string) => {
+  function handleInputChange(value: string): void {
     setInputValue(value);
-  }, []);
+  }
 
-  const handleSearch = useCallback(
-    (keyword: string) => {
-      const trimmed = keyword.trim();
-      if (!trimmed) return;
+  function handleSearch(keyword: string): void {
+    const trimmed = keyword.trim();
+    if (!trimmed) return;
 
-      setInputValue(trimmed);
-      setActiveKeyword(trimmed);
-      addRecentSearch(trimmed);
+    setInputValue(trimmed);
+    addRecentSearch(trimmed);
 
-      const params = new URLSearchParams(searchParams.toString());
-      params.set("keyword", trimmed);
-      router.push(`/search?${params.toString()}`);
-    },
-    [router, searchParams, addRecentSearch]
-  );
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("keyword", trimmed);
+    router.push(`/search?${params.toString()}`);
+  }
 
   return {
     inputValue,

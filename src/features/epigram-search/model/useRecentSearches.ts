@@ -27,7 +27,8 @@ interface UseRecentSearchesResult {
 export function useRecentSearches(): UseRecentSearchesResult {
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
 
-  // Load from localStorage after mount to avoid SSR/client hydration mismatch
+  // Load from localStorage after mount to avoid SSR/client hydration mismatch.
+  // startTransition: marks this low-priority so React can yield to urgent updates (e.g. input focus)
   useEffect(() => {
     startTransition(() => {
       setRecentSearches(loadFromStorage());

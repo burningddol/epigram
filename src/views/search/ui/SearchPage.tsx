@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactElement, useMemo } from "react";
+import { type ReactElement } from "react";
 
 import { ArrowUp, Loader2, SearchX } from "lucide-react";
 
@@ -16,8 +16,8 @@ const SEARCH_LIMIT = 10;
 function SearchResultSkeletonItem(): ReactElement {
   return (
     <div className="animate-pulse space-y-3 border-b border-line-100 py-7 last:border-0 pc:py-9">
-      <div className="h-3.5 rounded-md bg-blue-200/40 w-4/5 pc:h-4" />
-      <div className="h-3.5 rounded-md bg-blue-200/40 w-1/2 pc:h-4" />
+      <div className="h-3.5 w-4/5 rounded-md bg-blue-200/40 pc:h-4" />
+      <div className="h-3.5 w-1/2 rounded-md bg-blue-200/40 pc:h-4" />
       <div className="flex gap-2 pt-1">
         <div className="h-5 w-14 rounded-full bg-blue-200/30" />
         <div className="h-5 w-20 rounded-full bg-blue-200/30" />
@@ -38,7 +38,11 @@ function SearchResultSkeleton(): ReactElement {
 
 // ─── Empty / Initial states ───────────────────────────────────────────────────
 
-function EmptyState({ keyword }: { keyword: string }): ReactElement {
+interface EmptyStateProps {
+  keyword: string;
+}
+
+function EmptyState({ keyword }: EmptyStateProps): ReactElement {
   return (
     <div className="flex flex-col items-center gap-5 py-24 text-center pc:gap-6 pc:py-32">
       <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-200/40 pc:h-20 pc:w-20">
@@ -92,13 +96,17 @@ function ScrollToTopButton({
 
 // ─── Search results list (infinite scroll) ────────────────────────────────────
 
-function SearchResults({ keyword }: { keyword: string }): ReactElement {
+interface SearchResultsProps {
+  keyword: string;
+}
+
+function SearchResults({ keyword }: SearchResultsProps): ReactElement {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useSearchEpigrams({
     keyword,
     limit: SEARCH_LIMIT,
   });
 
-  // useIntersectionObserver stores the callback in a ref — no need for useCallback
+  // useIntersectionObserver stores the callback in a ref internally — useCallback not needed
   const sentinelRef = useIntersectionObserver(
     () => {
       if (hasNextPage && !isFetchingNextPage) {
@@ -108,8 +116,7 @@ function SearchResults({ keyword }: { keyword: string }): ReactElement {
     { rootMargin: "300px" }
   );
 
-  // Avoid re-creating the flattened list on every render
-  const epigrams = useMemo(() => data?.pages.flatMap((page) => page.list) ?? [], [data?.pages]);
+  const epigrams = data?.pages.flatMap((page) => page.list) ?? [];
 
   if (isLoading) return <SearchResultSkeleton />;
 
@@ -118,7 +125,11 @@ function SearchResults({ keyword }: { keyword: string }): ReactElement {
   return (
     <div>
       <p className="mb-5 text-xs font-medium text-black-300 pc:mb-7 pc:text-sm">
-        검색 결과 <span className="font-semibold text-blue-700">{epigrams.length}+</span>
+        검색 결과{" "}
+        <span className="font-semibold text-blue-700">
+          {epigrams.length}
+          {hasNextPage ? "+" : ""}
+        </span>
       </p>
 
       <ul className="divide-y divide-line-200" aria-label="검색 결과 목록">
