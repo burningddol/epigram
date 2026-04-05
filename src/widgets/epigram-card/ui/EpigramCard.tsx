@@ -34,7 +34,7 @@ function EpigramTagList({ tags }: EpigramTagListProps): ReactElement | null {
     <ul className="mt-4 flex flex-wrap gap-2" aria-label="태그 목록">
       {tags.map((tag) => (
         <li key={tag.id}>
-          <span className="rounded-full bg-blue-200 px-3 py-1 text-xs font-medium text-blue-700 transition-colors duration-150 hover:bg-blue-300">
+          <span className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-600 transition-all duration-150 hover:border-blue-400 hover:bg-blue-100 hover:text-blue-800">
             #{tag.name}
           </span>
         </li>
@@ -45,11 +45,11 @@ function EpigramTagList({ tags }: EpigramTagListProps): ReactElement | null {
 
 export function EpigramCard({ epigram, isFeatured = false }: EpigramCardProps): ReactElement {
   const baseClasses =
-    "group block rounded-2xl border bg-white px-6 py-6 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2";
+    "group block rounded-2xl border-l-[3px] bg-white pl-6 pr-6 py-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2";
 
   const featuredClasses = isFeatured
-    ? "border-blue-300 shadow-sm shadow-blue-100 hover:border-blue-400 hover:shadow-blue-200"
-    : "border-line-200 shadow-sm hover:border-blue-300";
+    ? "border-blue-500 shadow-blue-100 hover:border-blue-700"
+    : "border-blue-300 hover:border-blue-500";
 
   return (
     <Link href={`/epigrams/${epigram.id}`} className={`${baseClasses} ${featuredClasses}`}>

@@ -65,8 +65,21 @@ function SearchNoResults({ keyword }: SearchNoResultsProps): ReactElement {
 
 function InitialState(): ReactElement {
   return (
-    <div className="flex flex-col items-center gap-2 py-24 text-center pc:py-36">
-      <p className="text-sm text-black-300 pc:text-base">검색어를 입력해 에피그램을 찾아보세요</p>
+    <div className="flex flex-col items-center gap-4 py-24 text-center pc:py-36">
+      <span
+        className="select-none font-serif text-[72px] leading-none text-blue-200 pc:text-[96px]"
+        aria-hidden="true"
+      >
+        {"\u201C"}
+      </span>
+      <div className="flex flex-col gap-1.5">
+        <p className="font-serif text-base text-black-500 pc:text-lg">
+          검색어를 입력해 에피그램을 찾아보세요
+        </p>
+        <p className="text-xs text-black-300 pc:text-sm">
+          작가 이름, 글귀, 태그 모두 검색 가능합니다
+        </p>
+      </div>
     </div>
   );
 }

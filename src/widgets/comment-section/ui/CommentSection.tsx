@@ -58,7 +58,7 @@ function CommentItem({ comment, epigramId, currentUserId }: CommentItemProps): R
   }
 
   return (
-    <li className="flex gap-3 rounded-2xl border border-line-200 bg-white px-5 py-4 shadow-sm transition-all duration-200 hover:border-blue-200 hover:shadow-md">
+    <li className="flex gap-3 rounded-xl bg-sub-gray-3 px-4 py-4 transition-colors duration-200 hover:bg-blue-200/30">
       <button
         type="button"
         onClick={handleProfileClick}
@@ -129,7 +129,7 @@ function CommentItem({ comment, epigramId, currentUserId }: CommentItemProps): R
 
 function CommentSkeleton(): ReactElement {
   return (
-    <li className="flex gap-3 rounded-2xl border border-line-200 bg-white px-5 py-4">
+    <li className="flex gap-3 rounded-xl bg-sub-gray-3 px-4 py-4">
       <div className="h-9 w-9 flex-shrink-0 animate-pulse rounded-full bg-blue-200" />
       <div className="flex-1 space-y-2">
         <div className="h-3 w-24 animate-pulse rounded bg-blue-200" />

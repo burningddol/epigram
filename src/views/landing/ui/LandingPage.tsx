@@ -34,7 +34,7 @@ function HeroSection(): ReactElement {
         {"\u201C"}
       </span>
 
-      <div className="relative flex flex-col items-center gap-6 animate-fade-in-up">
+      <div className="relative flex flex-col items-center gap-8 animate-fade-in-up">
         <div className="flex flex-col gap-3">
           <h1 className="font-serif text-2xl font-normal leading-tight text-black-500 tablet:text-4xl desktop:text-5xl">
             나만 갖고 있기엔
@@ -45,17 +45,20 @@ function HeroSection(): ReactElement {
             다른 사람들과 감정을 공유해 보세요.
           </p>
         </div>
+        {/* border + fill-on-hover premium CTA */}
         <Link
           href="/epigrams"
-          className="inline-flex h-12 w-32 items-center justify-center rounded-xl bg-black-500 text-base font-semibold text-white shadow-sm transition-all duration-200 hover:bg-black-600 hover:shadow-md active:scale-95"
+          className="inline-flex h-12 w-36 items-center justify-center rounded-xl border border-blue-950 bg-blue-950 text-sm font-semibold text-white shadow-sm transition-all duration-300 hover:bg-transparent hover:text-blue-950 hover:shadow-md active:scale-95"
         >
           시작하기
         </Link>
       </div>
 
       <div className="absolute bottom-8 flex flex-col items-center gap-1">
-        <span className="text-xs font-semibold text-blue-400">더 알아보기</span>
-        <ChevronDown size={24} className="animate-bounce text-blue-400" aria-hidden="true" />
+        <span className="text-xs font-semibold tracking-[0.2em] text-blue-400 uppercase">
+          scroll
+        </span>
+        <ChevronDown size={20} className="animate-bounce text-blue-400" aria-hidden="true" />
       </div>
     </section>
   );
@@ -63,22 +66,34 @@ function HeroSection(): ReactElement {
 
 function EmotionSection(): ReactElement {
   return (
-    <section className="flex flex-col items-center gap-10 px-6 py-16 tablet:px-[72px] desktop:px-[120px]">
-      <div className="w-full max-w-sm rounded-2xl bg-blue-200 px-6 py-8">
-        <div className="mb-6 flex flex-wrap gap-3">
+    <section className="flex flex-col items-center gap-10 bg-blue-200 px-6 py-20 tablet:px-[72px] desktop:px-[120px]">
+      <div className="flex flex-col items-center gap-2 text-center">
+        <span className="font-serif text-xs uppercase tracking-[0.2em] text-blue-500">
+          감정을 담다
+        </span>
+        <h2 className="font-serif text-2xl font-normal text-blue-950 tablet:text-3xl">
+          오늘의 감정에 맞는 에피그램
+        </h2>
+      </div>
+
+      <div className="w-full max-w-md rounded-2xl bg-white/60 px-8 py-8 shadow-sm backdrop-blur-sm">
+        <div className="mb-6 flex flex-wrap gap-2">
           {EMOTION_TAGS.map((tag) => (
-            <span key={tag} className="font-serif text-xl text-blue-400">
+            <span
+              key={tag}
+              className="rounded-full border border-blue-300/60 px-3 py-1 font-serif text-sm text-blue-700"
+            >
               {tag}
             </span>
           ))}
         </div>
-        <div className="flex justify-center gap-2">
+        <div className="flex justify-center gap-3">
           {EMOTION_BADGES.map(({ emoji, label }) => (
             <div key={label} className="flex flex-col items-center gap-2">
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-400 text-2xl transition-transform duration-200 hover:-translate-y-1">
+              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-blue-200 text-2xl shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
                 {emoji}
               </div>
-              <span className="text-xs font-semibold text-gray-400">{label}</span>
+              <span className="text-xs font-medium text-blue-600">{label}</span>
             </div>
           ))}
         </div>
@@ -89,12 +104,17 @@ function EmotionSection(): ReactElement {
 
 function EpigramsSection(): ReactElement {
   return (
-    <section className="mx-auto w-full max-w-5xl flex flex-col gap-10 px-6 py-16 tablet:px-[72px]">
-      <h2 className="text-2xl font-bold text-black-950 tablet:text-3xl">
-        사용자들이 직접
-        <br />
-        인용한 에피그램들
-      </h2>
+    <section className="mx-auto w-full max-w-5xl flex flex-col gap-10 px-6 py-20 tablet:px-[72px]">
+      <div className="flex flex-col gap-1">
+        <span className="font-serif text-xs uppercase tracking-[0.2em] text-blue-400">
+          community
+        </span>
+        <h2 className="font-serif text-2xl font-normal text-black-800 tablet:text-3xl">
+          사용자들이 직접
+          <br />
+          인용한 에피그램들
+        </h2>
+      </div>
       <ul className="flex flex-col gap-4">
         {SAMPLE_EPIGRAMS.map((item, index) => (
           <li
@@ -102,9 +122,9 @@ function EpigramsSection(): ReactElement {
             className="animate-fade-in-up"
             style={{ animationDelay: `${index * 0.12}s` }}
           >
-            <div className="flex flex-col gap-1 rounded-2xl border-l-2 border-blue-500 bg-white px-6 py-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+            <div className="flex flex-col gap-1 rounded-2xl border-l-[3px] border-blue-400 bg-white px-6 py-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-600 hover:shadow-md">
               <p className="font-serif text-sm leading-relaxed text-black-600">{item.content}</p>
-              <p className="font-serif text-sm text-blue-400">{item.author}</p>
+              <p className="mt-2 font-serif text-sm text-blue-400">{item.author}</p>
             </div>
             <div className="mt-2 flex gap-2 px-2">
               {item.tags.map((tag) => (
@@ -122,19 +142,33 @@ function EpigramsSection(): ReactElement {
 
 function CtaSection(): ReactElement {
   return (
-    <section className="flex flex-col items-center gap-8 bg-blue-950 px-6 py-20 tablet:px-[72px] desktop:px-[120px]">
-      <div className="flex flex-col items-center gap-2">
-        <span className="font-serif text-xs uppercase tracking-widest text-blue-500">
+    <section className="relative flex flex-col items-center gap-8 overflow-hidden bg-blue-950 px-6 py-24 tablet:px-[72px] desktop:px-[120px]">
+      {/* 미묘한 radial glow */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 60% 50% at 50% 60%, rgba(107,130,169,0.18) 0%, transparent 70%)",
+        }}
+        aria-hidden="true"
+      />
+
+      <div className="relative flex flex-col items-center gap-2">
+        <span className="font-serif text-xs uppercase tracking-[0.25em] text-blue-500">
           every day
         </span>
         <div className="flex flex-col items-center leading-snug">
-          <span className="font-serif text-3xl font-bold text-white">날마다</span>
+          <span className="font-serif text-3xl font-light text-white">날마다</span>
           <span className="font-serif text-3xl font-bold text-blue-300">에피그램</span>
         </div>
+        <p className="mt-2 font-serif text-sm text-blue-600">
+          좋은 글귀 하나가 하루를 바꿀 수 있습니다
+        </p>
       </div>
+
       <Link
         href="/epigrams"
-        className="inline-flex h-12 w-32 items-center justify-center rounded-xl border border-blue-400 text-base font-semibold text-white transition-all duration-200 hover:bg-white hover:text-blue-950 active:scale-95"
+        className="relative inline-flex h-12 w-36 items-center justify-center rounded-xl border border-blue-400/60 text-sm font-semibold text-white transition-all duration-300 hover:border-white hover:bg-white/10 active:scale-95"
       >
         시작하기
       </Link>

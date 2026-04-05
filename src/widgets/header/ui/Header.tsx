@@ -1,7 +1,16 @@
+"use client";
+
 import type { ReactElement } from "react";
 
-import { Menu, User } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+import { Menu, User } from "lucide-react";
+
+const NAV_LINKS = [
+  { href: "/epigrams", label: "피드" },
+  { href: "/search", label: "검색" },
+] as const;
 
 interface LogoProps {
   size: "sm" | "lg";
@@ -12,10 +21,38 @@ function Logo({ size }: LogoProps): ReactElement {
   return (
     <Link href="/" className="flex items-center gap-1" aria-label="홈으로 이동">
       <span
-        className={`font-black leading-[26px] text-black-600 whitespace-nowrap ${isLg ? "text-[20px]" : "text-[16px]"}`}
+        className={`font-serif font-black leading-[26px] tracking-tight text-blue-950 whitespace-nowrap ${isLg ? "text-[20px]" : "text-[16px]"}`}
       >
         Epigram
       </span>
+    </Link>
+  );
+}
+
+interface NavLinkProps {
+  href: string;
+  label: string;
+  textSize: "sm" | "md";
+}
+
+function NavLink({ href, label, textSize }: NavLinkProps): ReactElement {
+  const pathname = usePathname();
+  const isActive = pathname.startsWith(href);
+  const isMd = textSize === "md";
+
+  return (
+    <Link
+      href={href}
+      className={[
+        "relative font-semibold transition-colors duration-150",
+        isMd ? "text-[16px] leading-[26px]" : "text-[14px] leading-6",
+        isActive ? "text-blue-700" : "text-black-600 hover:text-blue-700",
+      ].join(" ")}
+    >
+      {label}
+      {isActive && (
+        <span className="absolute -bottom-1 left-0 h-0.5 w-full rounded-full bg-blue-500" />
+      )}
     </Link>
   );
 }
@@ -42,7 +79,7 @@ function UserSection({ iconSize, textSize }: UserSectionProps): ReactElement {
 
 export function Header(): ReactElement {
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-line-100 bg-white">
+    <header className="sticky top-0 z-50 w-full border-b border-line-100 bg-white/90 backdrop-blur-md">
       {/* Mobile (base ~ 743px): 햄버거 + 로고 / 유저 */}
       <div className="flex h-[52px] items-center justify-between px-6 tablet:hidden">
         <div className="flex items-center gap-3">
@@ -54,36 +91,27 @@ export function Header(): ReactElement {
         <UserSection iconSize="sm" textSize="sm" />
       </div>
 
-      {/* Tablet (744px ~ 1919px): 로고 + 텍스트 링크 / 유저 */}
-      <div className="hidden h-[60px] items-center justify-between px-[72px] tablet:flex desktop:hidden">
+      {/* Tablet (744px ~ 1279px): 로고 + 텍스트 링크 / 유저 */}
+      <div className="hidden h-[60px] items-center justify-between px-[72px] tablet:flex pc:hidden">
         <div className="flex items-center gap-6">
           <Logo size="sm" />
           <nav className="flex gap-6" aria-label="주요 메뉴">
-            <Link href="/feed" className="text-[14px] font-semibold leading-6 text-black-600">
-              피드
-            </Link>
-            <Link href="/search" className="text-[14px] font-semibold leading-6 text-black-600">
-              검색
-            </Link>
+            {NAV_LINKS.map((link) => (
+              <NavLink key={link.href} href={link.href} label={link.label} textSize="sm" />
+            ))}
           </nav>
         </div>
         <UserSection iconSize="sm" textSize="sm" />
       </div>
 
-      {/* Desktop (1920px+): 로고 + 텍스트 링크 / 유저 */}
-      <div className="hidden h-[80px] items-center justify-between px-[120px] desktop:flex">
+      {/* Desktop (1280px+): 로고 + 텍스트 링크 / 유저 */}
+      <div className="hidden h-[80px] items-center justify-between px-[120px] pc:flex">
         <div className="flex items-center gap-9">
           <Logo size="lg" />
           <nav className="flex gap-6" aria-label="주요 메뉴">
-            <Link href="/feed" className="text-[16px] font-semibold leading-[26px] text-black-600">
-              피드
-            </Link>
-            <Link
-              href="/search"
-              className="text-[16px] font-semibold leading-[26px] text-black-600"
-            >
-              검색
-            </Link>
+            {NAV_LINKS.map((link) => (
+              <NavLink key={link.href} href={link.href} label={link.label} textSize="md" />
+            ))}
           </nav>
         </div>
         <UserSection iconSize="lg" textSize="md" />
