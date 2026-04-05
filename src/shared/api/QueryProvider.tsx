@@ -18,6 +18,7 @@ export function QueryProvider({ children }: QueryProviderProps): ReactElement {
           queries: {
             staleTime: 60 * 1000,
             retry: 1,
+            throwOnError: true,
           },
         },
       })
