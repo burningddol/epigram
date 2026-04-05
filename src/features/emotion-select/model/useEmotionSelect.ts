@@ -5,15 +5,20 @@ import { postTodayEmotion, useTodayEmotion } from "@/entities/emotion-log";
 import { getMe } from "@/entities/user";
 
 interface UseEmotionSelectReturn {
-  hasSelectedToday: boolean;
+  isLoggedIn: boolean;
+  todayEmotion: Emotion | null;
   isSubmitting: boolean;
   selectEmotion: (emotion: Emotion) => void;
 }
 
 export function useEmotionSelect(): UseEmotionSelectReturn {
   const queryClient = useQueryClient();
-  const { data: me } = useQuery({ queryKey: ["me"], queryFn: getMe });
-  const { data: todayEmotion } = useTodayEmotion(me?.id ?? 0);
+  const { data: me, isSuccess: isMeLoaded } = useQuery({
+    queryKey: ["me"],
+    queryFn: getMe,
+  });
+
+  const { data: todayEmotionLog } = useTodayEmotion(me?.id ?? 0);
 
   const { mutate, isPending } = useMutation({
     mutationFn: postTodayEmotion,
@@ -23,7 +28,8 @@ export function useEmotionSelect(): UseEmotionSelectReturn {
   });
 
   return {
-    hasSelectedToday: todayEmotion != null,
+    isLoggedIn: isMeLoaded && me != null,
+    todayEmotion: todayEmotionLog?.emotion ?? null,
     isSubmitting: isPending,
     selectEmotion: mutate,
   };
