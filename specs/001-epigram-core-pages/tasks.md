@@ -228,7 +228,7 @@
 
 ### US6 — Widgets & Pages (의존: T075~T077)
 
-- [ ] T078 [US6] 마이페이지 활동 위젯 구현 — 감정 달력 + 파이 차트 + 내 에피그램(더보기 버튼) + 내 댓글(더보기 버튼, 댓글 수 표시) (`src/widgets/mypage-activity/ui/MypageActivity.tsx`, `src/widgets/mypage-activity/index.ts`)
+- [x] T078 [US6] 마이페이지 활동 위젯 구현 — 감정 달력 + 파이 차트 + 내 에피그램(더보기 버튼) + 내 댓글(더보기 버튼, 댓글 수 표시) (`src/widgets/mypage-activity/ui/MypageActivity.tsx`, `src/widgets/mypage-activity/index.ts`)
 - [ ] T079 [US6] 마이페이지 구현 — 로그아웃 버튼, 프로필 이미지 클릭 업로드, 댓글 클릭 → 해당 에피그램 상세 이동 (`src/views/mypage/ui/MypagePage.tsx`, `src/app/mypage/page.tsx`)
 
 **체크포인트**: 이미지 업로드(영문 파일) → 프로필 갱신 → 감정 달력 월 이동 → 파이 차트 정상 표시 → 내 에피그램 더보기 → 클릭 → 상세 이동
