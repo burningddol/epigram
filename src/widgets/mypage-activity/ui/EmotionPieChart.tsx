@@ -1,10 +1,10 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, type ReactElement } from "react";
 
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 
-import type { Emotion, EmotionLog } from "@/entities/emotion-log/model/schema";
+import type { Emotion, EmotionLog } from "@/entities/emotion-log";
 
 interface EmotionMeta {
   label: string;
@@ -52,7 +52,7 @@ interface EmotionPieChartProps {
   emotionLogs: EmotionLog[];
 }
 
-export function EmotionPieChart({ emotionLogs }: EmotionPieChartProps): React.ReactElement {
+export function EmotionPieChart({ emotionLogs }: EmotionPieChartProps): ReactElement {
   const chartData = useMemo(() => buildChartData(emotionLogs), [emotionLogs]);
 
   if (chartData.length === 0) {

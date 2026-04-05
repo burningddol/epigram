@@ -1,11 +1,11 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, type ReactElement } from "react";
 
 import { useQueryClient } from "@tanstack/react-query";
 import { Camera, Loader2 } from "lucide-react";
 
-import { updateMe } from "@/entities/user/api/user";
+import { updateMe } from "@/entities/user";
 import { uploadImage } from "@/shared/api/uploadImage";
 
 interface ProfileImageUploadProps {
@@ -16,7 +16,7 @@ interface ProfileImageUploadProps {
 export function ProfileImageUpload({
   currentImageUrl,
   nickname,
-}: ProfileImageUploadProps): React.ReactElement {
+}: ProfileImageUploadProps): ReactElement {
   const inputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
 
@@ -113,7 +113,7 @@ interface DefaultAvatarProps {
   nickname: string;
 }
 
-function DefaultAvatar({ nickname }: DefaultAvatarProps): React.ReactElement {
+function DefaultAvatar({ nickname }: DefaultAvatarProps): ReactElement {
   const initial = nickname.at(0)?.toUpperCase() ?? "?";
 
   return (
