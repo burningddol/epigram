@@ -91,7 +91,11 @@ export function Header(): ReactElement {
       {/* Mobile (base ~ 743px): 햄버거 + 로고 / 유저 */}
       <div className="flex h-[52px] items-center justify-between px-6 tablet:hidden">
         <div className="flex items-center gap-3">
-          <button type="button" aria-label="메뉴 열기">
+          <button
+            type="button"
+            aria-label="메뉴 열기"
+            className="rounded-md p-1 transition-colors hover:bg-blue-50"
+          >
             <Menu size={24} className="text-gray-200" aria-hidden="true" />
           </button>
           <Logo size="sm" />

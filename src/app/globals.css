@@ -148,6 +148,11 @@
   }
 }
 
+/* Tailwind preflight does not restore cursor:pointer for buttons — set it globally */
+button {
+  cursor: pointer;
+}
+
 body {
   background-color: var(--color-background);
   color: var(--color-black-600);
