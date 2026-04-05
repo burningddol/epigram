@@ -246,6 +246,21 @@
 
 ---
 
+## Phase 10: /feeds 피드 페이지 (에피그램 목록 무한 스크롤)
+
+**목적**: 에피그램 전체 목록을 2컬럼 그리드 + 무한 스크롤로 표시하는 전용 피드 페이지 구현
+
+**독립 테스트**: `/feeds` 진입 → 에피그램 2컬럼 그리드 표시 → 스크롤 시 추가 로드 → "에피그램 더보기" 버튼 동작 확인
+
+- [x] T084 [P] Header nav "피드" 링크를 `/feeds`로 변경 (`src/widgets/header/ui/Header.tsx`)
+- [x] T085 [P] `/feeds` 라우트 파일 생성 (`src/app/feeds/page.tsx`)
+- [x] T086 [P] feeds 뷰 구현 — "피드" 제목, 2컬럼 에피그램 카드 그리드, `useInfiniteQuery` 무한 스크롤, "에피그램 더보기" 버튼(수동 로드 트리거), 스크롤 위 버튼 (`src/views/feeds/ui/FeedsPage.tsx`, `src/views/feeds/index.ts`)
+- [x] T087 `/feeds` 미들웨어 비인증 접근 허용 확인 — 공개 페이지이므로 미들웨어 보호 경로에서 제외 (`src/middleware.ts`)
+
+**체크포인트**: 랜딩 "시작하기" → `/epigrams` 이동 확인 | nav "피드" → `/feeds` 이동 확인 | 무한 스크롤 추가 로드 정상 동작 확인
+
+---
+
 ## 의존성 및 실행 순서
 
 ### Phase 의존 관계
