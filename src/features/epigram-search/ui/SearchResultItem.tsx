@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactElement, ReactNode } from "react";
+import { type ReactElement, type ReactNode, useMemo } from "react";
 
 import Link from "next/link";
 
@@ -16,18 +16,15 @@ interface HighlightedTextProps {
   keyword: string;
 }
 
-function buildHighlightedSegments(text: string, keyword: string): ReactNode {
-  if (!keyword.trim()) return text;
-
-  const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  // Capturing group in split → odd-indexed parts are always the matches
-  const parts = text.split(new RegExp(`(${escapedKeyword})`, "i"));
+function buildHighlightedSegments(text: string, regex: RegExp): ReactNode {
+  // Regex split creates alternating text/match parts; odd indices are the highlighted matches
+  const parts = text.split(regex);
 
   return parts.map((part, index) =>
     index % 2 === 1 ? (
       <mark
         key={index}
-        className="rounded bg-yellow-100 px-0.5 font-medium text-yellow-800 not-italic"
+        className="rounded-sm bg-transparent px-0 font-semibold text-blue-700 not-italic"
       >
         {part}
       </mark>
@@ -38,7 +35,14 @@ function buildHighlightedSegments(text: string, keyword: string): ReactNode {
 }
 
 function HighlightedText({ text, keyword }: HighlightedTextProps): ReactElement {
-  return <>{buildHighlightedSegments(text, keyword)}</>;
+  const regex = useMemo(() => {
+    if (!keyword.trim()) return null;
+    const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    return new RegExp(`(${escaped})`, "i");
+  }, [keyword]);
+
+  if (!regex) return <>{text}</>;
+  return <>{buildHighlightedSegments(text, regex)}</>;
 }
 
 interface TagListProps {
@@ -50,10 +54,10 @@ function TagList({ tags, keyword }: TagListProps): ReactElement | null {
   if (tags.length === 0) return null;
 
   return (
-    <ul className="mt-4 flex flex-wrap gap-2" aria-label="태그 목록">
+    <ul className="flex flex-wrap justify-end gap-1.5" aria-label="태그 목록">
       {tags.map((tag) => (
         <li key={tag.id}>
-          <span className="rounded-full bg-blue-200 px-3 py-1 text-xs font-medium text-blue-700">
+          <span className="text-xs text-blue-500 transition-colors duration-150">
             #<HighlightedText text={tag.name} keyword={keyword} />
           </span>
         </li>
@@ -63,23 +67,23 @@ function TagList({ tags, keyword }: TagListProps): ReactElement | null {
 }
 
 export function SearchResultItem({ epigram, keyword }: SearchResultItemProps): ReactElement {
+  const authorLine = epigram.referenceTitle
+    ? `${epigram.author} 《${epigram.referenceTitle}》`
+    : epigram.author;
+
   return (
     <Link
       href={`/epigrams/${epigram.id}`}
-      className="group block rounded-2xl border border-line-200 bg-white px-6 py-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2"
+      className="group block border-b border-line-100 px-1 py-6 transition-colors duration-150 last:border-0 hover:bg-blue-100/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-inset"
     >
-      <article>
+      <article className="space-y-3">
         <blockquote>
-          <p className="font-serif text-base leading-relaxed text-black-700 transition-colors duration-200 group-hover:text-black-900">
+          <p className="font-serif text-sm leading-relaxed text-black-700 transition-colors duration-150 group-hover:text-black-950 tablet:text-base">
             <HighlightedText text={epigram.content} keyword={keyword} />
           </p>
-          <footer className="mt-3 text-right text-sm text-black-300">
-            —{" "}
-            {epigram.referenceTitle
-              ? `${epigram.author} 《${epigram.referenceTitle}》`
-              : epigram.author}
-          </footer>
+          <footer className="mt-2 text-right text-xs text-black-300 italic">— {authorLine}</footer>
         </blockquote>
+
         <TagList tags={epigram.tags} keyword={keyword} />
       </article>
     </Link>

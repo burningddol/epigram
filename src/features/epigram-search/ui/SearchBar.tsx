@@ -13,27 +13,32 @@ interface SearchBarProps {
   onClearAllRecent: () => void;
 }
 
-function RecentSearchChip({
-  keyword,
-  onSelect,
-  onRemove,
-}: {
+interface RecentSearchChipProps {
   keyword: string;
   onSelect: (keyword: string) => void;
   onRemove: (keyword: string) => void;
-}): ReactElement {
+}
+
+function RecentSearchChip({ keyword, onSelect, onRemove }: RecentSearchChipProps): ReactElement {
   return (
-    <li className="flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-sm text-black-600">
-      <button type="button" onClick={() => onSelect(keyword)} className="hover:text-black-950">
+    <li className="group flex items-center gap-0.5 rounded-full bg-blue-200/60 px-3 py-1.5 text-sm text-black-600 transition-all duration-150 hover:bg-blue-200 hover:text-black-900">
+      <button
+        type="button"
+        onClick={() => onSelect(keyword)}
+        className="max-w-[120px] truncate leading-none"
+      >
         {keyword}
       </button>
       <button
         type="button"
-        aria-label={`${keyword} 검색어 삭제`}
-        onClick={() => onRemove(keyword)}
-        className="flex items-center text-blue-400 hover:text-black-500"
+        aria-label={`"${keyword}" 검색어 삭제`}
+        onClick={(e) => {
+          e.stopPropagation();
+          onRemove(keyword);
+        }}
+        className="ml-1 flex items-center text-blue-400 opacity-60 transition-opacity duration-150 hover:text-black-500 hover:opacity-100 group-hover:opacity-100"
       >
-        <X size={12} />
+        <X size={11} strokeWidth={2.5} />
       </button>
     </li>
   );
@@ -55,35 +60,36 @@ export function SearchBar({
 
   return (
     <div className="flex w-full flex-col gap-6">
-      <div className="relative flex items-center">
+      <div className="group relative flex items-center border-b-2 border-blue-300 pb-2 transition-colors duration-200 focus-within:border-black-700">
         <input
-          type="text"
+          type="search"
           value={inputValue}
           onChange={(e) => onInputChange(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="검색어를 입력하세요"
-          className="h-12 w-full rounded-full border border-blue-200 bg-white px-5 pr-12 text-sm text-black-950 outline-none placeholder:text-blue-300 focus:border-black-500"
+          autoComplete="off"
+          className="h-10 w-full bg-transparent pr-10 text-base text-black-950 outline-none placeholder:text-blue-400"
         />
         <button
           type="button"
           aria-label="검색"
           onClick={() => onSearch(inputValue)}
-          className="absolute right-4 text-blue-300 hover:text-black-500"
+          className="absolute right-0 flex items-center justify-center text-blue-400 transition-all duration-150 hover:scale-110 hover:text-black-700 active:scale-95"
         >
-          <Search size={20} />
+          <Search size={20} strokeWidth={2} />
         </button>
       </div>
 
-      {recentSearches.length > 0 ? (
-        <div className="flex flex-col gap-3">
+      {recentSearches.length > 0 && (
+        <div className="animate-fade-in flex flex-col gap-3">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-black-600">최근 검색어</span>
+            <span className="text-sm font-semibold text-black-600">최근 검색어</span>
             <button
               type="button"
               onClick={onClearAllRecent}
-              className="text-xs text-blue-400 hover:text-black-500"
+              className="text-xs text-blue-400 transition-colors duration-150 hover:text-black-600"
             >
-              모두 제거
+              모두 지우기
             </button>
           </div>
           <ul className="flex flex-wrap gap-2">
@@ -97,7 +103,7 @@ export function SearchBar({
             ))}
           </ul>
         </div>
-      ) : null}
+      )}
     </div>
   );
 }
