@@ -62,7 +62,7 @@ export function EpigramEditPage({ epigramId }: EpigramEditPageProps): ReactEleme
 
   if (isLoading || !epigram || isUnauthorized) {
     return (
-      <div className="mx-auto w-full max-w-2xl px-4 py-10 tablet:max-w-3xl tablet:px-6 pc:max-w-screen-xl pc:px-16 pc:py-16">
+      <div className="mx-auto w-full max-w-2xl px-4 py-10 tablet:max-w-3xl tablet:px-6 pc:max-w-screen-xl pc:px-16 pc:py-16 desktop:max-w-screen-2xl desktop:px-24">
         <div className="mb-8">
           <div className="h-9 w-48 animate-pulse rounded-lg bg-blue-200" />
         </div>
@@ -80,9 +80,9 @@ export function EpigramEditPage({ epigramId }: EpigramEditPageProps): ReactEleme
   });
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-4 py-10 tablet:max-w-3xl tablet:px-6 pc:max-w-screen-xl pc:px-16 pc:py-16">
+    <div className="mx-auto w-full max-w-2xl px-4 py-10 tablet:max-w-3xl tablet:px-6 pc:max-w-screen-xl pc:px-16 pc:py-16 desktop:max-w-screen-2xl desktop:px-24">
       <div className="mb-8 pc:mb-12">
-        <h1 className="text-2xl font-bold text-black-950 tablet:text-3xl pc:text-4xl">
+        <h1 className="text-2xl font-bold text-black-950 tablet:text-3xl pc:text-4xl desktop:text-5xl">
           에피그램 수정
         </h1>
       </div>

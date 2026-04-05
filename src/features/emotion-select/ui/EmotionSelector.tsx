@@ -68,7 +68,7 @@ export function EmotionSelector(): ReactElement | null {
       <h2 className="mb-6 text-center text-lg font-semibold text-black-700">
         오늘의 감정은 어떤가요?
       </h2>
-      <ul className="flex items-center justify-center gap-4 tablet:gap-8" role="list">
+      <ul className="flex items-center justify-center gap-2 tablet:gap-8" role="list">
         {EMOTION_OPTIONS.map((option) => (
           <li key={option.value}>
             <button
@@ -77,15 +77,15 @@ export function EmotionSelector(): ReactElement | null {
               disabled={isSubmitting}
               aria-label={option.label}
               className={`
-                group flex flex-col items-center gap-2
-                rounded-xl p-2 transition-all duration-200
+                group flex flex-col items-center gap-1.5
+                rounded-xl p-1.5 tablet:p-2 transition-all duration-200
                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
                 disabled:cursor-not-allowed disabled:opacity-50
                 ${option.hoverColor} ${option.activeColor} ${option.ringColor}
               `}
             >
               <span
-                className="text-4xl transition-transform duration-200 group-hover:scale-125 group-active:scale-110"
+                className="text-3xl tablet:text-4xl transition-transform duration-200 group-hover:scale-125 group-active:scale-110"
                 role="img"
                 aria-hidden="true"
               >
