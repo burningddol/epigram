@@ -2,6 +2,7 @@
 
 import type { ReactElement } from "react";
 
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import type { Emotion } from "@/entities/emotion-log";
@@ -10,60 +11,16 @@ import { useEmotionSelect } from "../model/useEmotionSelect";
 
 interface EmotionOption {
   value: Emotion;
-  emoji: string;
+  icon: string;
   label: string;
-  hoverColor: string;
-  activeColor: string;
-  ringColor: string;
-  selectedColor: string;
 }
 
 const EMOTION_OPTIONS: EmotionOption[] = [
-  {
-    value: "MOVED",
-    emoji: "😍",
-    label: "감동",
-    hoverColor: "hover:bg-red-50",
-    activeColor: "active:bg-red-100",
-    ringColor: "focus-visible:ring-red-300",
-    selectedColor: "bg-red-100 ring-2 ring-red-300",
-  },
-  {
-    value: "HAPPY",
-    emoji: "😊",
-    label: "기쁨",
-    hoverColor: "hover:bg-yellow-50",
-    activeColor: "active:bg-yellow-100",
-    ringColor: "focus-visible:ring-yellow-300",
-    selectedColor: "bg-yellow-100 ring-2 ring-yellow-300",
-  },
-  {
-    value: "WORRIED",
-    emoji: "😟",
-    label: "고민",
-    hoverColor: "hover:bg-blue-50",
-    activeColor: "active:bg-blue-100",
-    ringColor: "focus-visible:ring-blue-300",
-    selectedColor: "bg-blue-100 ring-2 ring-blue-300",
-  },
-  {
-    value: "SAD",
-    emoji: "😢",
-    label: "슬픔",
-    hoverColor: "hover:bg-indigo-50",
-    activeColor: "active:bg-indigo-100",
-    ringColor: "focus-visible:ring-indigo-300",
-    selectedColor: "bg-indigo-100 ring-2 ring-indigo-300",
-  },
-  {
-    value: "ANGRY",
-    emoji: "😡",
-    label: "분노",
-    hoverColor: "hover:bg-orange-50",
-    activeColor: "active:bg-orange-100",
-    ringColor: "focus-visible:ring-orange-300",
-    selectedColor: "bg-orange-100 ring-2 ring-orange-300",
-  },
+  { value: "MOVED", icon: "/icon/012-heart face.png", label: "감동" },
+  { value: "HAPPY", icon: "/icon/035-smiling face.png", label: "기쁨" },
+  { value: "WORRIED", icon: "/icon/044-thinking.png", label: "고민" },
+  { value: "SAD", icon: "/icon/034-sad.png", label: "슬픔" },
+  { value: "ANGRY", icon: "/icon/Frame 65.png", label: "분노" },
 ];
 
 export function EmotionSelector(): ReactElement {
@@ -83,11 +40,9 @@ export function EmotionSelector(): ReactElement {
   }
 
   return (
-    <section className="rounded-2xl border border-line-200 bg-white px-6 py-8 shadow-sm">
-      <h2 className="mb-6 text-center text-lg font-semibold text-black-700">
-        오늘의 감정은 어떤가요?
-      </h2>
-      <ul className="flex items-center justify-center gap-2 tablet:gap-8" role="list">
+    <section>
+      <h2 className="mb-6 text-xl font-semibold text-black-700">오늘의 감정은 어떤가요?</h2>
+      <ul className="flex items-center justify-center gap-5" role="list">
         {EMOTION_OPTIONS.map((option) => {
           const isSelected = todayEmotion === option.value;
           // 비로그인: 버튼 활성(클릭 시 로그인 유도) / 로그인: 이미 선택했으면 선택된 것 제외 비활성
@@ -102,23 +57,27 @@ export function EmotionSelector(): ReactElement {
                 disabled={isButtonDisabled}
                 aria-label={option.label}
                 aria-pressed={isSelected}
-                className={`
-                  group flex flex-col items-center gap-1.5
-                  rounded-xl p-1.5 tablet:p-2 transition-all duration-200
-                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
-                  disabled:cursor-not-allowed disabled:opacity-50
-                  ${isSelected ? option.selectedColor : `${option.hoverColor} ${option.activeColor} ${option.ringColor}`}
-                `}
+                className="group flex flex-col items-center gap-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <span
-                  className={`text-3xl tablet:text-4xl transition-transform duration-200 ${isSelected ? "scale-125" : "group-hover:scale-125 group-active:scale-110"}`}
-                  role="img"
-                  aria-hidden="true"
+                  className={`flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-200 tablet:h-[72px] tablet:w-[72px] ${
+                    isSelected
+                      ? "bg-blue-100 ring-2 ring-blue-300"
+                      : "bg-gray-100 group-hover:bg-gray-200 group-active:bg-gray-300"
+                  }`}
                 >
-                  {option.emoji}
+                  <Image
+                    src={option.icon}
+                    alt={option.label}
+                    width={48}
+                    height={48}
+                    className="h-9 w-9 tablet:h-12 tablet:w-12 transition-transform duration-200 group-hover:scale-110 group-active:scale-100"
+                  />
                 </span>
                 <span
-                  className={`text-xs font-medium transition-colors duration-200 ${isSelected ? "text-black-700 font-semibold" : "text-black-300 group-hover:text-black-600"}`}
+                  className={`text-sm transition-colors duration-200 ${
+                    isSelected ? "font-semibold text-black-700" : "font-medium text-black-300"
+                  }`}
                 >
                   {option.label}
                 </span>

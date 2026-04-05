@@ -152,6 +152,7 @@ body {
   background-color: var(--color-background);
   color: var(--color-black-600);
   scrollbar-gutter: stable;
+  overflow-x: clip;
 }
 
 ::selection {

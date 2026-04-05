@@ -39,13 +39,13 @@ function FeedEpigramCard({ epigram }: FeedEpigramCardProps): ReactElement {
   return (
     <Link
       href={`/epigrams/${epigram.id}`}
-      className="group block rounded-2xl border border-line-200 bg-white px-6 py-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md"
+      className="group block min-w-0 overflow-hidden rounded-2xl border border-line-200 bg-white px-6 py-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md"
     >
       <blockquote>
-        <p className="font-serif text-base leading-relaxed text-black-700 transition-colors group-hover:text-black-900">
+        <p className="break-all font-serif text-base leading-relaxed text-black-700 transition-colors group-hover:text-black-900">
           {epigram.content}
         </p>
-        <footer className="mt-3 text-right text-sm text-black-300">
+        <footer className="mt-3 break-all text-right text-sm text-black-300">
           — {epigram.author}
           {epigram.referenceTitle ? ` 《${epigram.referenceTitle}》` : ""}
         </footer>
