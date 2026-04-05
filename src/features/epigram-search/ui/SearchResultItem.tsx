@@ -78,7 +78,7 @@ export function SearchResultItem({ epigram, keyword }: SearchResultItemProps): R
   return (
     <Link
       href={`/epigrams/${epigram.id}`}
-      className="group block border-b border-line-200 px-1 py-6 transition-colors duration-150 last:border-0 hover:bg-blue-100/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-inset
+      className="group block px-1 py-6 transition-colors duration-150 hover:bg-blue-100/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-inset
         tablet:px-2 tablet:py-7
         pc:px-3 pc:py-9"
     >
