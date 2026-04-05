@@ -4,7 +4,7 @@ import { useState } from "react";
 import type { ReactElement } from "react";
 
 import { useQuery } from "@tanstack/react-query";
-import { MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { MessageCircle, MoreVertical, Pencil, Trash2 } from "lucide-react";
 
 import { UserProfileModal, WriterAvatar, useEpigramComments } from "@/entities/comment";
 import { getMe } from "@/entities/user";
@@ -14,6 +14,7 @@ import { CommentEditForm } from "@/features/comment-edit";
 import { useIntersectionObserver } from "@/shared/hooks/useIntersectionObserver";
 import { useModal } from "@/shared/hooks/useModal";
 import { formatRelativeTime } from "@/shared/lib/date";
+import { EmptyState } from "@/shared/ui/EmptyState";
 
 import type { Comment } from "@/entities/comment";
 
@@ -174,8 +175,18 @@ export function CommentSection({ epigramId }: CommentSectionProps): ReactElement
       )}
 
       {!isLoading && comments.length === 0 && (
-        <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-line-200 py-12 text-black-300">
-          <p className="text-sm">첫 번째 댓글을 남겨보세요.</p>
+        <div className="rounded-2xl border border-dashed border-line-200">
+          <EmptyState
+            icon={
+              <MessageCircle
+                className="h-7 w-7 text-blue-400"
+                strokeWidth={1.5}
+                aria-hidden="true"
+              />
+            }
+            title="아직 댓글이 없어요"
+            description="첫 번째 댓글을 남겨보세요."
+          />
         </div>
       )}
 

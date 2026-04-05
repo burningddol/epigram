@@ -38,11 +38,11 @@ function SearchResultSkeleton(): ReactElement {
 
 // ─── Empty / Initial states ───────────────────────────────────────────────────
 
-interface EmptyStateProps {
+interface SearchNoResultsProps {
   keyword: string;
 }
 
-function EmptyState({ keyword }: EmptyStateProps): ReactElement {
+function SearchNoResults({ keyword }: SearchNoResultsProps): ReactElement {
   return (
     <div className="flex flex-col items-center gap-5 py-24 text-center pc:gap-6 pc:py-32">
       <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-200/40 pc:h-20 pc:w-20">
@@ -120,7 +120,7 @@ function SearchResults({ keyword }: SearchResultsProps): ReactElement {
 
   if (isLoading) return <SearchResultSkeleton />;
 
-  if (epigrams.length === 0) return <EmptyState keyword={keyword} />;
+  if (epigrams.length === 0) return <SearchNoResults keyword={keyword} />;
 
   return (
     <div>
