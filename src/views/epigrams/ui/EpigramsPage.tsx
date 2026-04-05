@@ -47,7 +47,7 @@ export function EpigramsPage(): ReactElement {
   return (
     <main
       id="main-content"
-      className="relative mx-auto min-h-screen max-w-2xl px-4 py-10 tablet:px-6 desktop:max-w-3xl"
+      className="relative mx-auto min-h-screen max-w-2xl overflow-x-hidden px-4 py-10 tablet:px-6 desktop:max-w-3xl"
     >
       <div className="flex flex-col gap-12 bg-background">
         <EmotionSelector />
