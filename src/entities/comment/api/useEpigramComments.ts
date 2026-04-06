@@ -6,7 +6,7 @@ import {
 
 import { apiClient } from "@/shared/api/client";
 
-import type { CommentListResponse } from "../model/schema";
+import { commentListResponseSchema, type CommentListResponse } from "../model/schema";
 
 interface UseEpigramCommentsParams {
   epigramId: number;
@@ -27,10 +27,10 @@ export function useEpigramComments({
       const params = new URLSearchParams({ limit: String(limit) });
       if (pageParam !== undefined) params.set("cursor", String(pageParam));
 
-      const response = await apiClient.get<CommentListResponse>(
+      const response = await apiClient.get<unknown>(
         `/api/epigrams/${epigramId}/comments?${params}`
       );
-      return response.data;
+      return commentListResponseSchema.parse(response.data);
     },
     initialPageParam: undefined as number | undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,

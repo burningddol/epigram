@@ -9,5 +9,7 @@ export const emotionLogSchema = z.object({
   createdAt: z.string().datetime(),
 });
 
+export const emotionLogArraySchema = z.array(emotionLogSchema);
+
 export type Emotion = z.infer<typeof emotionSchema>;
 export type EmotionLog = z.infer<typeof emotionLogSchema>;
