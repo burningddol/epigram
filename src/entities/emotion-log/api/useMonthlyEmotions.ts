@@ -2,7 +2,9 @@ import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 
 import { apiClient } from "@/shared/api/client";
 
-import type { EmotionLog } from "../model/schema";
+import { z } from "zod";
+
+import { emotionLogSchema, type EmotionLog } from "../model/schema";
 
 interface UseMonthlyEmotionsParams {
   userId: number;
@@ -18,10 +20,10 @@ export function useMonthlyEmotions({
   return useQuery({
     queryKey: ["emotionLogs", "monthly", userId, year, month],
     queryFn: async () => {
-      const response = await apiClient.get<EmotionLog[]>("/api/emotionLogs/monthly", {
+      const response = await apiClient.get<unknown>("/api/emotionLogs/monthly", {
         params: { userId, year, month },
       });
-      return response.data;
+      return z.array(emotionLogSchema).parse(response.data);
     },
     // userId 0 or negative is invalid per API spec (minimum: 1)
     enabled: userId > 0,

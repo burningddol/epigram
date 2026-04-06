@@ -6,7 +6,7 @@ import {
 
 import { apiClient } from "@/shared/api/client";
 
-import type { EpigramListResponse } from "../model/schema";
+import { epigramListResponseSchema, type EpigramListResponse } from "../model/schema";
 
 interface UseEpigramsParams {
   limit: number;
@@ -30,8 +30,8 @@ export function useEpigrams({
       if (keyword) params.set("keyword", keyword);
       if (writerId !== undefined) params.set("writerId", String(writerId));
 
-      const response = await apiClient.get<EpigramListResponse>(`/api/epigrams?${params}`);
-      return response.data;
+      const response = await apiClient.get<unknown>(`/api/epigrams?${params}`);
+      return epigramListResponseSchema.parse(response.data);
     },
     initialPageParam: undefined as number | undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,

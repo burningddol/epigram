@@ -2,17 +2,18 @@ import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 
 import { apiClient } from "@/shared/api/client";
 
-import type { EmotionLog } from "../model/schema";
+import { emotionLogSchema, type EmotionLog } from "../model/schema";
 
 export function useTodayEmotion(userId: number): UseQueryResult<EmotionLog | null, Error> {
   return useQuery({
     queryKey: ["emotionLogs", "today", userId],
     enabled: userId > 0,
     queryFn: async () => {
-      const response = await apiClient.get<EmotionLog | null>("/api/emotionLogs/today", {
+      const response = await apiClient.get<unknown>("/api/emotionLogs/today", {
         params: { userId },
       });
-      return response.data;
+      if (response.data === null || response.data === undefined) return null;
+      return emotionLogSchema.parse(response.data);
     },
   });
 }
