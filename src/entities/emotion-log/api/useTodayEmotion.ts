@@ -12,7 +12,7 @@ export function useTodayEmotion(userId: number): UseQueryResult<EmotionLog | nul
       const response = await apiClient.get<unknown>("/api/emotionLogs/today", {
         params: { userId },
       });
-      if (response.data === null || response.data === undefined) return null;
+      if (response.data == null) return null;
       return emotionLogSchema.parse(response.data);
     },
   });
