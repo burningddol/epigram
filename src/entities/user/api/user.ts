@@ -7,8 +7,9 @@ export interface UpdateMeBody {
   image?: string;
 }
 
-export async function getMe(): Promise<User> {
-  const response = await apiClient.get("/api/users/me");
+export async function getMe(): Promise<User | null> {
+  const response = await apiClient.get<User | null>("/api/users/me");
+  if (response.data === null) return null;
   return userSchema.parse(response.data);
 }
 

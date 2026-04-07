@@ -3,11 +3,10 @@
 import { useState } from "react";
 import type { ReactElement } from "react";
 
-import { useQuery } from "@tanstack/react-query";
 import { MessageCircle, MoreVertical, Pencil, Trash2 } from "lucide-react";
 
 import { UserProfileModal, WriterAvatar, useEpigramComments } from "@/entities/comment";
-import { getMe } from "@/entities/user";
+import { useMe } from "@/entities/user";
 import { CommentForm } from "@/features/comment-create";
 import { useCommentDelete } from "@/features/comment-delete";
 import { CommentEditForm } from "@/features/comment-edit";
@@ -140,7 +139,7 @@ function CommentSkeleton(): ReactElement {
 }
 
 export function CommentSection({ epigramId }: CommentSectionProps): ReactElement {
-  const { data: me } = useQuery({ queryKey: ["me"], queryFn: getMe });
+  const { user: me } = useMe();
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } = useEpigramComments({
     epigramId,
     limit: COMMENTS_PAGE_SIZE,

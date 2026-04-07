@@ -65,22 +65,18 @@ function NavLink({ href, label, textSize }: NavLinkProps): ReactElement {
 }
 
 interface UserSectionProps {
-  iconSize: "sm" | "lg";
-  textSize: "sm" | "md";
+  size: "sm" | "lg";
 }
 
-function UserSection({ iconSize, textSize }: UserSectionProps): ReactElement {
+function UserSection({ size }: UserSectionProps): ReactElement {
   const { user, isLoading } = useMe();
-  const isLgIcon = iconSize === "lg";
-  const isMdText = textSize === "md";
-  const imageSize = isLgIcon ? 32 : 24;
+  const isLg = size === "lg";
+  const imageSize = isLg ? 32 : 24;
 
   if (isLoading) {
     return (
       <div className="flex items-center gap-[6px] animate-pulse">
-        <div
-          className={cn("rounded-full bg-blue-100 shrink-0", isLgIcon ? "h-8 w-8" : "h-6 w-6")}
-        />
+        <div className={cn("rounded-full bg-blue-100 shrink-0", isLg ? "h-8 w-8" : "h-6 w-6")} />
         <div className="h-4 w-14 rounded bg-blue-100" />
       </div>
     );
@@ -92,7 +88,7 @@ function UserSection({ iconSize, textSize }: UserSectionProps): ReactElement {
         href="/login"
         className={cn(
           "font-semibold text-blue-700 hover:text-blue-900 transition-colors duration-150 whitespace-nowrap",
-          isMdText ? "text-[16px] leading-6" : "text-[14px] leading-[22px]"
+          isLg ? "text-[16px] leading-6" : "text-[14px] leading-[22px]"
         )}
       >
         로그인
@@ -116,7 +112,7 @@ function UserSection({ iconSize, textSize }: UserSectionProps): ReactElement {
       <span
         className={cn(
           "font-medium text-gray-300 whitespace-nowrap",
-          isMdText ? "text-[14px] leading-6" : "text-[13px] leading-[22px]"
+          isLg ? "text-[14px] leading-6" : "text-[13px] leading-[22px]"
         )}
       >
         {user.nickname}
@@ -138,7 +134,7 @@ export function Header(): ReactElement {
             ))}
           </nav>
         </div>
-        <UserSection iconSize="sm" textSize="sm" />
+        <UserSection size="sm" />
       </div>
 
       {/* Tablet (744px ~ 1279px): 로고 + 텍스트 링크 / 유저 */}
@@ -151,7 +147,7 @@ export function Header(): ReactElement {
             ))}
           </nav>
         </div>
-        <UserSection iconSize="sm" textSize="sm" />
+        <UserSection size="sm" />
       </div>
 
       {/* Desktop (1280px+): 로고 + 텍스트 링크 / 유저 */}
@@ -164,7 +160,7 @@ export function Header(): ReactElement {
             ))}
           </nav>
         </div>
-        <UserSection iconSize="lg" textSize="md" />
+        <UserSection size="lg" />
       </div>
     </header>
   );

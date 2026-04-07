@@ -2,9 +2,7 @@
 
 import type { ReactElement } from "react";
 
-import { useQuery } from "@tanstack/react-query";
-
-import { getMe } from "@/entities/user/api/user";
+import { useMe } from "@/entities/user";
 import { EpigramCreateForm } from "@/features/epigram-create";
 
 const WRITING_TIPS = [
@@ -14,10 +12,7 @@ const WRITING_TIPS = [
 ];
 
 export function AddEpigramPage(): ReactElement {
-  const { data: user } = useQuery({
-    queryKey: ["me"],
-    queryFn: getMe,
-  });
+  const { user } = useMe();
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-10 tablet:max-w-3xl tablet:px-6 pc:max-w-screen-xl pc:px-16 pc:py-16 desktop:max-w-screen-2xl desktop:px-24">

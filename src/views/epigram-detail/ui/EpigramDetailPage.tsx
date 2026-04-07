@@ -5,11 +5,10 @@ import { useEffect, useState, type ReactElement } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, ExternalLink, MoreVertical, Share2 } from "lucide-react";
 
 import { useEpigramDetail } from "@/entities/epigram";
-import { getMe } from "@/entities/user";
+import { useMe } from "@/entities/user";
 import { useEpigramDelete } from "@/features/epigram-delete";
 import { LikeButton } from "@/features/epigram-like";
 import { copyToClipboard } from "@/shared/lib/clipboard";
@@ -93,12 +92,11 @@ export function EpigramDetailPage({ epigramId }: EpigramDetailPageProps): ReactE
   const router = useRouter();
 
   const { data: epigram, isLoading: isEpigramLoading } = useEpigramDetail(epigramId);
-  const { data: me, isLoading: isMeLoading } = useQuery({ queryKey: ["me"], queryFn: getMe });
+  const { user: me, isLoading: isMeLoading } = useMe();
   const { handleDeleteClick } = useEpigramDelete(epigramId);
 
   const isLoading = isEpigramLoading || isMeLoading;
-  const isOwner =
-    !isLoading && epigram !== undefined && me !== undefined && epigram.writerId === me.id;
+  const isOwner = !isLoading && epigram !== undefined && me !== null && epigram.writerId === me.id;
 
   useEffect(() => {
     if (!isCopied) return;
