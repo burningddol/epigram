@@ -4,7 +4,7 @@ import { useState, type ReactElement } from "react";
 
 import Link from "next/link";
 
-import { ChevronDown } from "lucide-react";
+import { Plus } from "lucide-react";
 
 import { useMyComments } from "@/entities/comment";
 import { useMonthlyEmotions } from "@/entities/emotion-log";
@@ -32,12 +32,14 @@ interface MypageActivityProps {
 interface LoadMoreButtonProps {
   hasNextPage: boolean;
   isFetchingNextPage: boolean;
+  label: string;
   onLoadMore: () => void;
 }
 
 function LoadMoreButton({
   hasNextPage,
   isFetchingNextPage,
+  label,
   onLoadMore,
 }: LoadMoreButtonProps): ReactElement | null {
   if (!hasNextPage) return null;
@@ -47,13 +49,10 @@ function LoadMoreButton({
       type="button"
       onClick={onLoadMore}
       disabled={isFetchingNextPage}
-      className="mt-6 flex w-full items-center justify-center gap-2 rounded-full border border-line-200 bg-background py-3.5 text-xl font-medium text-blue-500 transition-all duration-200 hover:bg-[#edf1f8] disabled:cursor-not-allowed disabled:opacity-60 active:scale-[0.98]"
+      className="flex h-14 items-center justify-center gap-2 rounded-[100px] border border-line-200 bg-background px-10 py-3 text-xl font-medium text-blue-500 transition-all duration-200 hover:bg-[#edf1f8] disabled:cursor-not-allowed disabled:opacity-60 active:scale-[0.98]"
     >
-      <ChevronDown
-        className={cn("h-6 w-6 transition-transform", isFetchingNextPage && "animate-spin")}
-        aria-hidden="true"
-      />
-      {isFetchingNextPage ? "불러오는 중..." : "더보기"}
+      <Plus className="h-6 w-6" aria-hidden="true" />
+      {isFetchingNextPage ? "불러오는 중..." : label}
     </button>
   );
 }
@@ -102,11 +101,11 @@ function MyEpigramList({ userId }: MyEpigramListProps): ReactElement {
   const epigrams = data?.pages.flatMap((page) => page.list) ?? [];
 
   return (
-    <div>
+    <div className="flex flex-col items-center gap-[72px]">
       {epigrams.length === 0 ? (
         <p className="py-8 text-center text-sm text-gray-300">작성한 에피그램이 없어요.</p>
       ) : (
-        <ul className="flex flex-col gap-4">
+        <ul className="flex flex-col gap-12">
           {epigrams.map((epigram) => (
             <MyEpigramItem key={epigram.id} epigram={epigram} />
           ))}
@@ -116,6 +115,7 @@ function MyEpigramList({ userId }: MyEpigramListProps): ReactElement {
       <LoadMoreButton
         hasNextPage={hasNextPage ?? false}
         isFetchingNextPage={isFetchingNextPage}
+        label="에피그램 더보기"
         onLoadMore={() => void fetchNextPage()}
       />
     </div>
@@ -156,11 +156,11 @@ function MyCommentList({ userId }: MyCommentListProps): ReactElement {
   const comments = data?.pages.flatMap((page) => page.list) ?? [];
 
   return (
-    <div>
+    <div className="flex flex-col items-center gap-[72px]">
       {comments.length === 0 ? (
         <p className="py-8 text-center text-sm text-gray-300">작성한 댓글이 없어요.</p>
       ) : (
-        <ul className="flex flex-col gap-4">
+        <ul className="flex flex-col gap-12">
           {comments.map((comment) => (
             <MyCommentItem key={comment.id} comment={comment} />
           ))}
@@ -170,6 +170,7 @@ function MyCommentList({ userId }: MyCommentListProps): ReactElement {
       <LoadMoreButton
         hasNextPage={hasNextPage ?? false}
         isFetchingNextPage={isFetchingNextPage}
+        label="댓글 더보기"
         onLoadMore={() => void fetchNextPage()}
       />
     </div>
@@ -196,7 +197,7 @@ function TabNav({ activeTab, epigramCount, commentCount, onTabChange }: TabNavPr
   const counts: Record<ActivityTab, number> = { epigram: epigramCount, comment: commentCount };
 
   return (
-    <div className="mb-6 flex gap-6">
+    <div className="flex gap-6">
       {TAB_DEFINITIONS.map(({ tab, label }) => {
         const count = counts[tab];
         return (
@@ -244,7 +245,7 @@ export function MypageActivity({ userId }: MypageActivityProps): ReactElement {
         <EmotionPieChart emotionLogs={monthlyLogs} />
       </ErrorBoundary>
 
-      <section>
+      <section className="flex flex-col gap-12">
         <TabNav
           activeTab={activeTab}
           epigramCount={epigramCount}

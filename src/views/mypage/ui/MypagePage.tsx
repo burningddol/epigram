@@ -146,7 +146,7 @@ export function MypagePage(): ReactElement {
       </section>
 
       <div
-        className="flex flex-col gap-10 overflow-hidden rounded-3xl bg-white px-6 py-8 shadow-[0px_0px_36px_0_rgba(0,0,0,0.05)] animate-fade-in-up"
+        className="flex flex-col gap-10 overflow-hidden rounded-3xl bg-white px-6 py-8 shadow-[0px_4px_32px_0_rgba(0,0,0,0.08)] animate-fade-in-up"
         style={{ animationDelay: "80ms" }}
       >
         <EmotionSelector
