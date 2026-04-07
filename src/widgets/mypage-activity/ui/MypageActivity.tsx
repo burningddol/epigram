@@ -54,8 +54,8 @@ function MyEpigramItem({ epigram }: MyEpigramItemProps): ReactElement {
         />
 
         {/* Content */}
-        <div className="relative flex flex-col gap-5">
-          <p className="text-base font-medium leading-relaxed text-black-600 tablet:text-lg pc:text-xl">
+        <div className="font-serif relative flex flex-col gap-5">
+          <p className=" text-base font-medium leading-relaxed text-black-600 tablet:text-lg pc:text-xl">
             {epigram.content}
           </p>
           <p className="text-right text-base font-medium text-blue-400 tablet:text-lg pc:text-xl">
@@ -70,7 +70,7 @@ function MyEpigramItem({ epigram }: MyEpigramItemProps): ReactElement {
           {epigram.tags.map((tag) => (
             <span
               key={tag.id}
-              className="text-sm font-medium text-blue-400 tablet:text-base pc:text-lg"
+              className="font-serif text-sm font-medium text-blue-400 tablet:text-base pc:text-lg"
             >
               #{tag.name}
             </span>
@@ -269,7 +269,7 @@ export function MypageActivity({ userId }: MypageActivityProps): ReactElement {
         <EmotionPieChart emotionLogs={monthlyLogs} />
       </ErrorBoundary>
 
-      <div className="rounded-2xl bg-white px-6 py-6 shadow-sm ring-1 ring-blue-200">
+      <div className=" --color-background  py-6  ">
         <TabbedSection userId={userId} />
       </div>
     </div>
