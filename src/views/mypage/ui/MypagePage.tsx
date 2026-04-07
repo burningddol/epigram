@@ -8,10 +8,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LogOut } from "lucide-react";
 
 import { postTodayEmotion, useTodayEmotion } from "@/entities/emotion-log";
-import type { Emotion } from "@/entities/emotion-log";
 import { useMe } from "@/entities/user";
 import { ProfileImageUpload, useLogout } from "@/features/auth";
+import { toKSTDateString } from "@/shared/lib/date";
 import { MypageActivity } from "@/widgets/mypage-activity";
+
+import type { Emotion } from "@/entities/emotion-log";
 
 const EMOTION_OPTIONS: { value: Emotion; icon: string; label: string }[] = [
   { value: "MOVED", icon: "/icon/012-heart face.png", label: "감동" },
@@ -21,9 +23,9 @@ const EMOTION_OPTIONS: { value: Emotion; icon: string; label: string }[] = [
   { value: "ANGRY", icon: "/icon/Frame 65.png", label: "분노" },
 ];
 
-// Computed once at module load — date does not change during a session
-const _today = new Date();
-const TODAY_LABEL = `${_today.getFullYear()}.${String(_today.getMonth() + 1).padStart(2, "0")}.${String(_today.getDate()).padStart(2, "0")}`;
+// Computed once at module load — date does not change during a session.
+// Use KST so the displayed date matches the Korean calendar day.
+const TODAY_LABEL = toKSTDateString(new Date()).replace(/-/g, ".");
 
 // ─── Skeletons ────────────────────────────────────────────────────────────────
 

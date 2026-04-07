@@ -11,7 +11,7 @@ import { useMyComments } from "@/entities/comment";
 import { useMonthlyEmotions } from "@/entities/emotion-log";
 import { EpigramListCard, useEpigrams } from "@/entities/epigram";
 import { useCommentDelete } from "@/features/comment-delete";
-import { formatRelativeTime } from "@/shared/lib/date";
+import { formatRelativeTime, toKSTDateString } from "@/shared/lib/date";
 import { ErrorBoundary } from "@/shared/ui/ErrorBoundary";
 import { SectionErrorFallback } from "@/shared/ui/SectionErrorFallback";
 
@@ -21,7 +21,9 @@ import { EmotionPieChart } from "./EmotionPieChart";
 import type { Comment } from "@/entities/comment";
 
 const PAGE_SIZE = 3;
-const NOW = new Date();
+const [_nowYear, _nowMonth] = toKSTDateString(new Date()).split("-");
+const NOW_YEAR = Number(_nowYear);
+const NOW_MONTH = Number(_nowMonth);
 
 type ActiveTab = "epigrams" | "comments";
 
@@ -266,8 +268,8 @@ function TabbedSection({ userId }: TabbedSectionProps): ReactElement {
 export function MypageActivity({ userId }: MypageActivityProps): ReactElement {
   const { data: monthlyLogs = [] } = useMonthlyEmotions({
     userId,
-    year: NOW.getFullYear(),
-    month: NOW.getMonth() + 1,
+    year: NOW_YEAR,
+    month: NOW_MONTH,
   });
 
   return (
