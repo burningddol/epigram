@@ -2,21 +2,18 @@
 
 import { useCallback, useEffect, useState, type ReactElement } from "react";
 
+import Image from "next/image";
 import Link from "next/link";
 
 import { Plus } from "lucide-react";
 
-import Image from "next/image";
-
 import { useMyComments } from "@/entities/comment";
 import { useMonthlyEmotions } from "@/entities/emotion-log";
 import { useEpigrams } from "@/entities/epigram";
-
 import { useCommentDelete } from "@/features/comment-delete";
-
+import { formatRelativeTime } from "@/shared/lib/date";
 import { ErrorBoundary } from "@/shared/ui/ErrorBoundary";
 import { SectionErrorFallback } from "@/shared/ui/SectionErrorFallback";
-import { formatRelativeTime } from "@/shared/lib/date";
 
 import { EmotionCalendar } from "./EmotionCalendar";
 import { EmotionPieChart } from "./EmotionPieChart";
@@ -31,6 +28,34 @@ type ActiveTab = "epigrams" | "comments";
 
 interface MypageActivityProps {
   userId: number;
+}
+
+// ─── Load More Button ─────────────────────────────────────────────────────────
+
+interface LoadMoreButtonProps {
+  isFetchingNextPage: boolean;
+  label: string;
+  onLoadMore: () => void;
+}
+
+function LoadMoreButton({
+  isFetchingNextPage,
+  label,
+  onLoadMore,
+}: LoadMoreButtonProps): ReactElement {
+  return (
+    <div className="flex justify-center">
+      <button
+        type="button"
+        onClick={onLoadMore}
+        disabled={isFetchingNextPage}
+        className="flex items-center gap-2 rounded-full border border-line-200 bg-background px-10 py-3.5 text-base font-medium text-blue-500 transition hover:bg-blue-200 disabled:opacity-60"
+      >
+        <Plus className="h-5 w-5" aria-hidden="true" />
+        {isFetchingNextPage ? "불러오는 중..." : label}
+      </button>
+    </div>
+  );
 }
 
 // ─── Epigram Card ─────────────────────────────────────────────────────────────
@@ -58,7 +83,6 @@ function MyEpigramItem({ epigram }: MyEpigramItemProps): ReactElement {
           }}
         />
 
-        {/* Content */}
         <div className="font-serif relative flex flex-col gap-5">
           <p className=" text-base font-medium leading-relaxed text-black-600 tablet:text-lg pc:text-xl">
             {epigram.content}
@@ -93,15 +117,15 @@ const DEFAULT_AVATAR = "/icon/035-smiling face.png";
 interface MyCommentItemProps {
   comment: Comment;
   epigramId: number;
+  userId: number;
 }
 
-function MyCommentItem({ comment, epigramId }: MyCommentItemProps): ReactElement {
-  const { handleDeleteClick, isDeleting } = useCommentDelete(comment.id, epigramId);
+function MyCommentItem({ comment, epigramId, userId }: MyCommentItemProps): ReactElement {
+  const { handleDeleteClick, isDeleting } = useCommentDelete(comment.id, epigramId, userId);
 
   return (
     <li className="flex flex-col gap-2.5 border-t border-line-200 bg-background px-6 py-8 first:border-t-0">
       <div className="flex items-start gap-4">
-        {/* Avatar */}
         <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full bg-blue-200">
           <Image
             src={comment.writer.image ?? DEFAULT_AVATAR}
@@ -111,9 +135,7 @@ function MyCommentItem({ comment, epigramId }: MyCommentItemProps): ReactElement
           />
         </div>
 
-        {/* Content */}
         <div className="flex flex-1 flex-col gap-3">
-          {/* Header row */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-sm text-black-300">{comment.writer.nickname}</span>
@@ -139,7 +161,6 @@ function MyCommentItem({ comment, epigramId }: MyCommentItemProps): ReactElement
             </div>
           </div>
 
-          {/* Comment text */}
           <Link href={`/epigrams/${epigramId}`}>
             <p className="text-base leading-relaxed text-black-700 tablet:text-lg pc:text-xl">
               {comment.content}
@@ -155,10 +176,10 @@ function MyCommentItem({ comment, epigramId }: MyCommentItemProps): ReactElement
 
 interface MyEpigramListProps {
   userId: number;
-  totalCountRef: (count: number) => void;
+  onTotalCount: (count: number) => void;
 }
 
-function MyEpigramList({ userId, totalCountRef }: MyEpigramListProps): ReactElement {
+function MyEpigramList({ userId, onTotalCount }: MyEpigramListProps): ReactElement {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useEpigrams({
     limit: PAGE_SIZE,
     writerId: userId,
@@ -168,8 +189,8 @@ function MyEpigramList({ userId, totalCountRef }: MyEpigramListProps): ReactElem
   const totalCount = data?.pages[0]?.totalCount ?? 0;
 
   useEffect(() => {
-    totalCountRef(totalCount);
-  }, [totalCount, totalCountRef]);
+    onTotalCount(totalCount);
+  }, [totalCount, onTotalCount]);
 
   if (epigrams.length === 0) {
     return <p className="py-10 text-center text-sm text-gray-300">작성한 에피그램이 없어요.</p>;
@@ -184,17 +205,11 @@ function MyEpigramList({ userId, totalCountRef }: MyEpigramListProps): ReactElem
       </ul>
 
       {hasNextPage && (
-        <div className="flex justify-center">
-          <button
-            type="button"
-            onClick={() => void fetchNextPage()}
-            disabled={isFetchingNextPage}
-            className="flex items-center gap-2 rounded-full border border-line-200 bg-background px-10 py-3.5 text-base font-medium text-blue-500 transition hover:bg-blue-200 disabled:opacity-60"
-          >
-            <Plus className="h-5 w-5" aria-hidden="true" />
-            {isFetchingNextPage ? "불러오는 중..." : "에피그램 더보기"}
-          </button>
-        </div>
+        <LoadMoreButton
+          isFetchingNextPage={isFetchingNextPage}
+          label="에피그램 더보기"
+          onLoadMore={() => void fetchNextPage()}
+        />
       )}
     </div>
   );
@@ -204,10 +219,10 @@ function MyEpigramList({ userId, totalCountRef }: MyEpigramListProps): ReactElem
 
 interface MyCommentListProps {
   userId: number;
-  totalCountRef: (count: number) => void;
+  onTotalCount: (count: number) => void;
 }
 
-function MyCommentList({ userId, totalCountRef }: MyCommentListProps): ReactElement {
+function MyCommentList({ userId, onTotalCount }: MyCommentListProps): ReactElement {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useMyComments({
     userId,
     limit: PAGE_SIZE,
@@ -217,8 +232,8 @@ function MyCommentList({ userId, totalCountRef }: MyCommentListProps): ReactElem
   const totalCount = data?.pages[0]?.totalCount ?? 0;
 
   useEffect(() => {
-    totalCountRef(totalCount);
-  }, [totalCount, totalCountRef]);
+    onTotalCount(totalCount);
+  }, [totalCount, onTotalCount]);
 
   if (comments.length === 0) {
     return <p className="py-10 text-center text-sm text-gray-300">작성한 댓글이 없어요.</p>;
@@ -228,22 +243,21 @@ function MyCommentList({ userId, totalCountRef }: MyCommentListProps): ReactElem
     <div className="flex flex-col gap-6">
       <ul className="flex flex-col gap-6">
         {comments.map((comment) => (
-          <MyCommentItem key={comment.id} comment={comment} epigramId={comment.epigramId} />
+          <MyCommentItem
+            key={comment.id}
+            comment={comment}
+            epigramId={comment.epigramId}
+            userId={userId}
+          />
         ))}
       </ul>
 
       {hasNextPage && (
-        <div className="flex justify-center">
-          <button
-            type="button"
-            onClick={() => void fetchNextPage()}
-            disabled={isFetchingNextPage}
-            className="flex items-center gap-2 rounded-full border border-line-200 bg-background px-10 py-3.5 text-base font-medium text-blue-500 transition hover:bg-blue-200 disabled:opacity-60"
-          >
-            <Plus className="h-5 w-5" aria-hidden="true" />
-            {isFetchingNextPage ? "불러오는 중..." : "댓글 더보기"}
-          </button>
-        </div>
+        <LoadMoreButton
+          isFetchingNextPage={isFetchingNextPage}
+          label="댓글 더보기"
+          onLoadMore={() => void fetchNextPage()}
+        />
       )}
     </div>
   );
@@ -289,12 +303,13 @@ function TabbedSection({ userId }: TabbedSectionProps): ReactElement {
         </button>
       </div>
 
-      {/* Tab content */}
-      {activeTab === "epigrams" ? (
-        <MyEpigramList userId={userId} totalCountRef={handleEpigramCount} />
-      ) : (
-        <MyCommentList userId={userId} totalCountRef={handleCommentCount} />
-      )}
+      {/* Tab content — both lists stay mounted so counts stay accurate after tab switch */}
+      <div className={activeTab !== "epigrams" ? "hidden" : ""}>
+        <MyEpigramList userId={userId} onTotalCount={handleEpigramCount} />
+      </div>
+      <div className={activeTab !== "comments" ? "hidden" : ""}>
+        <MyCommentList userId={userId} onTotalCount={handleCommentCount} />
+      </div>
     </div>
   );
 }
@@ -317,7 +332,7 @@ export function MypageActivity({ userId }: MypageActivityProps): ReactElement {
         <EmotionPieChart emotionLogs={monthlyLogs} />
       </ErrorBoundary>
 
-      <div className=" --color-background  py-6  ">
+      <div className="py-6">
         <TabbedSection userId={userId} />
       </div>
     </div>

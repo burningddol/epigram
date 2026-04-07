@@ -11,14 +11,26 @@ interface UseCommentDeleteReturn {
   isDeleting: boolean;
 }
 
-export function useCommentDelete(commentId: number, epigramId: number): UseCommentDeleteReturn {
+export function useCommentDelete(
+  commentId: number,
+  epigramId: number,
+  userId?: number
+): UseCommentDeleteReturn {
   const queryClient = useQueryClient();
   const { open } = useModal();
 
   const { mutate, isPending: isDeleting } = useMutation({
     mutationFn: () => apiClient.delete(`/api/comments/${commentId}`).then((res) => res.data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["epigrams", epigramId, "comments"] });
+    onSuccess: async () => {
+      const invalidations = [
+        queryClient.invalidateQueries({ queryKey: ["epigrams", epigramId, "comments"] }),
+      ];
+      if (userId !== undefined) {
+        invalidations.push(
+          queryClient.invalidateQueries({ queryKey: ["users", userId, "comments"] })
+        );
+      }
+      await Promise.all(invalidations);
     },
   });
 
