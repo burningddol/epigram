@@ -22,11 +22,8 @@ const EMOTION_OPTIONS: { value: Emotion; icon: string; label: string }[] = [
 ];
 
 // Computed once at module load — date does not change during a session
-const TODAY_LABEL = new Date().toLocaleDateString("ko-KR", {
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-});
+const _today = new Date();
+const TODAY_LABEL = `${_today.getFullYear()}.${String(_today.getMonth() + 1).padStart(2, "0")}.${String(_today.getDate()).padStart(2, "0")}`;
 
 // ─── Skeletons ────────────────────────────────────────────────────────────────
 
@@ -54,13 +51,13 @@ function EmotionSelector({
   isPending,
 }: EmotionSelectorProps): ReactElement {
   return (
-    <div className="w-full rounded-2xl bg-white px-5 py-5 shadow-sm ring-1 ring-line-200">
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-black-600">오늘의 감정</h2>
-        <span className="text-xs text-black-300">{TODAY_LABEL}</span>
+    <div className="w-full rounded-2xl bg-white px-6 py-6 shadow-sm ring-1 ring-blue-200">
+      <div className="mb-6 flex items-center justify-between">
+        <h2 className="text-xl font-semibold text-black-600">오늘의 감정</h2>
+        <span className="text-base text-blue-400">{TODAY_LABEL}</span>
       </div>
 
-      <div className="flex items-center justify-around gap-1">
+      <div className="flex items-start justify-around gap-2">
         {EMOTION_OPTIONS.map(({ value, icon, label }) => {
           const isSelected = selectedEmotion === value;
           return (
@@ -71,12 +68,15 @@ function EmotionSelector({
               disabled={isPending}
               aria-label={`${label} 감정 선택`}
               aria-pressed={isSelected}
-              className="group flex flex-col items-center gap-1.5 rounded-xl px-3 py-2.5 transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-sub-gray-3 hover:scale-105 active:scale-95"
+              className="group flex flex-col items-center gap-2 transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 active:scale-95"
             >
               <span
                 className={[
-                  "flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-200",
-                  isSelected ? "ring-2 ring-illust-green" : "bg-gray-100 group-hover:bg-gray-200",
+                  "flex h-16 w-16 items-center justify-center rounded-2xl transition-all duration-200",
+                  "tablet:h-20 tablet:w-20 pc:h-24 pc:w-24",
+                  isSelected
+                    ? "border-4 border-illust-green"
+                    : "bg-blue-400/15 group-hover:bg-blue-400/25",
                 ].join(" ")}
               >
                 <Image
@@ -84,13 +84,13 @@ function EmotionSelector({
                   alt={label}
                   width={48}
                   height={48}
-                  className="h-9 w-9 transition-transform duration-200 group-hover:scale-110"
+                  className="h-9 w-9 transition-transform duration-200 group-hover:scale-110 tablet:h-10 tablet:w-10 pc:h-12 pc:w-12"
                 />
               </span>
               <span
                 className={[
-                  "text-xs transition-colors",
-                  isSelected ? "font-semibold text-illust-green" : "font-medium text-black-400",
+                  "text-sm font-semibold transition-colors tablet:text-base pc:text-lg",
+                  isSelected ? "text-black-600" : "text-gray-300",
                 ].join(" ")}
               >
                 {label}

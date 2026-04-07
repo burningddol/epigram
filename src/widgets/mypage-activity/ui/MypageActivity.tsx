@@ -200,14 +200,12 @@ export function MypageActivity({ userId }: MypageActivityProps): ReactElement {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid gap-4 tablet:grid-cols-2">
-        <ErrorBoundary fallback={(_, reset) => <SectionErrorFallback reset={reset} />}>
-          <EmotionCalendar userId={userId} />
-        </ErrorBoundary>
-        <ErrorBoundary fallback={(_, reset) => <SectionErrorFallback reset={reset} />}>
-          <EmotionPieChart emotionLogs={monthlyLogs} />
-        </ErrorBoundary>
-      </div>
+      <ErrorBoundary fallback={(_, reset) => <SectionErrorFallback reset={reset} />}>
+        <EmotionCalendar userId={userId} />
+      </ErrorBoundary>
+      <ErrorBoundary fallback={(_, reset) => <SectionErrorFallback reset={reset} />}>
+        <EmotionPieChart emotionLogs={monthlyLogs} />
+      </ErrorBoundary>
 
       <div className="grid gap-4 pc:grid-cols-2">
         <MyEpigramList userId={userId} />
