@@ -92,8 +92,8 @@ function EmotionSection(): ReactElement {
         <div className="flex justify-center gap-3">
           {EMOTION_BADGES.map(({ icon, label }) => (
             <div key={label} className="flex flex-col items-center gap-2">
-              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-blue-200 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
-                <Image src={icon} alt={label} width={36} height={36} className="h-9 w-9" />
+              <div className="flex h-12 w-12 md:w-14 md:h-14 items-center justify-center rounded-xl bg-blue-200 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
+                <Image src={icon} alt={label} width={32} height={32} className="h-8 w-8" />
               </div>
               <span className="text-xs font-medium text-blue-600">{label}</span>
             </div>
