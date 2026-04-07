@@ -1,8 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import type { Emotion } from "@/entities/emotion-log";
 import { postTodayEmotion, useTodayEmotion } from "@/entities/emotion-log";
-import type { User } from "@/entities/user";
+import { useMe } from "@/entities/user";
+
+import type { Emotion } from "@/entities/emotion-log";
 
 interface UseEmotionSelectReturn {
   isLoggedIn: boolean;
@@ -12,11 +13,11 @@ interface UseEmotionSelectReturn {
 }
 
 export function useEmotionSelect(): UseEmotionSelectReturn {
+  const { user } = useMe();
   const queryClient = useQueryClient();
-  // 네트워크 요청 없이 캐시에서만 읽음 — 로그인 후 보호 페이지 방문 시 캐시가 채워짐
-  const me = queryClient.getQueryData<User>(["me"]);
 
-  const { data: todayEmotionLog } = useTodayEmotion(me?.id ?? 0);
+  // emotionLogs/today POST는 upsert — 기선택 감정도 재호출로 변경 가능
+  const { data: todayEmotionLog } = useTodayEmotion(user?.id ?? 0);
 
   const { mutate, isPending } = useMutation({
     mutationFn: postTodayEmotion,
@@ -26,7 +27,7 @@ export function useEmotionSelect(): UseEmotionSelectReturn {
   });
 
   return {
-    isLoggedIn: me != null,
+    isLoggedIn: user != null,
     todayEmotion: todayEmotionLog?.emotion ?? null,
     isSubmitting: isPending,
     selectEmotion: mutate,
