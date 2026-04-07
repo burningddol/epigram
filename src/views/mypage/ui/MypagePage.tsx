@@ -71,20 +71,12 @@ function EmotionSelector({
               disabled={isPending}
               aria-label={`${label} 감정 선택`}
               aria-pressed={isSelected}
-              className={[
-                "group flex flex-col items-center gap-1.5 rounded-xl px-3 py-2.5",
-                "transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50",
-                isSelected
-                  ? "bg-blue-200 ring-2 ring-blue-500 scale-105 shadow-sm"
-                  : "hover:bg-sub-gray-3 hover:scale-105 active:scale-95",
-              ].join(" ")}
+              className="group flex flex-col items-center gap-1.5 rounded-xl px-3 py-2.5 transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-sub-gray-3 hover:scale-105 active:scale-95"
             >
               <span
                 className={[
                   "flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-200",
-                  isSelected
-                    ? "bg-blue-100 ring-2 ring-blue-300"
-                    : "bg-gray-100 group-hover:bg-gray-200",
+                  isSelected ? "ring-2 ring-illust-green" : "bg-gray-100 group-hover:bg-gray-200",
                 ].join(" ")}
               >
                 <Image
@@ -97,8 +89,8 @@ function EmotionSelector({
               </span>
               <span
                 className={[
-                  "text-xs font-medium transition-colors",
-                  isSelected ? "text-blue-700" : "text-black-400",
+                  "text-xs transition-colors",
+                  isSelected ? "font-semibold text-illust-green" : "font-medium text-black-400",
                 ].join(" ")}
               >
                 {label}
