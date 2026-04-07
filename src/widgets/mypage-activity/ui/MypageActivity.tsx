@@ -47,12 +47,10 @@ function LoadMoreButton({
       type="button"
       onClick={onLoadMore}
       disabled={isFetchingNextPage}
-      className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-xl border border-line-200 py-2.5 text-sm text-black-400 transition-all duration-200 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-600 disabled:cursor-not-allowed disabled:opacity-60 active:scale-[0.98]"
+      className="mt-6 flex w-full items-center justify-center gap-2 rounded-full border border-line-200 bg-background py-3.5 text-xl font-medium text-blue-500 transition-all duration-200 hover:bg-[#edf1f8] disabled:cursor-not-allowed disabled:opacity-60 active:scale-[0.98]"
     >
       <ChevronDown
-        className={["h-4 w-4 transition-transform", isFetchingNextPage ? "animate-spin" : ""].join(
-          " "
-        )}
+        className={cn("h-6 w-6 transition-transform", isFetchingNextPage && "animate-spin")}
         aria-hidden="true"
       />
       {isFetchingNextPage ? "불러오는 중..." : "더보기"}
@@ -68,16 +66,25 @@ interface MyEpigramItemProps {
 
 function MyEpigramItem({ epigram }: MyEpigramItemProps): ReactElement {
   return (
-    <li>
+    <li className="flex flex-col gap-2">
       <Link
         href={`/epigrams/${epigram.id}`}
-        className="group block rounded-xl border border-line-200 bg-white px-4 py-3.5 transition-all duration-200 hover:border-blue-400 hover:bg-blue-100/40 hover:shadow-sm active:scale-[0.99]"
+        className="group block rounded-2xl border border-line-100 bg-white p-6 shadow-[0px_3px_12px_0_rgba(0,0,0,0.04)] transition-all duration-200 hover:shadow-md active:scale-[0.99]"
       >
-        <p className="line-clamp-2 text-sm font-medium leading-snug text-black-700 transition-colors group-hover:text-blue-800">
+        <p className="line-clamp-2 text-2xl font-medium leading-snug text-black-600 transition-colors group-hover:text-blue-700">
           {epigram.content}
         </p>
-        <p className="mt-1.5 text-right text-xs text-black-300">— {epigram.author}</p>
+        <p className="mt-5 text-right text-2xl font-medium text-blue-400">- {epigram.author} -</p>
       </Link>
+      {epigram.tags.length > 0 && (
+        <div className="flex flex-wrap gap-4 px-1">
+          {epigram.tags.map((tag) => (
+            <span key={tag.id} className="text-2xl font-medium text-blue-400">
+              #{tag.name}
+            </span>
+          ))}
+        </div>
+      )}
     </li>
   );
 }
@@ -97,9 +104,9 @@ function MyEpigramList({ userId }: MyEpigramListProps): ReactElement {
   return (
     <div>
       {epigrams.length === 0 ? (
-        <p className="py-8 text-center text-sm text-black-300">작성한 에피그램이 없어요.</p>
+        <p className="py-8 text-center text-sm text-gray-300">작성한 에피그램이 없어요.</p>
       ) : (
-        <ul className="flex flex-col gap-2.5">
+        <ul className="flex flex-col gap-4">
           {epigrams.map((epigram) => (
             <MyEpigramItem key={epigram.id} epigram={epigram} />
           ))}
@@ -126,9 +133,9 @@ function MyCommentItem({ comment }: MyCommentItemProps): ReactElement {
     <li>
       <Link
         href={`/epigrams/${comment.epigramId}`}
-        className="group block rounded-xl border border-line-200 bg-white px-4 py-3.5 transition-all duration-200 hover:border-blue-400 hover:bg-blue-100/40 hover:shadow-sm active:scale-[0.99]"
+        className="group block rounded-2xl border border-line-100 bg-white p-6 shadow-[0px_3px_12px_0_rgba(0,0,0,0.04)] transition-all duration-200 hover:shadow-md active:scale-[0.99]"
       >
-        <p className="line-clamp-2 text-sm leading-snug text-black-600 transition-colors group-hover:text-blue-800">
+        <p className="line-clamp-2 text-2xl font-medium leading-snug text-black-600 transition-colors group-hover:text-blue-700">
           {comment.content}
         </p>
       </Link>
@@ -151,9 +158,9 @@ function MyCommentList({ userId }: MyCommentListProps): ReactElement {
   return (
     <div>
       {comments.length === 0 ? (
-        <p className="py-8 text-center text-sm text-black-300">작성한 댓글이 없어요.</p>
+        <p className="py-8 text-center text-sm text-gray-300">작성한 댓글이 없어요.</p>
       ) : (
-        <ul className="flex flex-col gap-2.5">
+        <ul className="flex flex-col gap-4">
           {comments.map((comment) => (
             <MyCommentItem key={comment.id} comment={comment} />
           ))}
@@ -189,7 +196,7 @@ function TabNav({ activeTab, epigramCount, commentCount, onTabChange }: TabNavPr
   const counts: Record<ActivityTab, number> = { epigram: epigramCount, comment: commentCount };
 
   return (
-    <div className="flex border-b border-line-200">
+    <div className="mb-6 flex gap-6">
       {TAB_DEFINITIONS.map(({ tab, label }) => {
         const count = counts[tab];
         return (
@@ -198,23 +205,11 @@ function TabNav({ activeTab, epigramCount, commentCount, onTabChange }: TabNavPr
             type="button"
             onClick={() => onTabChange(tab)}
             className={cn(
-              "-mb-px flex items-center gap-1.5 px-4 pb-3 pt-1 text-sm font-semibold transition-colors",
-              activeTab === tab
-                ? "border-b-2 border-black-800 text-black-800"
-                : "text-black-300 hover:text-black-500"
+              "text-2xl font-semibold transition-colors",
+              activeTab === tab ? "text-black-600" : "text-gray-300 hover:text-[#888]"
             )}
           >
-            {label}
-            {count > 0 && (
-              <span
-                className={cn(
-                  "rounded-full px-1.5 py-0.5 text-xs font-semibold",
-                  activeTab === tab ? "bg-black-800 text-white" : "bg-line-200 text-black-400"
-                )}
-              >
-                {count}
-              </span>
-            )}
+            {label}({count})
           </button>
         );
       })}
@@ -256,13 +251,11 @@ export function MypageActivity({ userId }: MypageActivityProps): ReactElement {
           commentCount={commentCount}
           onTabChange={setActiveTab}
         />
-        <div className="pt-4">
-          {activeTab === "epigram" ? (
-            <MyEpigramList userId={userId} />
-          ) : (
-            <MyCommentList userId={userId} />
-          )}
-        </div>
+        {activeTab === "epigram" ? (
+          <MyEpigramList userId={userId} />
+        ) : (
+          <MyCommentList userId={userId} />
+        )}
       </section>
     </div>
   );
