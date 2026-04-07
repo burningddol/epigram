@@ -2,7 +2,7 @@
 
 import type { ReactElement, ReactNode } from "react";
 
-import { isServer, QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 interface QueryProviderProps {
@@ -27,7 +27,7 @@ function makeQueryClient(): QueryClient {
 let browserQueryClient: QueryClient | undefined;
 
 function getQueryClient(): QueryClient {
-  if (isServer) {
+  if (typeof window === "undefined") {
     return makeQueryClient();
   }
 
