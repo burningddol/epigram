@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { Menu, User } from "lucide-react";
+import { User } from "lucide-react";
 
 import { useMe } from "@/entities/user";
 import { cn } from "@/shared/lib/cn";
@@ -128,17 +128,15 @@ function UserSection({ iconSize, textSize }: UserSectionProps): ReactElement {
 export function Header(): ReactElement {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-line-100 bg-white/90 backdrop-blur-md">
-      {/* Mobile (base ~ 743px): 햄버거 + 로고 / 유저 */}
+      {/* Mobile (base ~ 743px): 로고 + 텍스트 링크 / 유저 */}
       <div className="flex h-[52px] items-center justify-between px-6 tablet:hidden">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            aria-label="메뉴 열기"
-            className="rounded-md p-1 transition-colors hover:bg-blue-50"
-          >
-            <Menu size={24} className="text-gray-200" aria-hidden="true" />
-          </button>
+        <div className="flex items-center gap-6">
           <Logo size="sm" />
+          <nav className="flex gap-6" aria-label="주요 메뉴">
+            {NAV_LINKS.map((link) => (
+              <NavLink key={link.href} href={link.href} label={link.label} textSize="sm" />
+            ))}
+          </nav>
         </div>
         <UserSection iconSize="sm" textSize="sm" />
       </div>
