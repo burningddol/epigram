@@ -30,8 +30,8 @@ export function LoginForm(): ReactElement {
 
   async function onSubmit(data: LoginFormValues): Promise<void> {
     try {
-      await signIn(data);
-      await queryClient.invalidateQueries({ queryKey: ["me"] });
+      const { user } = await signIn(data);
+      queryClient.setQueryData(["me"], user);
       router.push("/");
     } catch {
       const message = "이메일 혹은 비밀번호를 확인해주세요.";

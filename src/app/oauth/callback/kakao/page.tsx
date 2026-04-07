@@ -24,8 +24,8 @@ function KakaoCallbackHandler(): null {
     const redirectUri = `${window.location.origin}/oauth/callback/kakao`;
 
     signInKakao({ token: code, redirectUri })
-      .then(async () => {
-        await queryClient.invalidateQueries({ queryKey: ["me"] });
+      .then(({ user }) => {
+        queryClient.setQueryData(["me"], user);
         router.replace("/epigrams");
       })
       .catch(() => router.replace("/login"));
