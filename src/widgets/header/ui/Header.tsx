@@ -2,11 +2,13 @@
 
 import type { ReactElement } from "react";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { Menu, User } from "lucide-react";
 
+import { useMe } from "@/entities/user";
 import { cn } from "@/shared/lib/cn";
 
 const NAV_LINKS = [
@@ -68,18 +70,62 @@ interface UserSectionProps {
 }
 
 function UserSection({ iconSize, textSize }: UserSectionProps): ReactElement {
+  const { user, isLoading } = useMe();
   const isLgIcon = iconSize === "lg";
   const isMdText = textSize === "md";
+  const imageSize = isLgIcon ? 32 : 24;
+
+  if (isLoading) {
+    return (
+      <div
+        className={cn(
+          "flex items-center gap-[6px] animate-pulse",
+          isMdText ? "text-[14px]" : "text-[13px]"
+        )}
+      >
+        <div
+          className="rounded-full bg-blue-100 shrink-0"
+          style={{ width: imageSize, height: imageSize }}
+        />
+        <div className="h-4 w-14 rounded bg-blue-100" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <Link
+        href="/login"
+        className={cn(
+          "font-semibold text-blue-700 hover:text-blue-900 transition-colors duration-150 whitespace-nowrap",
+          isMdText ? "text-[14px] leading-6" : "text-[13px] leading-[22px]"
+        )}
+      >
+        로그인
+      </Link>
+    );
+  }
+
   return (
     <Link href="/mypage" className="flex items-center gap-[6px]" aria-label="마이페이지">
-      <User size={isLgIcon ? 24 : 16} className="text-gray-300 shrink-0" aria-hidden="true" />
+      {user.image ? (
+        <Image
+          src={user.image}
+          alt={user.nickname}
+          width={imageSize}
+          height={imageSize}
+          className="rounded-full object-cover shrink-0"
+        />
+      ) : (
+        <User size={imageSize} className="text-gray-300 shrink-0" aria-hidden="true" />
+      )}
       <span
         className={cn(
           "font-medium text-gray-300 whitespace-nowrap",
           isMdText ? "text-[14px] leading-6" : "text-[13px] leading-[22px]"
         )}
       >
-        김코드
+        {user.nickname}
       </span>
     </Link>
   );
