@@ -73,9 +73,9 @@ export function SearchResultItem({ epigram, keyword }: SearchResultItemProps): R
       href={`/epigrams/${epigram.id}`}
       className="group block border-b border-gray-100 py-6 transition-colors duration-150 hover:bg-blue-100/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-inset"
     >
-      <article className="flex flex-col items-end gap-4">
+      <article className="font-serif flex flex-col items-end gap-4">
         <div className="flex w-full flex-col gap-6">
-          <p className="font-serif break-all text-xl font-medium text-black-600">
+          <p className=" break-all text-xl font-medium text-black-600">
             <HighlightedText text={epigram.content} keyword={keyword} />
           </p>
           <p className="text-xl font-medium text-blue-400">- {authorLabel} -</p>
