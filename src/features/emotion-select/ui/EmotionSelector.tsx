@@ -61,18 +61,15 @@ export function EmotionSelector(): ReactElement {
       <ul className="flex items-center justify-center gap-5" role="list">
         {EMOTION_OPTIONS.map((option) => {
           const isSelected = todayEmotion === option.value;
-          // 제출 중에는 모든 버튼 비활성 — HTML disabled로 접근성 보장
-          const isButtonDisabled = isLoggedIn && isSubmitting;
 
           return (
             <li key={option.value}>
               <button
                 type="button"
                 onClick={() => handleEmotionClick(option.value)}
-                disabled={isButtonDisabled}
                 aria-label={option.label}
                 aria-pressed={isSelected}
-                className="group flex flex-col items-center gap-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                className="group flex flex-col items-center gap-2 focus-visible:outline-none"
               >
                 <span
                   className={cn(
