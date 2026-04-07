@@ -5,6 +5,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { AuthLeftPanel } from "@/features/auth/ui/AuthLeftPanel";
+import { GuestLoginButton } from "@/features/auth/ui/GuestLoginButton";
 import { LoginForm } from "@/features/auth/ui/LoginForm";
 import { EpigramLogo } from "@/shared/ui/EpigramLogo";
 
@@ -28,6 +29,7 @@ export async function LoginPage(): Promise<ReactElement> {
           <div className="flex flex-col gap-[50px]">
             <div className="flex flex-col gap-[10px]">
               <LoginForm />
+              <GuestLoginButton />
               <div className="flex items-center gap-2">
                 <span className="text-sm text-blue-400">회원이 아니신가요?</span>
                 <Link href="/signup" className="text-sm font-medium text-black-600 hover:underline">
