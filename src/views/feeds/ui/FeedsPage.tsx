@@ -5,12 +5,11 @@ import type { ReactElement } from "react";
 import { BookOpenText, ChevronDown, ChevronUp, Plus } from "lucide-react";
 import Link from "next/link";
 
-import { useEpigrams } from "@/entities/epigram";
+import { EpigramListCard, useEpigrams } from "@/entities/epigram";
 import { useScrollToTop } from "@/shared/hooks/useScrollToTop";
 import { EmptyState } from "@/shared/ui/EmptyState";
 import { ErrorBoundary } from "@/shared/ui/ErrorBoundary";
 import { SectionErrorFallback } from "@/shared/ui/SectionErrorFallback";
-import { EpigramCard } from "@/widgets/epigram-card";
 
 const FEEDS_PAGE_SIZE = 10;
 
@@ -55,13 +54,9 @@ function FeedsGrid(): ReactElement {
 
   return (
     <div className="flex flex-col gap-6">
-      <ul className="grid min-w-0 grid-cols-1 gap-4 tablet:grid-cols-2">
-        {epigrams.map((epigram) => (
-          <li key={epigram.id} className="min-w-0">
-            <EpigramCard epigram={epigram} />
-          </li>
-        ))}
-      </ul>
+      {epigrams.map((epigram) => (
+        <EpigramListCard key={epigram.id} epigram={epigram} />
+      ))}
       {hasNextPage && (
         <div className="flex justify-center pt-2">
           <button
