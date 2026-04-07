@@ -6,12 +6,17 @@ import Link from "next/link";
 
 import { Plus } from "lucide-react";
 
+import Image from "next/image";
+
 import { useMyComments } from "@/entities/comment";
 import { useMonthlyEmotions } from "@/entities/emotion-log";
 import { useEpigrams } from "@/entities/epigram";
 
+import { useCommentDelete } from "@/features/comment-delete";
+
 import { ErrorBoundary } from "@/shared/ui/ErrorBoundary";
 import { SectionErrorFallback } from "@/shared/ui/SectionErrorFallback";
+import { formatRelativeTime } from "@/shared/lib/date";
 
 import { EmotionCalendar } from "./EmotionCalendar";
 import { EmotionPieChart } from "./EmotionPieChart";
@@ -83,22 +88,65 @@ function MyEpigramItem({ epigram }: MyEpigramItemProps): ReactElement {
 
 // ─── Comment Card ─────────────────────────────────────────────────────────────
 
+const DEFAULT_AVATAR = "/icon/035-smiling face.png";
+
 interface MyCommentItemProps {
   comment: Comment;
+  epigramId: number;
 }
 
-function MyCommentItem({ comment }: MyCommentItemProps): ReactElement {
+function MyCommentItem({ comment, epigramId }: MyCommentItemProps): ReactElement {
+  const { handleDeleteClick, isDeleting } = useCommentDelete(comment.id, epigramId);
+
   return (
-    <li>
-      <Link
-        href={`/epigrams/${comment.epigramId}`}
-        className="group block w-full rounded-2xl border border-line-100 bg-white p-6 transition-shadow duration-200 hover:shadow-md"
-        style={{ boxShadow: "0px 3px 12px 0 rgba(0,0,0,0.04)" }}
-      >
-        <p className="text-base font-medium leading-relaxed text-black-600 tablet:text-lg pc:text-xl">
-          {comment.content}
-        </p>
-      </Link>
+    <li className="flex flex-col gap-2.5 border-t border-line-200 bg-background px-6 py-8 first:border-t-0">
+      <div className="flex items-start gap-4">
+        {/* Avatar */}
+        <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full bg-blue-200">
+          <Image
+            src={comment.writer.image ?? DEFAULT_AVATAR}
+            alt={comment.writer.nickname}
+            fill
+            className="object-cover"
+          />
+        </div>
+
+        {/* Content */}
+        <div className="flex flex-1 flex-col gap-3">
+          {/* Header row */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-black-300">{comment.writer.nickname}</span>
+              <span className="text-sm text-black-300">
+                {formatRelativeTime(comment.createdAt)}
+              </span>
+            </div>
+            <div className="flex items-center gap-4">
+              <Link
+                href={`/epigrams/${epigramId}/edit?commentId=${comment.id}`}
+                className="text-sm text-black-600 transition hover:text-black-800"
+              >
+                수정
+              </Link>
+              <button
+                type="button"
+                onClick={handleDeleteClick}
+                disabled={isDeleting}
+                className="text-sm text-error transition hover:opacity-70 disabled:opacity-40"
+              >
+                삭제
+              </button>
+            </div>
+          </div>
+
+          {/* Comment text */}
+          <Link href={`/epigrams/${epigramId}`}>
+            <p className="text-base leading-relaxed text-black-700 tablet:text-lg pc:text-xl">
+              {comment.content}
+            </p>
+          </Link>
+        </div>
+      </div>
     </li>
   );
 }
@@ -180,7 +228,7 @@ function MyCommentList({ userId, totalCountRef }: MyCommentListProps): ReactElem
     <div className="flex flex-col gap-6">
       <ul className="flex flex-col gap-6">
         {comments.map((comment) => (
-          <MyCommentItem key={comment.id} comment={comment} />
+          <MyCommentItem key={comment.id} comment={comment} epigramId={comment.epigramId} />
         ))}
       </ul>
 
