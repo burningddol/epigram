@@ -22,10 +22,7 @@ function buildHighlightedSegments(text: string, regex: RegExp): ReactNode {
 
   return parts.map((part, index) =>
     index % 2 === 1 ? (
-      <mark
-        key={index}
-        className="rounded-sm bg-transparent px-0 font-semibold text-blue-700 not-italic"
-      >
+      <mark key={index} className="bg-transparent px-0 font-semibold text-illust-blue not-italic">
         {part}
       </mark>
     ) : (
@@ -54,13 +51,10 @@ function TagList({ tags, keyword }: TagListProps): ReactElement | null {
   if (tags.length === 0) return null;
 
   return (
-    <ul
-      className="flex flex-wrap items-center justify-end gap-x-2.5 gap-y-1"
-      aria-label="태그 목록"
-    >
+    <ul className="flex flex-wrap gap-3" aria-label="태그 목록">
       {tags.map((tag) => (
         <li key={tag.id}>
-          <span className="text-xs font-medium text-blue-500 transition-colors duration-150 group-hover:text-blue-600 pc:text-sm">
+          <span className="text-xl text-blue-400">
             #<HighlightedText text={tag.name} keyword={keyword} />
           </span>
         </li>
@@ -77,17 +71,17 @@ export function SearchResultItem({ epigram, keyword }: SearchResultItemProps): R
   return (
     <Link
       href={`/epigrams/${epigram.id}`}
-      className="group block px-1 py-6 transition-colors duration-150 hover:bg-blue-100/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-inset tablet:px-2 tablet:py-7 pc:px-3 pc:py-9"
+      className="group block border-b border-gray-100 py-6 transition-colors duration-150 hover:bg-blue-100/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-inset"
     >
-      <article className="flex flex-col gap-3 pc:gap-2">
-        <p className="font-serif text-sm leading-relaxed text-black-700 transition-colors duration-150 group-hover:text-black-950 tablet:text-base tablet:leading-loose pc:text-lg pc:leading-loose">
-          <HighlightedText text={epigram.content} keyword={keyword} />
-        </p>
-
-        <div className="flex items-start justify-between gap-4">
-          <footer className="shrink-0 text-xs text-black-300 pc:text-sm">- {authorLabel} -</footer>
-          <TagList tags={epigram.tags} keyword={keyword} />
+      <article className="font-serif flex flex-col items-end gap-4">
+        <div className="flex w-full flex-col gap-6">
+          <p className=" break-all text-xl font-medium text-black-600">
+            <HighlightedText text={epigram.content} keyword={keyword} />
+          </p>
+          <p className="text-xl font-medium text-blue-400">- {authorLabel} -</p>
         </div>
+
+        <TagList tags={epigram.tags} keyword={keyword} />
       </article>
     </Link>
   );
