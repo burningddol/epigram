@@ -1,7 +1,9 @@
 import type { ReactElement } from "react";
 
-import { ChevronDown } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
+
+import { ChevronDown } from "lucide-react";
 
 export function LandingPage(): ReactElement {
   return (
@@ -88,10 +90,10 @@ function EmotionSection(): ReactElement {
           ))}
         </div>
         <div className="flex justify-center gap-3">
-          {EMOTION_BADGES.map(({ emoji, label }) => (
+          {EMOTION_BADGES.map(({ icon, label }) => (
             <div key={label} className="flex flex-col items-center gap-2">
-              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-blue-200 text-2xl shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
-                {emoji}
+              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-blue-200 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
+                <Image src={icon} alt={label} width={36} height={36} className="h-9 w-9" />
               </div>
               <span className="text-xs font-medium text-blue-600">{label}</span>
             </div>
@@ -179,10 +181,11 @@ function CtaSection(): ReactElement {
 const EMOTION_TAGS = ["#우울해요", "#슬플때에필로그", "#위로가", "#마음이착잡할때"] as const;
 
 const EMOTION_BADGES = [
-  { emoji: "🤩", label: "감동" },
-  { emoji: "😊", label: "기쁨" },
-  { emoji: "🤔", label: "고민" },
-  { emoji: "😢", label: "슬픔" },
+  { icon: "/icon/012-heart face.png", label: "감동" },
+  { icon: "/icon/035-smiling face.png", label: "기쁨" },
+  { icon: "/icon/044-thinking.png", label: "고민" },
+  { icon: "/icon/034-sad.png", label: "슬픔" },
+  { icon: "/icon/Frame 65.png", label: "분노" },
 ] as const;
 
 const SAMPLE_EPIGRAMS = [
