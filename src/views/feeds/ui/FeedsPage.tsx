@@ -54,9 +54,13 @@ function FeedsGrid(): ReactElement {
 
   return (
     <div className="flex flex-col gap-6">
-      {epigrams.map((epigram) => (
-        <EpigramListCard key={epigram.id} epigram={epigram} />
-      ))}
+      <ul className="grid min-w-0 grid-cols-1 gap-4 tablet:grid-cols-2">
+        {epigrams.map((epigram) => (
+          <li key={epigram.id} className="min-w-0">
+            <EpigramListCard epigram={epigram} />
+          </li>
+        ))}
+      </ul>
       {hasNextPage && (
         <div className="flex justify-center pt-2">
           <button
