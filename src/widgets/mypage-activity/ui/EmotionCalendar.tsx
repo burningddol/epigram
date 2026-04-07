@@ -83,6 +83,31 @@ function buildCalendarCells(year: number, month: number): CalendarCell[] {
   return cells;
 }
 
+interface MonthNavigationProps {
+  onPrev: () => void;
+  onNext: () => void;
+  size?: "sm" | "md";
+}
+
+function MonthNavigation({ onPrev, onNext, size = "md" }: MonthNavigationProps): ReactElement {
+  const btnClass =
+    size === "sm"
+      ? "flex h-8 w-8 items-center justify-center rounded-full transition hover:bg-background active:scale-90"
+      : "flex h-9 w-9 items-center justify-center rounded-full transition hover:bg-background active:scale-90";
+  const iconClass = size === "sm" ? "h-4 w-4 text-black-600" : "h-5 w-5 text-black-600";
+
+  return (
+    <div className="flex items-center gap-2">
+      <button type="button" aria-label="이전 달" onClick={onPrev} className={btnClass}>
+        <ChevronLeft className={iconClass} strokeWidth={2.5} />
+      </button>
+      <button type="button" aria-label="다음 달" onClick={onNext} className={btnClass}>
+        <ChevronRight className={iconClass} strokeWidth={2.5} />
+      </button>
+    </div>
+  );
+}
+
 interface EmotionCalendarProps {
   userId: number;
 }
@@ -157,23 +182,8 @@ export function EmotionCalendar({ userId }: EmotionCalendarProps): ReactElement 
           </h2>
 
           {/* Navigation (모바일: 연월 오른쪽, tablet+: 헤더 우측) */}
-          <div className="flex items-center gap-2 tablet:hidden">
-            <button
-              type="button"
-              aria-label="이전 달"
-              onClick={handlePrevMonth}
-              className="flex h-8 w-8 items-center justify-center rounded-full transition hover:bg-background active:scale-90"
-            >
-              <ChevronLeft className="h-4 w-4 text-black-600" strokeWidth={2.5} />
-            </button>
-            <button
-              type="button"
-              aria-label="다음 달"
-              onClick={handleNextMonth}
-              className="flex h-8 w-8 items-center justify-center rounded-full transition hover:bg-background active:scale-90"
-            >
-              <ChevronRight className="h-4 w-4 text-black-600" strokeWidth={2.5} />
-            </button>
+          <div className="tablet:hidden">
+            <MonthNavigation onPrev={handlePrevMonth} onNext={handleNextMonth} size="sm" />
           </div>
         </div>
 
@@ -232,23 +242,8 @@ export function EmotionCalendar({ userId }: EmotionCalendarProps): ReactElement 
           </div>
 
           {/* Navigation (tablet+만 표시) */}
-          <div className="hidden items-center gap-2 tablet:flex">
-            <button
-              type="button"
-              aria-label="이전 달"
-              onClick={handlePrevMonth}
-              className="flex h-9 w-9 items-center justify-center rounded-full transition hover:bg-background active:scale-90"
-            >
-              <ChevronLeft className="h-5 w-5 text-black-600" strokeWidth={2.5} />
-            </button>
-            <button
-              type="button"
-              aria-label="다음 달"
-              onClick={handleNextMonth}
-              className="flex h-9 w-9 items-center justify-center rounded-full transition hover:bg-background active:scale-90"
-            >
-              <ChevronRight className="h-5 w-5 text-black-600" strokeWidth={2.5} />
-            </button>
+          <div className="hidden tablet:block">
+            <MonthNavigation onPrev={handlePrevMonth} onNext={handleNextMonth} />
           </div>
         </div>
       </div>
