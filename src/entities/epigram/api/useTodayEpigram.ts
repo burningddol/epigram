@@ -9,7 +9,7 @@ export function useTodayEpigram(): UseQueryResult<EpigramDetail | null, Error> {
     queryKey: ["epigrams", "today"],
     queryFn: async () => {
       const response = await apiClient.get<unknown>("/api/epigrams/today");
-      if (response.data == null) return null;
+      if (response.data == null || typeof response.data !== "object") return null;
       return epigramDetailSchema.parse(response.data);
     },
   });
