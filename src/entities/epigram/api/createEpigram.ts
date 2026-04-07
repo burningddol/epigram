@@ -1,6 +1,6 @@
 import { apiClient } from "@/shared/api/client";
 
-import { epigramDetailSchema, type EpigramDetail } from "../model/schema";
+import { epigramSchema, type Epigram } from "../model/schema";
 
 export interface CreateEpigramRequest {
   content: string;
@@ -10,7 +10,7 @@ export interface CreateEpigramRequest {
   tags: string[];
 }
 
-export async function createEpigram(data: CreateEpigramRequest): Promise<EpigramDetail> {
+export async function createEpigram(data: CreateEpigramRequest): Promise<Epigram> {
   const response = await apiClient.post<unknown>("/api/epigrams", data);
-  return epigramDetailSchema.parse(response.data);
+  return epigramSchema.parse(response.data);
 }
