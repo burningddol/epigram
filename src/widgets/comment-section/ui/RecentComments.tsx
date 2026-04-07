@@ -26,25 +26,26 @@ function CommentItem({ comment }: CommentItemProps): ReactElement {
   }
 
   return (
-    <li className="group flex gap-3 rounded-2xl border border-line-200 bg-white px-5 py-4 shadow-sm transition-all duration-200 hover:border-blue-200 hover:shadow-md">
-      <button
-        type="button"
-        onClick={handleProfileClick}
-        className="flex-shrink-0 rounded-full transition-transform duration-150 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2"
-        aria-label={`${comment.writer.nickname} 프로필 보기`}
-      >
-        <WriterAvatar writer={comment.writer} />
-      </button>
-      <div className="min-w-0 flex-1">
-        <div className="flex items-baseline gap-2">
-          <span className="truncate text-sm font-semibold text-black-700">
-            {comment.writer.nickname}
-          </span>
-          <span className="flex-shrink-0 text-xs text-black-300">
-            {formatRelativeTime(comment.createdAt)}
-          </span>
+    <li className="flex flex-col gap-2.5 border-t border-line-200 bg-background px-6 py-8 first:border-t-0">
+      <div className="flex items-start gap-4">
+        <button
+          type="button"
+          onClick={handleProfileClick}
+          className="shrink-0 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2"
+          aria-label={`${comment.writer.nickname} 프로필 보기`}
+        >
+          <WriterAvatar writer={comment.writer} size={48} />
+        </button>
+
+        <div className="min-w-0 flex flex-1 flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-black-300">{comment.writer.nickname}</span>
+            <span className="text-sm text-black-300">{formatRelativeTime(comment.createdAt)}</span>
+          </div>
+          <p className="break-all text-base leading-relaxed text-black-700 tablet:text-lg pc:text-xl">
+            {comment.content}
+          </p>
         </div>
-        <p className="mt-1 text-sm leading-relaxed text-black-500">{comment.content}</p>
       </div>
     </li>
   );
@@ -94,9 +95,17 @@ export function RecentComments(): ReactElement {
     <section aria-label="최신 댓글">
       <h2 className="mb-4 text-xl font-bold text-black-900">최신 댓글</h2>
       {isLoading && (
-        <ul className="flex flex-col gap-3">
+        <ul className="flex flex-col">
           {SKELETON_ITEMS.map((_, i) => (
-            <li key={i} className="h-20 animate-pulse rounded-2xl bg-blue-200" />
+            <li key={i} className="border-t border-line-200 px-6 py-8 first:border-t-0">
+              <div className="flex items-start gap-4">
+                <div className="h-12 w-12 animate-pulse rounded-full bg-blue-200" />
+                <div className="min-w-0 flex flex-1 flex-col gap-3">
+                  <div className="h-3 w-24 animate-pulse rounded bg-blue-200" />
+                  <div className="h-4 w-full animate-pulse rounded bg-blue-100" />
+                </div>
+              </div>
+            </li>
           ))}
         </ul>
       )}
@@ -107,7 +116,7 @@ export function RecentComments(): ReactElement {
       )}
       {!isLoading && comments.length > 0 && (
         <>
-          <ul className="flex flex-col gap-3">
+          <ul className="flex flex-col">
             {comments.map((comment) => (
               <CommentItem key={comment.id} comment={comment} />
             ))}

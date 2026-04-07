@@ -5,55 +5,12 @@ import type { ReactElement } from "react";
 import { BookOpenText, ChevronDown } from "lucide-react";
 import Link from "next/link";
 
-import type { Epigram } from "@/entities/epigram";
-import { useEpigrams, useTodayEpigram } from "@/entities/epigram";
+import { EpigramListCard, useEpigrams, useTodayEpigram } from "@/entities/epigram";
 import { EmptyState } from "@/shared/ui/EmptyState";
 import { ErrorBoundary } from "@/shared/ui/ErrorBoundary";
 import { SectionErrorFallback } from "@/shared/ui/SectionErrorFallback";
 
 const FEED_PAGE_SIZE = 5;
-
-interface EpigramTagListProps {
-  tags: Epigram["tags"];
-}
-
-function EpigramTagList({ tags }: EpigramTagListProps): ReactElement {
-  return (
-    <ul className="mt-3 flex flex-wrap gap-2" aria-label="태그 목록">
-      {tags.map((tag) => (
-        <li key={tag.id}>
-          <span className="rounded-full bg-blue-200 px-3 py-1 text-xs font-medium text-blue-700 transition-colors hover:bg-blue-300">
-            #{tag.name}
-          </span>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-interface FeedEpigramCardProps {
-  epigram: Epigram;
-}
-
-function FeedEpigramCard({ epigram }: FeedEpigramCardProps): ReactElement {
-  return (
-    <Link
-      href={`/epigrams/${epigram.id}`}
-      className="group block min-w-0 overflow-hidden rounded-2xl border border-line-200 bg-white px-6 py-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md"
-    >
-      <blockquote>
-        <p className="break-all font-serif text-base leading-relaxed text-black-700 transition-colors group-hover:text-black-900">
-          {epigram.content}
-        </p>
-        <footer className="mt-3 break-all text-right text-sm text-black-300">
-          — {epigram.author}
-          {epigram.referenceTitle ? ` 《${epigram.referenceTitle}》` : ""}
-        </footer>
-      </blockquote>
-      {epigram.tags.length > 0 && <EpigramTagList tags={epigram.tags} />}
-    </Link>
-  );
-}
 
 function TodayEpigramEmpty(): ReactElement {
   return (
@@ -108,7 +65,7 @@ function TodayEpigramSection(): ReactElement {
   return (
     <section aria-label="오늘의 에피그램">
       <h2 className="mb-4 text-xl font-bold text-black-900">오늘의 에피그램</h2>
-      <FeedEpigramCard epigram={todayEpigram} />
+      <EpigramListCard epigram={todayEpigram} />
     </section>
   );
 }
@@ -122,7 +79,7 @@ function EpigramFeedList(): ReactElement {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-6">
         {Array.from({ length: 3 }).map((_, i) => (
           <div key={i} className="h-28 animate-pulse rounded-2xl bg-blue-200" />
         ))}
@@ -153,9 +110,9 @@ function EpigramFeedList(): ReactElement {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       {epigrams.map((epigram) => (
-        <FeedEpigramCard key={epigram.id} epigram={epigram} />
+        <EpigramListCard key={epigram.id} epigram={epigram} />
       ))}
       {hasNextPage && (
         <button
