@@ -58,7 +58,7 @@ function EmotionSelector({
         <span className="text-xl text-blue-400">{TODAY_LABEL}</span>
       </div>
 
-      <div className="flex items-start justify-start gap-4">
+      <div className="flex items-start justify-between gap-2 tablet:justify-start tablet:gap-4">
         {EMOTION_ORDER.map((value) => {
           const { icon, label } = EMOTION_META[value];
           const isSelected = selectedEmotion === value;
@@ -74,7 +74,7 @@ function EmotionSelector({
             >
               <span
                 className={cn(
-                  "flex h-24 w-24 items-center justify-center rounded-2xl p-4 transition-all duration-200",
+                  "flex h-16 w-16 items-center justify-center rounded-2xl p-3 transition-all duration-200 tablet:h-24 tablet:w-24 tablet:p-4",
                   isSelected
                     ? "border-4 border-illust-green"
                     : "bg-[#afbacd]/15 group-hover:bg-[#afbacd]/25"
@@ -85,12 +85,12 @@ function EmotionSelector({
                   alt={label}
                   width={48}
                   height={48}
-                  className="h-12 w-12 transition-transform duration-200 group-hover:scale-110"
+                  className="h-9 w-9 transition-transform duration-200 group-hover:scale-110 tablet:h-12 tablet:w-12"
                 />
               </span>
               <span
                 className={cn(
-                  "text-xl font-semibold transition-colors",
+                  "text-base font-semibold transition-colors tablet:text-xl",
                   isSelected ? "text-sub-blue-1" : "text-[#999]"
                 )}
               >
@@ -125,7 +125,7 @@ export function MypagePage(): ReactElement {
   return (
     <main
       id="main-content"
-      className="mx-auto min-h-screen w-full max-w-[640px] bg-background pb-24 pt-10"
+      className="mx-auto min-h-screen w-full max-w-[640px] bg-[#dde3ee] pb-24 pt-10"
     >
       <section className="mb-8 flex flex-col items-center gap-4 px-6 animate-fade-in-up">
         {isLoading || !me ? (
@@ -146,7 +146,7 @@ export function MypagePage(): ReactElement {
       </section>
 
       <div
-        className="flex flex-col gap-10 overflow-hidden rounded-3xl bg-white px-6 py-8 shadow-[0px_4px_32px_0_rgba(0,0,0,0.08)] animate-fade-in-up"
+        className="flex flex-col gap-10 rounded-3xl bg-white px-6 py-8 shadow-[0px_2px_24px_0_rgba(0,0,0,0.1)] animate-fade-in-up"
         style={{ animationDelay: "80ms" }}
       >
         <EmotionSelector
