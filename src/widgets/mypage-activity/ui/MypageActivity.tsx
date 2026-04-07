@@ -9,7 +9,7 @@ import { Plus } from "lucide-react";
 
 import { useMyComments } from "@/entities/comment";
 import { useMonthlyEmotions } from "@/entities/emotion-log";
-import { useEpigrams } from "@/entities/epigram";
+import { EpigramListCard, useEpigrams } from "@/entities/epigram";
 import { useCommentDelete } from "@/features/comment-delete";
 import { formatRelativeTime } from "@/shared/lib/date";
 import { ErrorBoundary } from "@/shared/ui/ErrorBoundary";
@@ -19,7 +19,6 @@ import { EmotionCalendar } from "./EmotionCalendar";
 import { EmotionPieChart } from "./EmotionPieChart";
 
 import type { Comment } from "@/entities/comment";
-import type { Epigram } from "@/entities/epigram";
 
 const PAGE_SIZE = 3;
 const NOW = new Date();
@@ -55,58 +54,6 @@ function LoadMoreButton({
         {isFetchingNextPage ? "불러오는 중..." : label}
       </button>
     </div>
-  );
-}
-
-// ─── Epigram Card ─────────────────────────────────────────────────────────────
-
-interface MyEpigramItemProps {
-  epigram: Epigram;
-}
-
-function MyEpigramItem({ epigram }: MyEpigramItemProps): ReactElement {
-  return (
-    <li className="flex flex-col items-end gap-2">
-      <Link
-        href={`/epigrams/${epigram.id}`}
-        className="group relative w-full overflow-hidden rounded-2xl border border-line-100 bg-white p-6 transition-shadow duration-200 hover:shadow-md"
-        style={{ boxShadow: "0px 3px 12px 0 rgba(0,0,0,0.04)" }}
-      >
-        {/* Decorative ruled lines */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(180deg, transparent 0px, transparent 24px, #f2f2f2 24px, #f2f2f2 25px)",
-            backgroundPositionY: "1px",
-          }}
-        />
-
-        <div className="font-serif relative flex flex-col gap-5">
-          <p className=" text-base font-medium leading-relaxed text-black-600 tablet:text-lg pc:text-xl">
-            {epigram.content}
-          </p>
-          <p className="text-right text-base font-medium text-blue-400 tablet:text-lg pc:text-xl">
-            - {epigram.author} -
-          </p>
-        </div>
-      </Link>
-
-      {/* Tags */}
-      {epigram.tags.length > 0 && (
-        <div className="flex flex-wrap justify-end gap-3">
-          {epigram.tags.map((tag) => (
-            <span
-              key={tag.id}
-              className="font-serif text-sm font-medium text-blue-400 tablet:text-base pc:text-lg"
-            >
-              #{tag.name}
-            </span>
-          ))}
-        </div>
-      )}
-    </li>
   );
 }
 
@@ -198,11 +145,11 @@ function MyEpigramList({ userId, onTotalCount }: MyEpigramListProps): ReactEleme
 
   return (
     <div className="flex flex-col gap-6">
-      <ul className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6">
         {epigrams.map((epigram) => (
-          <MyEpigramItem key={epigram.id} epigram={epigram} />
+          <EpigramListCard key={epigram.id} epigram={epigram} />
         ))}
-      </ul>
+      </div>
 
       {hasNextPage && (
         <LoadMoreButton
