@@ -37,11 +37,13 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
       className={`${pretendard.variable} ${nanumMyeongjo.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <Header />
-        <main id="main-content" className="flex flex-1 flex-col">
-          <QueryProvider>{children}</QueryProvider>
-        </main>
-        <ModalProvider />
+        <QueryProvider>
+          <Header />
+          <main id="main-content" className="flex flex-1 flex-col">
+            {children}
+          </main>
+          <ModalProvider />
+        </QueryProvider>
       </body>
     </html>
   );

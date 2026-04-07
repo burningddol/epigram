@@ -2,11 +2,13 @@
 
 import type { ReactElement } from "react";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { Menu, User } from "lucide-react";
+import { User } from "lucide-react";
 
+import { useMe } from "@/entities/user";
 import { cn } from "@/shared/lib/cn";
 
 const NAV_LINKS = [
@@ -68,18 +70,56 @@ interface UserSectionProps {
 }
 
 function UserSection({ iconSize, textSize }: UserSectionProps): ReactElement {
+  const { user, isLoading } = useMe();
   const isLgIcon = iconSize === "lg";
   const isMdText = textSize === "md";
+  const imageSize = isLgIcon ? 32 : 24;
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center gap-[6px] animate-pulse">
+        <div
+          className={cn("rounded-full bg-blue-100 shrink-0", isLgIcon ? "h-8 w-8" : "h-6 w-6")}
+        />
+        <div className="h-4 w-14 rounded bg-blue-100" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <Link
+        href="/login"
+        className={cn(
+          "font-semibold text-blue-700 hover:text-blue-900 transition-colors duration-150 whitespace-nowrap",
+          isMdText ? "text-[16px] leading-6" : "text-[14px] leading-[22px]"
+        )}
+      >
+        로그인
+      </Link>
+    );
+  }
+
   return (
     <Link href="/mypage" className="flex items-center gap-[6px]" aria-label="마이페이지">
-      <User size={isLgIcon ? 24 : 16} className="text-gray-300 shrink-0" aria-hidden="true" />
+      {user.image ? (
+        <Image
+          src={user.image}
+          alt={user.nickname}
+          width={imageSize}
+          height={imageSize}
+          className="rounded-full object-cover shrink-0"
+        />
+      ) : (
+        <User size={imageSize} className="text-gray-300 shrink-0" aria-hidden="true" />
+      )}
       <span
         className={cn(
           "font-medium text-gray-300 whitespace-nowrap",
           isMdText ? "text-[14px] leading-6" : "text-[13px] leading-[22px]"
         )}
       >
-        김코드
+        {user.nickname}
       </span>
     </Link>
   );
@@ -88,17 +128,15 @@ function UserSection({ iconSize, textSize }: UserSectionProps): ReactElement {
 export function Header(): ReactElement {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-line-100 bg-white/90 backdrop-blur-md">
-      {/* Mobile (base ~ 743px): 햄버거 + 로고 / 유저 */}
+      {/* Mobile (base ~ 743px): 로고 + 텍스트 링크 / 유저 */}
       <div className="flex h-[52px] items-center justify-between px-6 tablet:hidden">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            aria-label="메뉴 열기"
-            className="rounded-md p-1 transition-colors hover:bg-blue-50"
-          >
-            <Menu size={24} className="text-gray-200" aria-hidden="true" />
-          </button>
+        <div className="flex items-center gap-6">
           <Logo size="sm" />
+          <nav className="flex gap-6" aria-label="주요 메뉴">
+            {NAV_LINKS.map((link) => (
+              <NavLink key={link.href} href={link.href} label={link.label} textSize="sm" />
+            ))}
+          </nav>
         </div>
         <UserSection iconSize="sm" textSize="sm" />
       </div>
