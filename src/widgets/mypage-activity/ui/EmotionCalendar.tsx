@@ -30,11 +30,7 @@ const EMOTION_LABELS: Record<Emotion, string> = {
 const EMOTION_ORDER: Emotion[] = ["MOVED", "HAPPY", "WORRIED", "SAD", "ANGRY"];
 const WEEKDAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
 
-// Use KST so the calendar "today" matches Korean calendar date, not UTC.
-const [_todayYear, _todayMonth, _todayDate] = toKSTDateString(new Date()).split("-");
-const TODAY_YEAR = Number(_todayYear);
-const TODAY_MONTH = Number(_todayMonth);
-const TODAY_DATE = Number(_todayDate);
+const [TODAY_YEAR, TODAY_MONTH, TODAY_DATE] = toKSTDateString(new Date()).split("-").map(Number);
 
 interface CalendarCell {
   day: number;

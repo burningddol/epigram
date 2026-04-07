@@ -21,9 +21,7 @@ import { EmotionPieChart } from "./EmotionPieChart";
 import type { Comment } from "@/entities/comment";
 
 const PAGE_SIZE = 3;
-const [_nowYear, _nowMonth] = toKSTDateString(new Date()).split("-");
-const NOW_YEAR = Number(_nowYear);
-const NOW_MONTH = Number(_nowMonth);
+const [NOW_YEAR, NOW_MONTH] = toKSTDateString(new Date()).split("-").map(Number);
 
 type ActiveTab = "epigrams" | "comments";
 

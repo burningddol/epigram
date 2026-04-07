@@ -23,8 +23,6 @@ const EMOTION_OPTIONS: { value: Emotion; icon: string; label: string }[] = [
   { value: "ANGRY", icon: "/icon/Frame 65.png", label: "분노" },
 ];
 
-// Computed once at module load — date does not change during a session.
-// Use KST so the displayed date matches the Korean calendar day.
 const TODAY_LABEL = toKSTDateString(new Date()).replace(/-/g, ".");
 
 // ─── Skeletons ────────────────────────────────────────────────────────────────

@@ -1,9 +1,10 @@
+// Reused across calls — Intl.DateTimeFormat construction is expensive.
+const KST_FORMATTER = new Intl.DateTimeFormat("sv", { timeZone: "Asia/Seoul" });
+
 // Returns "YYYY-MM-DD" in KST (UTC+9) regardless of the browser's local timezone.
 // Use this whenever a date string must represent the Korean calendar day.
 export function toKSTDateString(date: Date | string): string {
-  return new Intl.DateTimeFormat("sv", { timeZone: "Asia/Seoul" }).format(
-    typeof date === "string" ? new Date(date) : date
-  );
+  return KST_FORMATTER.format(typeof date === "string" ? new Date(date) : date);
 }
 
 export function formatDate(date: string | Date): string {
