@@ -5,11 +5,13 @@ import type { ReactElement } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
+import { useModal } from "@/shared/hooks/useModal";
 import { cn } from "@/shared/lib/cn";
-
-import type { Emotion } from "@/entities/emotion-log";
+import { ConfirmModal } from "@/shared/ui/Modal";
 
 import { useEmotionSelect } from "../model/useEmotionSelect";
+
+import type { Emotion } from "@/entities/emotion-log";
 
 interface EmotionOption {
   value: Emotion;
@@ -28,15 +30,27 @@ const EMOTION_OPTIONS: EmotionOption[] = [
 export function EmotionSelector(): ReactElement {
   const router = useRouter();
   const { isLoggedIn, todayEmotion, isSubmitting, selectEmotion } = useEmotionSelect();
+  const { open } = useModal();
 
   function handleEmotionClick(emotion: Emotion): void {
     if (!isLoggedIn) {
-      alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
-      router.push("/login");
+      open((onClose) => (
+        <ConfirmModal
+          title="로그인이 필요합니다"
+          description="감정을 기록하려면 로그인이 필요합니다. 로그인 페이지로 이동할까요?"
+          confirmLabel="로그인하기"
+          cancelLabel="취소"
+          onConfirm={() => {
+            router.push("/login");
+            onClose();
+          }}
+          onClose={onClose}
+        />
+      ));
       return;
     }
 
-    if (todayEmotion != null) return;
+    if (isSubmitting || todayEmotion === emotion) return;
 
     selectEmotion(emotion);
   }
@@ -47,19 +61,15 @@ export function EmotionSelector(): ReactElement {
       <ul className="flex items-center justify-center gap-5" role="list">
         {EMOTION_OPTIONS.map((option) => {
           const isSelected = todayEmotion === option.value;
-          // 비로그인: 버튼 활성(클릭 시 로그인 유도) / 로그인: 이미 선택했으면 선택된 것 제외 비활성
-          const isButtonDisabled =
-            isLoggedIn && (isSubmitting || (todayEmotion != null && !isSelected));
 
           return (
             <li key={option.value}>
               <button
                 type="button"
                 onClick={() => handleEmotionClick(option.value)}
-                disabled={isButtonDisabled}
                 aria-label={option.label}
                 aria-pressed={isSelected}
-                className="group flex flex-col items-center gap-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                className="group flex flex-col items-center gap-2 focus-visible:outline-none"
               >
                 <span
                   className={cn(
