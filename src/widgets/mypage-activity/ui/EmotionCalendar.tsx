@@ -105,7 +105,7 @@ export function EmotionCalendar({ userId }: EmotionCalendarProps): ReactElement 
             key={label}
             className="flex aspect-square items-center justify-center border border-[#eceff4] bg-white"
           >
-            <span className="text-sm font-semibold text-[#c4c4c4] tablet:text-xl">{label}</span>
+            <span className="text-2xl font-semibold text-[#c4c4c4]">{label}</span>
           </div>
         ))}
 
@@ -124,14 +124,14 @@ export function EmotionCalendar({ userId }: EmotionCalendarProps): ReactElement 
             <div
               key={dateKey}
               className={cn(
-                "flex aspect-square flex-col items-center justify-center gap-0.5 bg-white tablet:gap-1",
+                "flex aspect-square flex-col items-center justify-center gap-2 bg-white",
                 isToday ? "rounded-sm border-[6px] border-[#ff6577]" : "border border-[#eceff4]"
               )}
             >
               <span
                 className={cn(
-                  "font-semibold leading-none",
-                  emotion !== null ? "text-[10px] tablet:text-sm" : "text-sm tablet:text-xl",
+                  "leading-none",
+                  emotion !== null ? "text-base font-bold" : "text-2xl font-semibold",
                   isToday ? "text-[#ff6577]" : "text-[#c4c4c4]"
                 )}
               >
@@ -143,7 +143,7 @@ export function EmotionCalendar({ userId }: EmotionCalendarProps): ReactElement 
                   alt={EMOTION_META[emotion].label}
                   width={36}
                   height={36}
-                  className="h-5 w-5 tablet:h-8 tablet:w-8"
+                  className="h-9 w-9"
                 />
               )}
             </div>

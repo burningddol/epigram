@@ -74,7 +74,7 @@ function EmotionSelector({
             >
               <span
                 className={cn(
-                  "flex h-16 w-16 items-center justify-center rounded-2xl transition-all duration-200 tablet:h-24 tablet:w-24",
+                  "flex h-24 w-24 items-center justify-center rounded-2xl p-4 transition-all duration-200",
                   isSelected
                     ? "border-4 border-illust-green"
                     : "bg-[#afbacd]/15 group-hover:bg-[#afbacd]/25"
@@ -83,14 +83,14 @@ function EmotionSelector({
                 <Image
                   src={icon}
                   alt={label}
-                  width={52}
-                  height={52}
-                  className="h-9 w-9 transition-transform duration-200 group-hover:scale-110 tablet:h-12 tablet:w-12"
+                  width={48}
+                  height={48}
+                  className="h-12 w-12 transition-transform duration-200 group-hover:scale-110"
                 />
               </span>
               <span
                 className={cn(
-                  "text-sm font-semibold transition-colors tablet:text-xl",
+                  "text-xl font-semibold transition-colors",
                   isSelected ? "text-sub-blue-1" : "text-[#999]"
                 )}
               >
