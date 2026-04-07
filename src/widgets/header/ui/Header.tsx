@@ -92,7 +92,7 @@ function UserSection({ iconSize, textSize }: UserSectionProps): ReactElement {
         href="/login"
         className={cn(
           "font-semibold text-blue-700 hover:text-blue-900 transition-colors duration-150 whitespace-nowrap",
-          isMdText ? "text-[14px] leading-6" : "text-[13px] leading-[22px]"
+          isMdText ? "text-[16px] leading-6" : "text-[14px] leading-[22px]"
         )}
       >
         로그인
