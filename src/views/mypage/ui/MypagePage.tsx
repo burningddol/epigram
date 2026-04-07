@@ -2,6 +2,8 @@
 
 import type { ReactElement } from "react";
 
+import Image from "next/image";
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { LogOut } from "lucide-react";
 
@@ -11,12 +13,12 @@ import { getMe } from "@/entities/user";
 import { ProfileImageUpload, useLogout } from "@/features/auth";
 import { MypageActivity } from "@/widgets/mypage-activity";
 
-const EMOTION_OPTIONS: { value: Emotion; emoji: string; label: string }[] = [
-  { value: "MOVED", emoji: "🥹", label: "감동" },
-  { value: "HAPPY", emoji: "😊", label: "기쁨" },
-  { value: "WORRIED", emoji: "😟", label: "고민" },
-  { value: "SAD", emoji: "😔", label: "슬픔" },
-  { value: "ANGRY", emoji: "😡", label: "분노" },
+const EMOTION_OPTIONS: { value: Emotion; icon: string; label: string }[] = [
+  { value: "MOVED", icon: "/icon/012-heart face.png", label: "감동" },
+  { value: "HAPPY", icon: "/icon/035-smiling face.png", label: "기쁨" },
+  { value: "WORRIED", icon: "/icon/044-thinking.png", label: "고민" },
+  { value: "SAD", icon: "/icon/034-sad.png", label: "슬픔" },
+  { value: "ANGRY", icon: "/icon/Frame 65.png", label: "분노" },
 ];
 
 // Computed once at module load — date does not change during a session
@@ -59,7 +61,7 @@ function EmotionSelector({
       </div>
 
       <div className="flex items-center justify-around gap-1">
-        {EMOTION_OPTIONS.map(({ value, emoji, label }) => {
+        {EMOTION_OPTIONS.map(({ value, icon, label }) => {
           const isSelected = selectedEmotion === value;
           return (
             <button
@@ -79,11 +81,19 @@ function EmotionSelector({
             >
               <span
                 className={[
-                  "text-2xl leading-none transition-transform duration-200",
-                  isSelected ? "scale-110" : "group-hover:scale-110",
+                  "flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-200",
+                  isSelected
+                    ? "bg-blue-100 ring-2 ring-blue-300"
+                    : "bg-gray-100 group-hover:bg-gray-200",
                 ].join(" ")}
               >
-                {emoji}
+                <Image
+                  src={icon}
+                  alt={label}
+                  width={48}
+                  height={48}
+                  className="h-9 w-9 transition-transform duration-200 group-hover:scale-110"
+                />
               </span>
               <span
                 className={[
