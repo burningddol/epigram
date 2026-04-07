@@ -70,11 +70,11 @@ function EmotionSelector({
               disabled={isPending}
               aria-label={`${label} 감정 선택`}
               aria-pressed={isSelected}
-              className="group flex flex-col items-center gap-2 transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50"
+              className="group flex flex-col items-center gap-1.5 transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 tablet:gap-2"
             >
               <span
                 className={[
-                  "flex h-20 w-20 items-center justify-center rounded-2xl transition-all duration-200",
+                  "flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-200 tablet:h-20 tablet:w-20",
                   isSelected
                     ? "border-4 border-illust-green"
                     : "bg-[#afbacd]/15 group-hover:bg-[#afbacd]/25",
@@ -85,12 +85,12 @@ function EmotionSelector({
                   alt={label}
                   width={52}
                   height={52}
-                  className="h-12 w-12 transition-transform duration-200 group-hover:scale-110"
+                  className="h-7 w-7 transition-transform duration-200 group-hover:scale-110 tablet:h-12 tablet:w-12"
                 />
               </span>
               <span
                 className={[
-                  "text-sm font-semibold transition-colors",
+                  "text-xs font-semibold transition-colors tablet:text-sm",
                   isSelected ? "text-black-800" : "text-black-300",
                 ].join(" ")}
               >
