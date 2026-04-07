@@ -2,6 +2,8 @@
 
 import type { ReactElement } from "react";
 
+import Image from "next/image";
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { LogOut } from "lucide-react";
 
@@ -11,12 +13,12 @@ import { getMe } from "@/entities/user";
 import { ProfileImageUpload, useLogout } from "@/features/auth";
 import { MypageActivity } from "@/widgets/mypage-activity";
 
-const EMOTION_OPTIONS: { value: Emotion; emoji: string; label: string }[] = [
-  { value: "MOVED", emoji: "🥹", label: "감동" },
-  { value: "HAPPY", emoji: "😊", label: "기쁨" },
-  { value: "WORRIED", emoji: "😟", label: "고민" },
-  { value: "SAD", emoji: "😔", label: "슬픔" },
-  { value: "ANGRY", emoji: "😡", label: "분노" },
+const EMOTION_OPTIONS: { value: Emotion; icon: string; label: string }[] = [
+  { value: "MOVED", icon: "/icon/012-heart face.png", label: "감동" },
+  { value: "HAPPY", icon: "/icon/035-smiling face.png", label: "기쁨" },
+  { value: "WORRIED", icon: "/icon/044-thinking.png", label: "고민" },
+  { value: "SAD", icon: "/icon/034-sad.png", label: "슬픔" },
+  { value: "ANGRY", icon: "/icon/Frame 65.png", label: "분노" },
 ];
 
 // Computed once at module load — date does not change during a session
@@ -59,7 +61,7 @@ function EmotionSelector({
       </div>
 
       <div className="flex items-center justify-around gap-1">
-        {EMOTION_OPTIONS.map(({ value, emoji, label }) => {
+        {EMOTION_OPTIONS.map(({ value, icon, label }) => {
           const isSelected = selectedEmotion === value;
           return (
             <button
@@ -69,26 +71,26 @@ function EmotionSelector({
               disabled={isPending}
               aria-label={`${label} 감정 선택`}
               aria-pressed={isSelected}
-              className={[
-                "group flex flex-col items-center gap-1.5 rounded-xl px-3 py-2.5",
-                "transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50",
-                isSelected
-                  ? "bg-blue-200 ring-2 ring-blue-500 scale-105 shadow-sm"
-                  : "hover:bg-sub-gray-3 hover:scale-105 active:scale-95",
-              ].join(" ")}
+              className="group flex flex-col items-center gap-1.5 rounded-xl px-3 py-2.5 transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-sub-gray-3 hover:scale-105 active:scale-95"
             >
               <span
                 className={[
-                  "text-2xl leading-none transition-transform duration-200",
-                  isSelected ? "scale-110" : "group-hover:scale-110",
+                  "flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-200",
+                  isSelected ? "ring-2 ring-illust-green" : "bg-gray-100 group-hover:bg-gray-200",
                 ].join(" ")}
               >
-                {emoji}
+                <Image
+                  src={icon}
+                  alt={label}
+                  width={48}
+                  height={48}
+                  className="h-9 w-9 transition-transform duration-200 group-hover:scale-110"
+                />
               </span>
               <span
                 className={[
-                  "text-xs font-medium transition-colors",
-                  isSelected ? "text-blue-700" : "text-black-400",
+                  "text-xs transition-colors",
+                  isSelected ? "font-semibold text-illust-green" : "font-medium text-black-400",
                 ].join(" ")}
               >
                 {label}
