@@ -7,19 +7,17 @@ import Image from "next/image";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { LogOut } from "lucide-react";
 
-import { postTodayEmotion, useTodayEmotion } from "@/entities/emotion-log";
-import type { Emotion } from "@/entities/emotion-log";
+import {
+  EMOTION_META,
+  EMOTION_ORDER,
+  postTodayEmotion,
+  useTodayEmotion,
+} from "@/entities/emotion-log";
 import { getMe } from "@/entities/user";
 import { ProfileImageUpload, useLogout } from "@/features/auth";
 import { MypageActivity } from "@/widgets/mypage-activity";
 
-const EMOTION_OPTIONS: { value: Emotion; icon: string; label: string }[] = [
-  { value: "MOVED", icon: "/icon/012-heart face.png", label: "감동" },
-  { value: "HAPPY", icon: "/icon/035-smiling face.png", label: "기쁨" },
-  { value: "WORRIED", icon: "/icon/044-thinking.png", label: "고민" },
-  { value: "SAD", icon: "/icon/034-sad.png", label: "슬픔" },
-  { value: "ANGRY", icon: "/icon/Frame 65.png", label: "분노" },
-];
+import type { Emotion } from "@/entities/emotion-log";
 
 // Computed once at module load — date does not change during a session
 const TODAY_LABEL = new Date().toLocaleDateString("ko-KR", {
@@ -54,14 +52,15 @@ function EmotionSelector({
   isPending,
 }: EmotionSelectorProps): ReactElement {
   return (
-    <div className="w-full rounded-2xl bg-white px-5 py-5 shadow-sm ring-1 ring-line-200">
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-black-600">오늘의 감정</h2>
-        <span className="text-xs text-black-300">{TODAY_LABEL}</span>
+    <div className="w-full">
+      <div className="mb-5 flex items-center justify-between">
+        <h2 className="text-2xl font-semibold text-black-800">오늘의 감정</h2>
+        <span className="text-sm text-black-300">{TODAY_LABEL}</span>
       </div>
 
-      <div className="flex items-center justify-around gap-1">
-        {EMOTION_OPTIONS.map(({ value, icon, label }) => {
+      <div className="flex items-center justify-around">
+        {EMOTION_ORDER.map((value) => {
+          const { icon, label } = EMOTION_META[value];
           const isSelected = selectedEmotion === value;
           return (
             <button
@@ -71,26 +70,28 @@ function EmotionSelector({
               disabled={isPending}
               aria-label={`${label} 감정 선택`}
               aria-pressed={isSelected}
-              className="group flex flex-col items-center gap-1.5 rounded-xl px-3 py-2.5 transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-sub-gray-3 hover:scale-105 active:scale-95"
+              className="group flex flex-col items-center gap-2 transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <span
                 className={[
-                  "flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-200",
-                  isSelected ? "ring-2 ring-illust-green" : "bg-gray-100 group-hover:bg-gray-200",
+                  "flex h-20 w-20 items-center justify-center rounded-2xl transition-all duration-200",
+                  isSelected
+                    ? "border-4 border-illust-green"
+                    : "bg-[#afbacd]/15 group-hover:bg-[#afbacd]/25",
                 ].join(" ")}
               >
                 <Image
                   src={icon}
                   alt={label}
-                  width={48}
-                  height={48}
-                  className="h-9 w-9 transition-transform duration-200 group-hover:scale-110"
+                  width={52}
+                  height={52}
+                  className="h-12 w-12 transition-transform duration-200 group-hover:scale-110"
                 />
               </span>
               <span
                 className={[
-                  "text-xs transition-colors",
-                  isSelected ? "font-semibold text-illust-green" : "font-medium text-black-400",
+                  "text-sm font-semibold transition-colors",
+                  isSelected ? "text-black-800" : "text-black-300",
                 ].join(" ")}
               >
                 {label}
@@ -122,11 +123,8 @@ export function MypagePage(): ReactElement {
   const selectedEmotion = todayEmotion?.emotion ?? null;
 
   return (
-    <main
-      id="main-content"
-      className="mx-auto min-h-screen w-full max-w-xl px-4 pb-24 pt-10 tablet:max-w-2xl tablet:px-8 tablet:pt-14 pc:max-w-4xl pc:px-12 pc:pt-16 desktop:max-w-5xl desktop:px-16"
-    >
-      <section className="mb-6 flex flex-col items-center gap-3 animate-fade-in-up">
+    <main id="main-content" className="mx-auto min-h-screen w-full max-w-[640px] px-6 pb-24 pt-10">
+      <section className="mb-8 flex flex-col items-center gap-3 animate-fade-in-up">
         {isLoading || !me ? (
           <ProfileSkeleton />
         ) : (
@@ -145,7 +143,7 @@ export function MypagePage(): ReactElement {
         )}
       </section>
 
-      <div className="mb-5 animate-fade-in-up" style={{ animationDelay: "80ms" }}>
+      <div className="mb-8 animate-fade-in-up" style={{ animationDelay: "80ms" }}>
         <EmotionSelector
           selectedEmotion={selectedEmotion}
           onSelect={selectEmotion}

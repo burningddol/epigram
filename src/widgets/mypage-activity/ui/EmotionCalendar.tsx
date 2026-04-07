@@ -2,21 +2,15 @@
 
 import { useMemo, useState, type ReactElement } from "react";
 
+import Image from "next/image";
+
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
-import { useMonthlyEmotions } from "@/entities/emotion-log";
+import { EMOTION_META, useMonthlyEmotions } from "@/entities/emotion-log";
 
 import type { Emotion } from "@/entities/emotion-log";
-
-const EMOTION_EMOJI: Record<Emotion, string> = {
-  MOVED: "🥹",
-  HAPPY: "😊",
-  WORRIED: "😟",
-  SAD: "😔",
-  ANGRY: "😡",
-};
 
 const WEEKDAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
 
@@ -74,16 +68,22 @@ export function EmotionCalendar({ userId }: EmotionCalendarProps): ReactElement 
     if (!emotion) return null;
 
     return (
-      <span className="absolute inset-0 flex items-center justify-center text-lg leading-none">
-        {EMOTION_EMOJI[emotion]}
+      <span className="absolute inset-0 flex items-center justify-center">
+        <Image
+          src={EMOTION_META[emotion].icon}
+          alt={EMOTION_META[emotion].label}
+          width={28}
+          height={28}
+          className="h-7 w-7"
+        />
       </span>
     );
   }
 
   return (
-    <section className="w-full rounded-2xl bg-white px-5 py-5 shadow-sm ring-1 ring-line-200">
-      <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-black-700">
+    <div className="w-full">
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-2xl font-semibold text-black-800">
           {year}년 {String(month).padStart(2, "0")}월
         </h2>
         <div className="flex items-center gap-0.5">
@@ -91,17 +91,17 @@ export function EmotionCalendar({ userId }: EmotionCalendarProps): ReactElement 
             type="button"
             aria-label="이전 달"
             onClick={handlePrevMonth}
-            className="flex h-8 w-8 items-center justify-center rounded-full text-black-400 transition-all duration-150 hover:bg-blue-200 hover:text-blue-700 active:scale-90"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-black-400 transition-all duration-150 hover:bg-blue-100 hover:text-blue-700 active:scale-90"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-5 w-5" />
           </button>
           <button
             type="button"
             aria-label="다음 달"
             onClick={handleNextMonth}
-            className="flex h-8 w-8 items-center justify-center rounded-full text-black-400 transition-all duration-150 hover:bg-blue-200 hover:text-blue-700 active:scale-90"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-black-400 transition-all duration-150 hover:bg-blue-100 hover:text-blue-700 active:scale-90"
           >
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="h-5 w-5" />
           </button>
         </div>
       </div>
@@ -125,6 +125,6 @@ export function EmotionCalendar({ userId }: EmotionCalendarProps): ReactElement 
         }}
         className="emotion-calendar w-full border-none"
       />
-    </section>
+    </div>
   );
 }

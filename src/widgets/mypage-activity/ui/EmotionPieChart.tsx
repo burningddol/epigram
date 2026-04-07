@@ -2,26 +2,14 @@
 
 import { useMemo, type ReactElement } from "react";
 
+import Image from "next/image";
+
+import { Inbox } from "lucide-react";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 
+import { EMOTION_META, EMOTION_ORDER } from "@/entities/emotion-log";
+
 import type { Emotion, EmotionLog } from "@/entities/emotion-log";
-
-interface EmotionMeta {
-  label: string;
-  emoji: string;
-  color: string;
-}
-
-// Emojis and labels aligned with EmotionSelector to ensure consistency across the UI
-const EMOTION_META: Record<Emotion, EmotionMeta> = {
-  MOVED: { label: "감동", emoji: "🥹", color: "#48bb98" },
-  HAPPY: { label: "기쁨", emoji: "😊", color: "#fbc85b" },
-  WORRIED: { label: "고민", emoji: "😟", color: "#8e80e3" },
-  SAD: { label: "슬픔", emoji: "😔", color: "#5195ee" },
-  ANGRY: { label: "분노", emoji: "😡", color: "#e46e80" },
-};
-
-const EMOTION_ORDER: Emotion[] = ["MOVED", "HAPPY", "WORRIED", "SAD", "ANGRY"];
 
 interface ChartDatum {
   emotion: Emotion;
@@ -57,21 +45,21 @@ export function EmotionPieChart({ emotionLogs }: EmotionPieChartProps): ReactEle
 
   if (chartData.length === 0) {
     return (
-      <section className="flex w-full flex-col rounded-2xl bg-white px-5 py-5 shadow-sm ring-1 ring-line-200">
-        <h2 className="mb-4 text-sm font-semibold text-black-700">감정 기록</h2>
-        <div className="flex flex-1 flex-col items-center justify-center gap-2 py-8">
-          <span className="text-4xl">📭</span>
+      <div className="flex w-full flex-col">
+        <h2 className="mb-4 text-2xl font-semibold text-black-800">감정 차트</h2>
+        <div className="flex flex-col items-center justify-center gap-2 py-8">
+          <Inbox className="h-10 w-10 text-black-200" strokeWidth={1.5} aria-hidden="true" />
           <p className="text-sm text-black-300">이번 달 감정 기록이 없어요</p>
         </div>
-      </section>
+      </div>
     );
   }
 
   const topEmotion = chartData.reduce((max, d) => (d.count > max.count ? d : max));
 
   return (
-    <section className="w-full rounded-2xl bg-white px-5 py-5 shadow-sm ring-1 ring-line-200">
-      <h2 className="mb-4 text-sm font-semibold text-black-700">감정 기록</h2>
+    <div className="w-full">
+      <h2 className="mb-4 text-2xl font-semibold text-black-800">감정 차트</h2>
 
       <div className="flex items-center gap-6">
         {/* Donut chart */}
@@ -100,7 +88,13 @@ export function EmotionPieChart({ emotionLogs }: EmotionPieChartProps): ReactEle
           </ResponsiveContainer>
 
           <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-2xl leading-none">{EMOTION_META[topEmotion.emotion].emoji}</span>
+            <Image
+              src={EMOTION_META[topEmotion.emotion].icon}
+              alt={EMOTION_META[topEmotion.emotion].label}
+              width={36}
+              height={36}
+              className="h-9 w-9"
+            />
             <span className="mt-1 text-xs font-semibold text-black-500">
               {topEmotion.percentage}%
             </span>
@@ -116,7 +110,7 @@ export function EmotionPieChart({ emotionLogs }: EmotionPieChartProps): ReactEle
                 style={{ backgroundColor: EMOTION_META[emotion].color }}
               />
               <span className="w-10 text-xs text-black-400">{EMOTION_META[emotion].label}</span>
-              <div className="relative flex-1 overflow-hidden rounded-full bg-line-100 h-1.5">
+              <div className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-line-100">
                 <div
                   className="absolute left-0 top-0 h-full rounded-full transition-all duration-700"
                   style={{
@@ -132,6 +126,6 @@ export function EmotionPieChart({ emotionLogs }: EmotionPieChartProps): ReactEle
           ))}
         </ul>
       </div>
-    </section>
+    </div>
   );
 }

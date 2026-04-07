@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactElement } from "react";
+import { useState, type ReactElement } from "react";
 
 import Link from "next/link";
 
@@ -9,7 +9,6 @@ import { ChevronDown } from "lucide-react";
 import { useMyComments } from "@/entities/comment";
 import { useMonthlyEmotions } from "@/entities/emotion-log";
 import { useEpigrams } from "@/entities/epigram";
-
 import { ErrorBoundary } from "@/shared/ui/ErrorBoundary";
 import { SectionErrorFallback } from "@/shared/ui/SectionErrorFallback";
 
@@ -93,21 +92,11 @@ function MyEpigramList({ userId }: MyEpigramListProps): ReactElement {
   });
 
   const epigrams = data?.pages.flatMap((page) => page.list) ?? [];
-  const totalCount = data?.pages[0]?.totalCount ?? 0;
 
   return (
-    <section className="rounded-2xl bg-white px-5 py-5 shadow-sm ring-1 ring-line-200">
-      <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold text-black-700">
-        내 에피그램
-        {totalCount > 0 && (
-          <span className="rounded-full bg-blue-200 px-2 py-0.5 text-xs font-semibold text-blue-700">
-            {totalCount}
-          </span>
-        )}
-      </h2>
-
+    <div>
       {epigrams.length === 0 ? (
-        <p className="py-4 text-center text-sm text-black-300">작성한 에피그램이 없어요.</p>
+        <p className="py-8 text-center text-sm text-black-300">작성한 에피그램이 없어요.</p>
       ) : (
         <ul className="flex flex-col gap-2.5">
           {epigrams.map((epigram) => (
@@ -121,7 +110,7 @@ function MyEpigramList({ userId }: MyEpigramListProps): ReactElement {
         isFetchingNextPage={isFetchingNextPage}
         onLoadMore={() => void fetchNextPage()}
       />
-    </section>
+    </div>
   );
 }
 
@@ -157,21 +146,11 @@ function MyCommentList({ userId }: MyCommentListProps): ReactElement {
   });
 
   const comments = data?.pages.flatMap((page) => page.list) ?? [];
-  const totalCount = data?.pages[0]?.totalCount ?? 0;
 
   return (
-    <section className="rounded-2xl bg-white px-5 py-5 shadow-sm ring-1 ring-line-200">
-      <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold text-black-700">
-        내 댓글
-        {totalCount > 0 && (
-          <span className="rounded-full bg-blue-200 px-2 py-0.5 text-xs font-semibold text-blue-700">
-            {totalCount}
-          </span>
-        )}
-      </h2>
-
+    <div>
       {comments.length === 0 ? (
-        <p className="py-4 text-center text-sm text-black-300">작성한 댓글이 없어요.</p>
+        <p className="py-8 text-center text-sm text-black-300">작성한 댓글이 없어요.</p>
       ) : (
         <ul className="flex flex-col gap-2.5">
           {comments.map((comment) => (
@@ -185,34 +164,105 @@ function MyCommentList({ userId }: MyCommentListProps): ReactElement {
         isFetchingNextPage={isFetchingNextPage}
         onLoadMore={() => void fetchNextPage()}
       />
-    </section>
+    </div>
+  );
+}
+
+// ─── Tab navigation ───────────────────────────────────────────────────────────
+
+type ActivityTab = "epigram" | "comment";
+
+const TAB_DEFINITIONS = [
+  { tab: "epigram" as const, label: "내 에피그램" },
+  { tab: "comment" as const, label: "내 댓글" },
+];
+
+interface TabNavProps {
+  activeTab: ActivityTab;
+  epigramCount: number;
+  commentCount: number;
+  onTabChange: (tab: ActivityTab) => void;
+}
+
+function TabNav({ activeTab, epigramCount, commentCount, onTabChange }: TabNavProps): ReactElement {
+  const counts: Record<ActivityTab, number> = { epigram: epigramCount, comment: commentCount };
+
+  return (
+    <div className="flex border-b border-line-200">
+      {TAB_DEFINITIONS.map(({ tab, label }) => {
+        const count = counts[tab];
+        return (
+          <button
+            key={tab}
+            type="button"
+            onClick={() => onTabChange(tab)}
+            className={[
+              "flex items-center gap-1.5 px-4 pb-3 pt-1 text-sm font-semibold transition-colors",
+              activeTab === tab
+                ? "border-b-2 border-black-800 text-black-800"
+                : "text-black-300 hover:text-black-500",
+            ].join(" ")}
+          >
+            {label}
+            {count > 0 && (
+              <span
+                className={[
+                  "rounded-full px-1.5 py-0.5 text-xs font-semibold",
+                  activeTab === tab ? "bg-black-800 text-white" : "bg-line-200 text-black-400",
+                ].join(" ")}
+              >
+                {count}
+              </span>
+            )}
+          </button>
+        );
+      })}
+    </div>
   );
 }
 
 // ─── MypageActivity ───────────────────────────────────────────────────────────
 
 export function MypageActivity({ userId }: MypageActivityProps): ReactElement {
+  const [activeTab, setActiveTab] = useState<ActivityTab>("epigram");
+
   const { data: monthlyLogs = [] } = useMonthlyEmotions({
     userId,
     year: NOW.getFullYear(),
     month: NOW.getMonth() + 1,
   });
 
-  return (
-    <div className="flex flex-col gap-4">
-      <div className="grid gap-4 tablet:grid-cols-2">
-        <ErrorBoundary fallback={(_, reset) => <SectionErrorFallback reset={reset} />}>
-          <EmotionCalendar userId={userId} />
-        </ErrorBoundary>
-        <ErrorBoundary fallback={(_, reset) => <SectionErrorFallback reset={reset} />}>
-          <EmotionPieChart emotionLogs={monthlyLogs} />
-        </ErrorBoundary>
-      </div>
+  const { data: epigramData } = useEpigrams({ limit: PAGE_SIZE, writerId: userId });
+  const { data: commentData } = useMyComments({ userId, limit: PAGE_SIZE });
 
-      <div className="grid gap-4 pc:grid-cols-2">
-        <MyEpigramList userId={userId} />
-        <MyCommentList userId={userId} />
-      </div>
+  const epigramCount = epigramData?.pages[0]?.totalCount ?? 0;
+  const commentCount = commentData?.pages[0]?.totalCount ?? 0;
+
+  return (
+    <div className="flex flex-col gap-10">
+      <ErrorBoundary fallback={(_, reset) => <SectionErrorFallback reset={reset} />}>
+        <EmotionCalendar userId={userId} />
+      </ErrorBoundary>
+
+      <ErrorBoundary fallback={(_, reset) => <SectionErrorFallback reset={reset} />}>
+        <EmotionPieChart emotionLogs={monthlyLogs} />
+      </ErrorBoundary>
+
+      <section>
+        <TabNav
+          activeTab={activeTab}
+          epigramCount={epigramCount}
+          commentCount={commentCount}
+          onTabChange={setActiveTab}
+        />
+        <div className="pt-4">
+          {activeTab === "epigram" ? (
+            <MyEpigramList userId={userId} />
+          ) : (
+            <MyCommentList userId={userId} />
+          )}
+        </div>
+      </section>
     </div>
   );
 }
