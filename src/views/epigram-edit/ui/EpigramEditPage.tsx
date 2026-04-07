@@ -4,10 +4,8 @@ import { useEffect, type ReactElement } from "react";
 
 import { useRouter } from "next/navigation";
 
-import { useQuery } from "@tanstack/react-query";
-
 import { useEpigramDetail } from "@/entities/epigram";
-import { getMe } from "@/entities/user";
+import { useMe } from "@/entities/user";
 import { AUTHOR_TYPE, type EpigramCreateFormValues } from "@/features/epigram-create/model/schema";
 import { EpigramEditForm } from "@/features/epigram-edit";
 
@@ -47,10 +45,10 @@ function resolveDefaultValues({
 export function EpigramEditPage({ epigramId }: EpigramEditPageProps): ReactElement {
   const router = useRouter();
   const { data: epigram, isLoading: isEpigramLoading } = useEpigramDetail(epigramId);
-  const { data: me, isLoading: isMeLoading } = useQuery({ queryKey: ["me"], queryFn: getMe });
+  const { user: me, isLoading: isMeLoading } = useMe();
 
   const isUnauthorized =
-    !isMeLoading && me !== undefined && epigram !== undefined && epigram.writerId !== me.id;
+    !isMeLoading && me !== null && epigram !== undefined && epigram.writerId !== me.id;
 
   useEffect(() => {
     if (isUnauthorized) {

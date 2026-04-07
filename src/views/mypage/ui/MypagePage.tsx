@@ -4,12 +4,12 @@ import type { ReactElement } from "react";
 
 import Image from "next/image";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LogOut } from "lucide-react";
 
 import { postTodayEmotion, useTodayEmotion } from "@/entities/emotion-log";
 import type { Emotion } from "@/entities/emotion-log";
-import { getMe } from "@/entities/user";
+import { useMe } from "@/entities/user";
 import { ProfileImageUpload, useLogout } from "@/features/auth";
 import { MypageActivity } from "@/widgets/mypage-activity";
 
@@ -107,7 +107,7 @@ function EmotionSelector({
 
 export function MypagePage(): ReactElement {
   const queryClient = useQueryClient();
-  const { data: me, isLoading } = useQuery({ queryKey: ["me"], queryFn: getMe });
+  const { user: me, isLoading } = useMe();
   const { handleLogout } = useLogout();
   const { data: todayEmotion } = useTodayEmotion(me?.id ?? 0);
 
