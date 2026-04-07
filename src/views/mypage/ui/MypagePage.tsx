@@ -51,13 +51,13 @@ function EmotionSelector({
   isPending,
 }: EmotionSelectorProps): ReactElement {
   return (
-    <div className="w-full rounded-2xl bg-white px-6 py-6 shadow-sm ring-1 ring-blue-200">
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-black-600">오늘의 감정</h2>
-        <span className="text-base text-blue-400">{TODAY_LABEL}</span>
+    <div className="w-full rounded-2xl bg-white px-4 py-5 shadow-sm ring-1 ring-blue-200 tablet:px-6 tablet:py-6">
+      <div className="mb-4 flex items-center justify-between tablet:mb-6">
+        <h2 className="text-base font-semibold text-black-600 tablet:text-xl">오늘의 감정</h2>
+        <span className="text-xs text-blue-400 tablet:text-base">{TODAY_LABEL}</span>
       </div>
 
-      <div className="flex items-start justify-around gap-2">
+      <div className="flex items-start justify-between gap-1 tablet:justify-around tablet:gap-2">
         {EMOTION_OPTIONS.map(({ value, icon, label }) => {
           const isSelected = selectedEmotion === value;
           return (
@@ -68,12 +68,12 @@ function EmotionSelector({
               disabled={isPending}
               aria-label={`${label} 감정 선택`}
               aria-pressed={isSelected}
-              className="group flex flex-col items-center gap-2 transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 active:scale-95"
+              className="group flex flex-col items-center gap-1.5 transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 active:scale-95 tablet:gap-2"
             >
               <span
                 className={[
-                  "flex h-16 w-16 items-center justify-center rounded-2xl transition-all duration-200",
-                  "tablet:h-20 tablet:w-20 pc:h-24 pc:w-24",
+                  "flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-200",
+                  "tablet:h-16 tablet:w-16 tablet:rounded-2xl pc:h-20 pc:w-20",
                   isSelected
                     ? "border-4 border-illust-green"
                     : "bg-blue-400/15 group-hover:bg-blue-400/25",
@@ -84,12 +84,12 @@ function EmotionSelector({
                   alt={label}
                   width={48}
                   height={48}
-                  className="h-9 w-9 transition-transform duration-200 group-hover:scale-110 tablet:h-10 tablet:w-10 pc:h-12 pc:w-12"
+                  className="h-7 w-7 transition-transform duration-200 group-hover:scale-110 tablet:h-9 tablet:w-9 pc:h-12 pc:w-12"
                 />
               </span>
               <span
                 className={[
-                  "text-sm font-semibold transition-colors tablet:text-base pc:text-lg",
+                  "text-xs font-semibold transition-colors tablet:text-sm pc:text-base",
                   isSelected ? "text-black-600" : "text-gray-300",
                 ].join(" ")}
               >
