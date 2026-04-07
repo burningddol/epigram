@@ -9,6 +9,7 @@ import { ChevronDown } from "lucide-react";
 import { useMyComments } from "@/entities/comment";
 import { useMonthlyEmotions } from "@/entities/emotion-log";
 import { useEpigrams } from "@/entities/epigram";
+import { cn } from "@/shared/lib/cn";
 import { ErrorBoundary } from "@/shared/ui/ErrorBoundary";
 import { SectionErrorFallback } from "@/shared/ui/SectionErrorFallback";
 
@@ -196,20 +197,20 @@ function TabNav({ activeTab, epigramCount, commentCount, onTabChange }: TabNavPr
             key={tab}
             type="button"
             onClick={() => onTabChange(tab)}
-            className={[
-              "flex items-center gap-1.5 px-4 pb-3 pt-1 text-sm font-semibold transition-colors",
+            className={cn(
+              "-mb-px flex items-center gap-1.5 px-4 pb-3 pt-1 text-sm font-semibold transition-colors",
               activeTab === tab
                 ? "border-b-2 border-black-800 text-black-800"
-                : "text-black-300 hover:text-black-500",
-            ].join(" ")}
+                : "text-black-300 hover:text-black-500"
+            )}
           >
             {label}
             {count > 0 && (
               <span
-                className={[
+                className={cn(
                   "rounded-full px-1.5 py-0.5 text-xs font-semibold",
-                  activeTab === tab ? "bg-black-800 text-white" : "bg-line-200 text-black-400",
-                ].join(" ")}
+                  activeTab === tab ? "bg-black-800 text-white" : "bg-line-200 text-black-400"
+                )}
               >
                 {count}
               </span>

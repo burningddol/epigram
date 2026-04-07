@@ -15,6 +15,7 @@ import {
 } from "@/entities/emotion-log";
 import { getMe } from "@/entities/user";
 import { ProfileImageUpload, useLogout } from "@/features/auth";
+import { cn } from "@/shared/lib/cn";
 import { MypageActivity } from "@/widgets/mypage-activity";
 
 import type { Emotion } from "@/entities/emotion-log";
@@ -73,12 +74,12 @@ function EmotionSelector({
               className="group flex flex-col items-center gap-1.5 transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 tablet:gap-2"
             >
               <span
-                className={[
+                className={cn(
                   "flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-200 tablet:h-20 tablet:w-20",
                   isSelected
                     ? "border-4 border-illust-green"
-                    : "bg-[#afbacd]/15 group-hover:bg-[#afbacd]/25",
-                ].join(" ")}
+                    : "bg-[#afbacd]/15 group-hover:bg-[#afbacd]/25"
+                )}
               >
                 <Image
                   src={icon}
@@ -89,10 +90,10 @@ function EmotionSelector({
                 />
               </span>
               <span
-                className={[
+                className={cn(
                   "text-xs font-semibold transition-colors tablet:text-sm",
-                  isSelected ? "text-black-800" : "text-black-300",
-                ].join(" ")}
+                  isSelected ? "text-black-800" : "text-black-300"
+                )}
               >
                 {label}
               </span>

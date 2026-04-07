@@ -7,6 +7,7 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { EMOTION_META, useMonthlyEmotions } from "@/entities/emotion-log";
+import { cn } from "@/shared/lib/cn";
 
 import type { Emotion } from "@/entities/emotion-log";
 
@@ -74,7 +75,6 @@ export function EmotionCalendar({ userId }: EmotionCalendarProps): ReactElement 
 
   return (
     <div className="w-full">
-      {/* Header */}
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-2xl font-semibold text-black-800">
           {year}년 {String(month).padStart(2, "0")}월
@@ -99,9 +99,7 @@ export function EmotionCalendar({ userId }: EmotionCalendarProps): ReactElement 
         </div>
       </div>
 
-      {/* Calendar grid */}
       <div className="grid grid-cols-7">
-        {/* Weekday header row */}
         {WEEKDAY_LABELS.map((label) => (
           <div
             key={label}
@@ -111,7 +109,6 @@ export function EmotionCalendar({ userId }: EmotionCalendarProps): ReactElement 
           </div>
         ))}
 
-        {/* Date cells */}
         {calendarDays.map((date, i) => {
           if (date === null) {
             return (
@@ -126,17 +123,17 @@ export function EmotionCalendar({ userId }: EmotionCalendarProps): ReactElement 
           return (
             <div
               key={dateKey}
-              className={[
+              className={cn(
                 "flex aspect-square flex-col items-center justify-center gap-0.5 bg-white tablet:gap-1",
-                isToday ? "rounded-sm border-[6px] border-[#ff6577]" : "border border-[#eceff4]",
-              ].join(" ")}
+                isToday ? "rounded-sm border-[6px] border-[#ff6577]" : "border border-[#eceff4]"
+              )}
             >
               <span
-                className={[
+                className={cn(
                   "font-semibold leading-none",
                   emotion !== null ? "text-[10px] tablet:text-sm" : "text-sm tablet:text-xl",
-                  isToday ? "text-[#ff6577]" : "text-[#c4c4c4]",
-                ].join(" ")}
+                  isToday ? "text-[#ff6577]" : "text-[#c4c4c4]"
+                )}
               >
                 {date.getDate()}
               </span>
