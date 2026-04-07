@@ -141,6 +141,11 @@ async function handler(
 
   const refreshToken = request.cookies.get("refreshToken")?.value;
 
+  // 토큰이 전혀 없으면 백엔드 요청 없이 즉시 null 반환 — 브라우저 콘솔 401 방지
+  if (!accessToken && !refreshToken && path === "users/me") {
+    return NextResponse.json(null, { status: 200 });
+  }
+
   // accessToken 없이 refreshToken만 있으면 바로 갱신 시도
   if (!accessToken && refreshToken) {
     const newAccessToken = await attemptTokenRefresh(refreshToken);
