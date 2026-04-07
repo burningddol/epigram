@@ -8,8 +8,10 @@ export function useMe(): { user: User | null; isLoading: boolean } {
     queryKey: ["me"],
     queryFn: getMe,
     retry: false,
-    // 401 등 인증 에러는 에러로 throw하지 않고 null로 처리
-    throwOnError: false,
+    // 헤더가 모든 라우트에 sticky로 마운트되므로, 전역 staleTime(60s)을 상속하면
+    // 라우트 전환 시마다 /users/me 요청이 발생한다. 유저 정보는 세션 중 거의 불변이므로
+    // staleTime: Infinity로 캐시를 무효화하지 않는다.
+    staleTime: Infinity,
   });
 
   return { user: data ?? null, isLoading };

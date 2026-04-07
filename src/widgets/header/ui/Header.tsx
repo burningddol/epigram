@@ -77,15 +77,9 @@ function UserSection({ iconSize, textSize }: UserSectionProps): ReactElement {
 
   if (isLoading) {
     return (
-      <div
-        className={cn(
-          "flex items-center gap-[6px] animate-pulse",
-          isMdText ? "text-[14px]" : "text-[13px]"
-        )}
-      >
+      <div className="flex items-center gap-[6px] animate-pulse">
         <div
-          className="rounded-full bg-blue-100 shrink-0"
-          style={{ width: imageSize, height: imageSize }}
+          className={cn("rounded-full bg-blue-100 shrink-0", isLgIcon ? "h-8 w-8" : "h-6 w-6")}
         />
         <div className="h-4 w-14 rounded bg-blue-100" />
       </div>
