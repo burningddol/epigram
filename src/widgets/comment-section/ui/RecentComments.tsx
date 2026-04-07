@@ -37,12 +37,12 @@ function CommentItem({ comment }: CommentItemProps): ReactElement {
           <WriterAvatar writer={comment.writer} size={48} />
         </button>
 
-        <div className="flex flex-1 flex-col gap-3">
+        <div className="min-w-0 flex flex-1 flex-col gap-3">
           <div className="flex items-center gap-2">
             <span className="text-sm text-black-300">{comment.writer.nickname}</span>
             <span className="text-sm text-black-300">{formatRelativeTime(comment.createdAt)}</span>
           </div>
-          <p className="text-base leading-relaxed text-black-700 tablet:text-lg pc:text-xl">
+          <p className="break-all text-base leading-relaxed text-black-700 tablet:text-lg pc:text-xl">
             {comment.content}
           </p>
         </div>
@@ -100,7 +100,7 @@ export function RecentComments(): ReactElement {
             <li key={i} className="border-t border-line-200 px-6 py-8 first:border-t-0">
               <div className="flex items-start gap-4">
                 <div className="h-12 w-12 animate-pulse rounded-full bg-blue-200" />
-                <div className="flex flex-1 flex-col gap-3">
+                <div className="min-w-0 flex flex-1 flex-col gap-3">
                   <div className="h-3 w-24 animate-pulse rounded bg-blue-200" />
                   <div className="h-4 w-full animate-pulse rounded bg-blue-100" />
                 </div>

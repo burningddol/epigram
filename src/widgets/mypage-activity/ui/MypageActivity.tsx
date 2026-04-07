@@ -82,7 +82,7 @@ function MyCommentItem({ comment, epigramId, userId }: MyCommentItemProps): Reac
           />
         </div>
 
-        <div className="flex flex-1 flex-col gap-3">
+        <div className="min-w-0 flex flex-1 flex-col gap-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-sm text-black-300">{comment.writer.nickname}</span>
@@ -109,7 +109,7 @@ function MyCommentItem({ comment, epigramId, userId }: MyCommentItemProps): Reac
           </div>
 
           <Link href={`/epigrams/${epigramId}`}>
-            <p className="text-base leading-relaxed text-black-700 tablet:text-lg pc:text-xl">
+            <p className="break-all text-base leading-relaxed text-black-700 tablet:text-lg pc:text-xl">
               {comment.content}
             </p>
           </Link>

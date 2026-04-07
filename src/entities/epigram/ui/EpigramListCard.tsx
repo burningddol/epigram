@@ -10,7 +10,7 @@ interface EpigramListCardProps {
 
 export function EpigramListCard({ epigram }: EpigramListCardProps): ReactElement {
   return (
-    <div className="flex flex-col items-end gap-2">
+    <div className="flex min-w-0 flex-col items-end gap-2">
       <Link
         href={`/epigrams/${epigram.id}`}
         className="group relative w-full overflow-hidden rounded-2xl border border-line-100 bg-white p-6 transition-shadow duration-200 hover:shadow-md"
@@ -27,11 +27,11 @@ export function EpigramListCard({ epigram }: EpigramListCardProps): ReactElement
           }}
         />
 
-        <div className="font-serif relative flex flex-col gap-5">
-          <p className="text-base font-medium leading-relaxed text-black-600 tablet:text-lg pc:text-xl">
+        <div className="relative flex flex-col gap-5 font-serif">
+          <p className="break-all text-base font-medium leading-relaxed text-black-600 tablet:text-lg pc:text-xl">
             {epigram.content}
           </p>
-          <p className="text-right text-base font-medium text-blue-400 tablet:text-lg pc:text-xl">
+          <p className="break-all text-right text-base font-medium text-blue-400 tablet:text-lg pc:text-xl">
             - {epigram.author} -
           </p>
         </div>
