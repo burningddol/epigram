@@ -147,7 +147,7 @@ function SearchResults({ keyword }: SearchResultsProps): ReactElement {
         </span>
       </p>
 
-      <ul className="divide-y divide-line-200" aria-label="검색 결과 목록">
+      <ul aria-label="검색 결과 목록">
         {epigrams.map((epigram, index) => (
           <li
             key={epigram.id}
