@@ -24,6 +24,7 @@ export async function fetchEpigramsPageServer({
 
   const res = await fetch(`${BACKEND_BASE}/epigrams?${params}`, {
     next: { revalidate: 30, tags: ["epigrams"] },
+    signal: AbortSignal.timeout(5000),
   });
 
   if (!res.ok) throw new Error(`Failed to fetch epigrams: ${res.status}`);
@@ -33,6 +34,7 @@ export async function fetchEpigramsPageServer({
 export async function fetchTodayEpigramServer(): Promise<Epigram | null> {
   const res = await fetch(`${BACKEND_BASE}/epigrams/today`, {
     next: { revalidate: 60, tags: ["epigrams", "epigrams-today"] },
+    signal: AbortSignal.timeout(5000),
   });
 
   if (!res.ok) return null;

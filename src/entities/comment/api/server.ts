@@ -18,6 +18,7 @@ export async function fetchRecentCommentsPageServer({
 
   const res = await fetch(`${BACKEND_BASE}/comments?${params}`, {
     next: { revalidate: 30, tags: ["comments"] },
+    signal: AbortSignal.timeout(5000),
   });
 
   if (!res.ok) throw new Error(`Failed to fetch comments: ${res.status}`);
