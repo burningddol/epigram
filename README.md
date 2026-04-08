@@ -29,48 +29,54 @@
 
 ## 기술 스택
 
-| 분류 | 기술 |
-|------|------|
-| 프레임워크 | Next.js 15 (App Router), React 19 |
-| 언어 | TypeScript 5 |
-| 서버 상태 | TanStack React Query v5 |
-| 전역 상태 | Zustand v4 |
-| 폼 & 검증 | React Hook Form v7 + Zod v3 |
-| 스타일링 | Tailwind CSS v4 |
-| HTTP | Axios (CSR) / fetch (SSR) |
-| 인증 | 카카오 OAuth 2.0 + HttpOnly 쿠키 |
-| 시각화 | Recharts (파이 차트), react-calendar (감정 달력) |
-| 아이콘 | Lucide React |
-| 배포 | Vercel |
+| 분류       | 기술                                             |
+| ---------- | ------------------------------------------------ |
+| 프레임워크 | Next.js 15 (App Router), React 19                |
+| 언어       | TypeScript 5                                     |
+| 서버 상태  | TanStack React Query v5                          |
+| 전역 상태  | Zustand v4                                       |
+| 폼 & 검증  | React Hook Form v7 + Zod v3                      |
+| 스타일링   | Tailwind CSS v4                                  |
+| HTTP       | Axios (CSR) / fetch (SSR)                        |
+| 인증       | 카카오 OAuth 2.0 + HttpOnly 쿠키                 |
+| 시각화     | Recharts (파이 차트), react-calendar (감정 달력) |
+| 아이콘     | Lucide React                                     |
+| 배포       | Vercel                                           |
 
 ---
 
 ## 주요 기능
 
 ### 에피그램 CRUD
+
 - 글귀 작성, 수정, 삭제 (인증 필요)
 - 태그 기반 분류, 출처·작가 입력
 - 좋아요 토글 (낙관적 업데이트)
 
 ### 무한 스크롤 피드
+
 - `useInfiniteQuery` + `IntersectionObserver` 조합
 - 페이지 단위 API 호출, 스크롤 하단 도달 시 자동 페이지네이션
 - 스켈레톤 UI로 로딩 상태 표시
 
 ### 실시간 검색
+
 - 키워드 검색 + 무한 스크롤
 - 최근 검색어 localStorage 저장
 
 ### 감정 기록 & 시각화
+
 - 5가지 감정(감동·행복·고민·슬픔·분노) 일별 기록
 - 월간 감정 달력 + 감정 비율 파이 차트
 - KST 시간대 기반 날짜 처리 (`Intl.DateTimeFormat` 싱글톤 캐싱)
 
 ### 카카오 OAuth 로그인
+
 - 인가 코드 → BFF → 백엔드 토큰 교환 흐름
 - 토큰을 HttpOnly 쿠키에만 저장, 클라이언트 JS 접근 불가
 
 ### 전역 모달 시스템
+
 - Zustand `modalStore`로 모달 상태 중앙화
 - 루트 레이아웃 `<ModalProvider />` 단일 마운트
 - 접근성: 모달 외부 콘텐츠 `inert` 처리, 포커스 자동 복원
@@ -108,12 +114,12 @@ src/
 
 같은 '상태'라도 성격에 따라 담당 도구를 엄격히 구분했습니다.
 
-| 상태 유형 | 도구 | 예시 |
-|-----------|------|------|
-| 서버 상태 (API 데이터) | React Query | 에피그램 목록, 댓글, 사용자 정보 |
-| 전역 클라이언트 상태 | Zustand | 인증, 모달 제어 |
-| 지역 UI 상태 | useState | 탭 선택, 토글 |
-| 폼 상태 | React Hook Form + Zod | 글귀 작성, 로그인 폼 |
+| 상태 유형              | 도구                  | 예시                             |
+| ---------------------- | --------------------- | -------------------------------- |
+| 서버 상태 (API 데이터) | React Query           | 에피그램 목록, 댓글, 사용자 정보 |
+| 전역 클라이언트 상태   | Zustand               | 인증, 모달 제어                  |
+| 지역 UI 상태           | useState              | 탭 선택, 토글                    |
+| 폼 상태                | React Hook Form + Zod | 글귀 작성, 로그인 폼             |
 
 ---
 
@@ -143,6 +149,7 @@ specs/001-epigram-core-pages/
 명세가 실제 구현의 기준이 됩니다. 백엔드 Swagger와 명세가 충돌하면 Swagger를 우선합니다. 계획과 실제 사이의 간극을 코드가 아닌 문서에서 먼저 발견하는 것이 목표입니다.
 
 **인수 시나리오 예시 (spec.md):**
+
 ```
 시나리오: 로그인한 사용자가 에피그램에 좋아요를 누른다
   Given 사용자가 로그인되어 있다
@@ -175,13 +182,15 @@ VII. 보안            — HttpOnly 쿠키, localStorage 토큰 저장 금지
 # CLAUDE.md 핵심 지시 내용
 
 ## 필수 초기화 (코드 작성 전 반드시 읽어야 할 파일)
+
 - constitution.md — 모든 코드 작성 원칙
-- plan.md         — 태스크 컨텍스트 및 설계 의도
+- plan.md — 태스크 컨텍스트 및 설계 의도
 - 관련 spec, contracts 문서
 
 ⚠️ 위 파일들을 읽기 전까지 코드를 한 줄도 작성하지 않는다. 예외 없음.
 
 ## 필수 워크플로우 (매 태스크마다)
+
 1. GitHub 이슈 생성
 2. git pull origin main (브랜치 생성 전 반드시)
 3. 브랜치 생성: feat/#이슈번호-설명
@@ -215,6 +224,7 @@ Claude AI:
 ```
 
 **단독 개발자가 유지하는 품질 게이트:**
+
 - 모든 태스크에 이슈·PR 연결 → 추적 가능한 변경 이력
 - CI(lint + build)를 통과하지 않으면 머지 불가
 - 구현 직후 `simplify` 리팩토링으로 코드 냄새 즉시 제거
@@ -268,14 +278,14 @@ BFF 프록시 (Next.js API Routes /api/[...path])
 
 **"인증 필요 여부"** 를 렌더링 전략 결정의 유일한 기준으로 삼았습니다.
 
-| 페이지 | ISR/SSG (서버 컴포넌트) | CSR (React Query) |
-|--------|------------------------|-------------------|
-| `/epigrams` | 에피그램 목록 (`revalidate: 30`) | — |
-| `/epigrams/[id]` | 에피그램 본문 (`revalidate: 60`) | 좋아요 상태, 댓글 |
-| `/search` | — | 검색 결과 전체 |
-| `/addepigram` | — | 폼 전체 |
-| `/mypage` | — | 감정 달력, 차트, 프로필 |
-| `/login`, `/signup` | 전체 (`force-static`) | — |
+| 페이지              | ISR/SSG (서버 컴포넌트)          | CSR (React Query)       |
+| ------------------- | -------------------------------- | ----------------------- |
+| `/epigrams`         | 에피그램 목록 (`revalidate: 30`) | —                       |
+| `/epigrams/[id]`    | 에피그램 본문 (`revalidate: 60`) | 좋아요 상태, 댓글       |
+| `/search`           | —                                | 검색 결과 전체          |
+| `/addepigram`       | —                                | 폼 전체                 |
+| `/mypage`           | —                                | 감정 달력, 차트, 프로필 |
+| `/login`, `/signup` | 전체 (`force-static`)            | —                       |
 
 서버 컴포넌트는 `BACKEND_URL`에 직접 fetch하고, 클라이언트 컴포넌트는 axios로 BFF(`/api/...`)를 통해 요청합니다. 두 경로가 명확히 분리되어 있어 캐싱 전략과 보안 정책이 충돌하지 않습니다.
 
