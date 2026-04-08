@@ -22,7 +22,7 @@ export function middleware(request: NextRequest): NextResponse | undefined {
   }
 
   if (AUTH_ONLY_PATHS.some((p) => pathname.startsWith(p)) && isLoggedIn) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/epigrams", request.url));
   }
 }
 
