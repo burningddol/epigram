@@ -15,8 +15,6 @@
 
 ---
 
-
-
 ## SDD + AI 개발 파이프라인
 
 ### 전체 흐름
@@ -44,13 +42,13 @@ specs/001-epigram-core-pages/
 
 `.specify/memory/constitution.md`에 모든 관행보다 우선하는 최상위 규칙을 선언했습니다.
 
-| 원칙 | 핵심 규칙 |
-|---|---|
+| 원칙        | 핵심 규칙                                     |
+| ----------- | --------------------------------------------- |
 | 타입 안전성 | `any` 금지 (NON-NEGOTIABLE) · Zod 런타임 검증 |
-| 명확성 | guard clause · 중첩 2단계 제한 |
-| 보안 | HttpOnly 쿠키 · localStorage 토큰 저장 금지 |
-| 컴포넌트 | 관심사 분리 · 세 줄의 코드 > 추상화 |
-| 성능 | 조기 최적화 금지 · 실제 문제 있을 때만 최적화 |
+| 명확성      | guard clause · 중첩 2단계 제한                |
+| 보안        | HttpOnly 쿠키 · localStorage 토큰 저장 금지   |
+| 컴포넌트    | 관심사 분리 · 세 줄의 코드 > 추상화           |
+| 성능        | 조기 최적화 금지 · 실제 문제 있을 때만 최적화 |
 
 ### Step 3. Claude AI 에이전트
 
@@ -83,17 +81,18 @@ Claude AI:
 **품질 게이트**: 모든 태스크에 이슈·PR 연결 / CI 미통과 시 머지 불가 / simplify 리팩토링 즉시 적용 / Figma REST API로 디자인 값 추출
 
 ---
+
 ## 기술 스택
 
-| 분류 | 선택 |
-|---|---|
-| Framework | Next.js 15 (App Router) · React 19 · TypeScript 5 |
-| Server State | TanStack React Query v5 |
-| Client State | Zustand v4 |
-| Form & Validation | React Hook Form v7 + Zod v3 |
-| Styling | Tailwind CSS v4 |
-| Auth | 카카오 OAuth 2.0 · HttpOnly 쿠키 (BFF 프록시) |
-| Deploy | Vercel (ISR + force-static 하이브리드) |
+| 분류              | 선택                                              |
+| ----------------- | ------------------------------------------------- |
+| Framework         | Next.js 15 (App Router) · React 19 · TypeScript 5 |
+| Server State      | TanStack React Query v5                           |
+| Client State      | Zustand v4                                        |
+| Form & Validation | React Hook Form v7 + Zod v3                       |
+| Styling           | Tailwind CSS v4                                   |
+| Auth              | 카카오 OAuth 2.0 · HttpOnly 쿠키 (BFF 프록시)     |
+| Deploy            | Vercel (ISR + force-static 하이브리드)            |
 
 ---
 
@@ -119,12 +118,12 @@ src/
 
 ### 상태 관리 계층
 
-| 상태 유형 | 도구 | 예시 |
-|---|---|---|
-| 서버 상태 | React Query | 에피그램 목록, 댓글, 사용자 정보 |
-| 전역 클라이언트 | Zustand | 인증, 모달 제어 |
-| 지역 UI | useState | 탭 선택, 토글 |
-| 폼 | React Hook Form + Zod | 글귀 작성, 로그인 |
+| 상태 유형       | 도구                  | 예시                             |
+| --------------- | --------------------- | -------------------------------- |
+| 서버 상태       | React Query           | 에피그램 목록, 댓글, 사용자 정보 |
+| 전역 클라이언트 | Zustand               | 인증, 모달 제어                  |
+| 지역 UI         | useState              | 탭 선택, 토글                    |
+| 폼              | React Hook Form + Zod | 글귀 작성, 로그인                |
 
 ---
 
@@ -142,12 +141,12 @@ Browser (axios, 쿠키 자동 포함)
   → 외부 백엔드 API
 ```
 
-| 구현 포인트 | 설명 |
-|---|---|
-| 토큰 은닉 | 백엔드 응답 body의 토큰을 HttpOnly 쿠키로 교체, `document.cookie` 접근 차단 |
-| 자동 갱신 | 401 → refreshToken으로 재발급 → 원래 요청 재시도 → 실패 시 쿠키 삭제 |
-| ISR 캐시 분리 | BFF는 `no-store` 고정, 공개 데이터는 서버 컴포넌트에서 백엔드 직접 fetch로 ISR 활용 |
-| BFF 전용 로그아웃 | 토큰 revoke 엔드포인트 미제공 → 쿠키만 삭제하는 독립 엔드포인트 설계 |
+| 구현 포인트       | 설명                                                                                |
+| ----------------- | ----------------------------------------------------------------------------------- |
+| 토큰 은닉         | 백엔드 응답 body의 토큰을 HttpOnly 쿠키로 교체, `document.cookie` 접근 차단         |
+| 자동 갱신         | 401 → refreshToken으로 재발급 → 원래 요청 재시도 → 실패 시 쿠키 삭제                |
+| ISR 캐시 분리     | BFF는 `no-store` 고정, 공개 데이터는 서버 컴포넌트에서 백엔드 직접 fetch로 ISR 활용 |
+| BFF 전용 로그아웃 | 토큰 revoke 엔드포인트 미제공 → 쿠키만 삭제하는 독립 엔드포인트 설계                |
 
 ---
 
@@ -155,13 +154,13 @@ Browser (axios, 쿠키 자동 포함)
 
 **판단 기준은 단 하나: 인증 필요 여부**
 
-| 페이지 | 서버 렌더링 (ISR/SSG) | 클라이언트 렌더링 (React Query) |
-|---|---|---|
-| `/epigrams` | 목록 (`revalidate: 30`) | — |
-| `/epigrams/[id]` | 본문 (`revalidate: 60`) | 좋아요, 댓글 |
-| `/search` | — | 검색 결과 전체 |
-| `/mypage` | — | 감정 달력, 차트, 프로필 |
-| `/login`, `/signup` | 전체 (`force-static`) | — |
+| 페이지              | 서버 렌더링 (ISR/SSG)   | 클라이언트 렌더링 (React Query) |
+| ------------------- | ----------------------- | ------------------------------- |
+| `/epigrams`         | 목록 (`revalidate: 30`) | —                               |
+| `/epigrams/[id]`    | 본문 (`revalidate: 60`) | 좋아요, 댓글                    |
+| `/search`           | —                       | 검색 결과 전체                  |
+| `/mypage`           | —                       | 감정 달력, 차트, 프로필         |
+| `/login`, `/signup` | 전체 (`force-static`)   | —                               |
 
 동적 라우트는 `generateStaticParams`로 최근 20개를 빌드 시 정적 생성, 나머지는 요청 시 ISR로 처리합니다. 서버 컴포넌트는 `BACKEND_URL` 직접 fetch, 클라이언트 컴포넌트는 BFF(`/api/...`) 경유 — 두 경로가 명확히 분리되어 캐싱과 보안이 충돌하지 않습니다.
 
