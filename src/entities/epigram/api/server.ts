@@ -1,0 +1,43 @@
+// Server-only: DO NOT import in client components
+import { BACKEND_BASE } from "@/shared/config/backend";
+
+import { epigramListResponseSchema, epigramSchema } from "../model/schema";
+import type { Epigram, EpigramListResponse } from "../model/schema";
+
+interface FetchEpigramsPageParams {
+  limit: number;
+  pageParam?: number;
+  keyword?: string;
+  writerId?: number;
+}
+
+export async function fetchEpigramsPageServer({
+  limit,
+  pageParam,
+  keyword,
+  writerId,
+}: FetchEpigramsPageParams): Promise<EpigramListResponse> {
+  const params = new URLSearchParams({ limit: String(limit) });
+  if (pageParam !== undefined) params.set("cursor", String(pageParam));
+  if (keyword) params.set("keyword", keyword);
+  if (writerId !== undefined) params.set("writerId", String(writerId));
+
+  const res = await fetch(`${BACKEND_BASE}/epigrams?${params}`, {
+    next: { revalidate: 30, tags: ["epigrams"] },
+  });
+
+  if (!res.ok) throw new Error(`Failed to fetch epigrams: ${res.status}`);
+  return epigramListResponseSchema.parse(await res.json());
+}
+
+export async function fetchTodayEpigramServer(): Promise<Epigram | null> {
+  const res = await fetch(`${BACKEND_BASE}/epigrams/today`, {
+    next: { revalidate: 60, tags: ["epigrams", "epigrams-today"] },
+  });
+
+  if (!res.ok) return null;
+
+  const data: unknown = await res.json();
+  if (data == null || typeof data !== "object") return null;
+  return epigramSchema.parse(data);
+}
