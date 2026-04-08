@@ -27,7 +27,7 @@
 
 ### Step 1. 명세 설계
 
-코드 한 줄 작성 전에 [speckit](https://speckit.ai)으로 전체 기능 명세를 문서화했습니다.
+코드 한 줄 작성 전에 [speckit](https://github.com/github/spec-kit)으로 전체 기능 명세를 문서화했습니다.
 
 ```
 specs/001-epigram-core-pages/
