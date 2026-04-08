@@ -25,7 +25,7 @@
 
 ### Step 1. 명세 설계
 
-코드 한 줄 작성 전에 [speckit](https://speckit.ai)으로 전체 기능 명세를 문서화했습니다.
+코드 한 줄 작성 전에 [speckit](https://github.com/github/spec-kit)으로 전체 기능 명세를 문서화했습니다.
 
 ```
 specs/001-epigram-core-pages/
@@ -150,21 +150,6 @@ Browser (axios, 쿠키 자동 포함)
 
 ---
 
-## 하이브리드 렌더링 전략
-
-**판단 기준은 단 하나: 인증 필요 여부**
-
-| 페이지              | 서버 렌더링 (ISR/SSG)   | 클라이언트 렌더링 (React Query) |
-| ------------------- | ----------------------- | ------------------------------- |
-| `/epigrams`         | 목록 (`revalidate: 30`) | —                               |
-| `/epigrams/[id]`    | 본문 (`revalidate: 60`) | 좋아요, 댓글                    |
-| `/search`           | —                       | 검색 결과 전체                  |
-| `/mypage`           | —                       | 감정 달력, 차트, 프로필         |
-| `/login`, `/signup` | 전체 (`force-static`)   | —                               |
-
-동적 라우트는 `generateStaticParams`로 최근 20개를 빌드 시 정적 생성, 나머지는 요청 시 ISR로 처리합니다. 서버 컴포넌트는 `BACKEND_URL` 직접 fetch, 클라이언트 컴포넌트는 BFF(`/api/...`) 경유 — 두 경로가 명확히 분리되어 캐싱과 보안이 충돌하지 않습니다.
-
----
 
 ## 로컬 실행
 
