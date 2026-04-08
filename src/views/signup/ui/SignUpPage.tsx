@@ -1,19 +1,12 @@
 import type { ReactElement } from "react";
 
-import { cookies } from "next/headers";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 import { AuthLeftPanel } from "@/features/auth/ui/AuthLeftPanel";
 import { SignUpForm } from "@/features/auth/ui/SignUpForm";
 import { EpigramLogo } from "@/shared/ui/EpigramLogo";
 
-export async function SignUpPage(): Promise<ReactElement> {
-  const cookieStore = await cookies();
-  if (cookieStore.has("accessToken")) {
-    redirect("/epigrams");
-  }
-
+export function SignUpPage(): ReactElement {
   return (
     <div className="flex flex-1 flex-col tablet:flex-row">
       <AuthLeftPanel />

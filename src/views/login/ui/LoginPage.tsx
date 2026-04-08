@@ -1,20 +1,13 @@
 import type { ReactElement, ReactNode } from "react";
 
-import { cookies } from "next/headers";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 import { AuthLeftPanel } from "@/features/auth/ui/AuthLeftPanel";
 import { GuestLoginButton } from "@/features/auth/ui/GuestLoginButton";
 import { LoginForm } from "@/features/auth/ui/LoginForm";
 import { EpigramLogo } from "@/shared/ui/EpigramLogo";
 
-export async function LoginPage(): Promise<ReactElement> {
-  const cookieStore = await cookies();
-  if (cookieStore.has("accessToken")) {
-    redirect("/epigrams");
-  }
-
+export function LoginPage(): ReactElement {
   const kakaoOauthUrl = process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID ?? "";
 
   return (
