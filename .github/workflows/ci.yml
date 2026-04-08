@@ -37,6 +37,5 @@ jobs:
         run: npm run build
         env:
           NEXT_TELEMETRY_DISABLED: 1
-          # 빌드에 필요한 환경변수는 GitHub Secrets에 등록 후 아래에 추가
-          # BACKEND_URL: ${{ secrets.BACKEND_URL }}
-          # TEAM_ID: ${{ secrets.TEAM_ID }}
+          BACKEND_URL: ${{ secrets.BACKEND_URL }}
+          TEAM_ID: ${{ secrets.TEAM_ID }}
