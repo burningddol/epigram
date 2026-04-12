@@ -4,6 +4,8 @@ import type { ReactElement } from "react";
 
 import { useSearchParams } from "next/navigation";
 
+import { SESSION_REDIRECT_KEY } from "@/shared/lib";
+
 interface KakaoLoginButtonProps {
   kakaoOauthUrl: string;
 }
@@ -14,7 +16,7 @@ export function KakaoLoginButton({ kakaoOauthUrl }: KakaoLoginButtonProps): Reac
   function handleClick(): void {
     const redirect = searchParams.get("redirect");
     if (redirect?.startsWith("/")) {
-      sessionStorage.setItem("loginRedirect", redirect);
+      sessionStorage.setItem(SESSION_REDIRECT_KEY, redirect);
     }
   }
 

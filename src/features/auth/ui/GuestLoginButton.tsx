@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { signIn } from "@/entities/user";
+import { getSafeRedirect } from "@/shared/lib";
 import { Button } from "@/shared/ui/Button";
 
 const GUEST_CREDENTIALS = {
@@ -27,8 +28,7 @@ export function GuestLoginButton(): ReactElement {
     try {
       const { user } = await signIn(GUEST_CREDENTIALS);
       queryClient.setQueryData(["me"], user);
-      const redirect = searchParams.get("redirect");
-      router.push(redirect?.startsWith("/") ? redirect : "/epigrams");
+      router.push(getSafeRedirect(searchParams.get("redirect")));
     } catch {
       setError("게스트 로그인에 실패했습니다. 잠시 후 다시 시도해주세요.");
     } finally {

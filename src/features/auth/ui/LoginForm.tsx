@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { signIn } from "@/entities/user";
+import { getSafeRedirect } from "@/shared/lib";
 import { Button } from "@/shared/ui/Button";
 import { Input } from "@/shared/ui/Input";
 
@@ -33,8 +34,7 @@ export function LoginForm(): ReactElement {
     try {
       const { user } = await signIn(data);
       queryClient.setQueryData(["me"], user);
-      const redirect = searchParams.get("redirect");
-      router.push(redirect?.startsWith("/") ? redirect : "/epigrams");
+      router.push(getSafeRedirect(searchParams.get("redirect")));
     } catch {
       const message = "이메일 혹은 비밀번호를 확인해주세요.";
       setError("email", { message });
