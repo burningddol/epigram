@@ -44,12 +44,14 @@ async function callBackend(
   url: string,
   method: string,
   accessToken: string | undefined,
-  body: ArrayBuffer | undefined,
+  body: BodyInit | undefined,
   contentType: string | null
 ): Promise<Response> {
   const headers: HeadersInit = {};
 
-  if (contentType) {
+  // multipart/form-data는 Content-Type을 설정하지 않는다 —
+  // FormData를 body로 넘기면 fetch가 올바른 boundary를 자동 생성한다.
+  if (contentType && !contentType.includes("multipart/form-data")) {
     headers["Content-Type"] = contentType;
   }
 
@@ -136,10 +138,16 @@ async function handler(
   const backendUrl = buildBackendUrl(path, request.nextUrl.searchParams);
   const accessToken = request.cookies.get("accessToken")?.value;
   const contentType = request.headers.get("Content-Type");
-  const body =
-    request.method !== "GET" && request.method !== "HEAD"
-      ? await request.arrayBuffer()
-      : undefined;
+
+  // multipart/form-data는 FormData로 파싱해서 그대로 전달한다.
+  // fetch가 올바른 boundary를 자동 생성하므로 Content-Type을 별도로 지정하지 않아도 된다.
+  // 그 외 요청은 arrayBuffer로 읽어 바이너리를 보존한다.
+  let body: BodyInit | undefined;
+  if (request.method !== "GET" && request.method !== "HEAD") {
+    body = contentType?.includes("multipart/form-data")
+      ? await request.formData()
+      : await request.arrayBuffer();
+  }
 
   const refreshToken = request.cookies.get("refreshToken")?.value;
 
