@@ -26,7 +26,10 @@ function KakaoCallbackHandler(): null {
     signInKakao({ token: code, redirectUri })
       .then(({ user }) => {
         queryClient.setQueryData(["me"], user);
-        router.replace("/epigrams");
+        const savedRedirect = sessionStorage.getItem("loginRedirect");
+        sessionStorage.removeItem("loginRedirect");
+        const destination = savedRedirect?.startsWith("/") ? savedRedirect : "/epigrams";
+        router.replace(destination);
       })
       .catch(() => router.replace("/login"));
   }, [router, searchParams, queryClient]);

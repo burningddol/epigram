@@ -2,7 +2,7 @@
 
 import { type ReactElement, useState } from "react";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -16,6 +16,7 @@ const GUEST_CREDENTIALS = {
 
 export function GuestLoginButton(): ReactElement {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +27,8 @@ export function GuestLoginButton(): ReactElement {
     try {
       const { user } = await signIn(GUEST_CREDENTIALS);
       queryClient.setQueryData(["me"], user);
-      router.push("/epigrams");
+      const redirect = searchParams.get("redirect");
+      router.push(redirect?.startsWith("/") ? redirect : "/epigrams");
     } catch {
       setError("게스트 로그인에 실패했습니다. 잠시 후 다시 시도해주세요.");
     } finally {

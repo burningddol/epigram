@@ -3,7 +3,7 @@
 import type { ReactElement } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 import { useQueryClient } from "@tanstack/react-query";
@@ -16,6 +16,7 @@ import { loginSchema, type LoginFormValues } from "../model/loginSchema";
 
 export function LoginForm(): ReactElement {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const queryClient = useQueryClient();
 
   const {
@@ -32,7 +33,8 @@ export function LoginForm(): ReactElement {
     try {
       const { user } = await signIn(data);
       queryClient.setQueryData(["me"], user);
-      router.push("/");
+      const redirect = searchParams.get("redirect");
+      router.push(redirect?.startsWith("/") ? redirect : "/epigrams");
     } catch {
       const message = "이메일 혹은 비밀번호를 확인해주세요.";
       setError("email", { message });

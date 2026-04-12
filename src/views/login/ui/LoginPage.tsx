@@ -1,9 +1,12 @@
 import type { ReactElement, ReactNode } from "react";
 
+import { Suspense } from "react";
+
 import Link from "next/link";
 
 import { AuthLeftPanel } from "@/features/auth/ui/AuthLeftPanel";
 import { GuestLoginButton } from "@/features/auth/ui/GuestLoginButton";
+import { KakaoLoginButton } from "@/features/auth/ui/KakaoLoginButton";
 import { LoginForm } from "@/features/auth/ui/LoginForm";
 import { EpigramLogo } from "@/shared/ui/EpigramLogo";
 
@@ -21,8 +24,10 @@ export function LoginPage(): ReactElement {
           </div>
           <div className="flex flex-col gap-[50px]">
             <div className="flex flex-col gap-[10px]">
-              <LoginForm />
-              <GuestLoginButton />
+              <Suspense>
+                <LoginForm />
+                <GuestLoginButton />
+              </Suspense>
               <div className="flex items-center gap-2">
                 <span className="text-sm text-blue-400">회원이 아니신가요?</span>
                 <Link href="/signup" className="text-sm font-medium text-black-600 hover:underline">
@@ -66,9 +71,9 @@ function SocialLoginSection({ kakaoOauthUrl }: SocialLoginSectionProps): ReactEl
         >
           <span className="text-sm font-bold leading-none text-[#4285F4]">G</span>
         </SocialIconButton>
-        <SocialIconButton href={kakaoOauthUrl} label="카카오로 로그인" bgColor="#FEE500">
-          <span className="text-sm font-bold leading-none text-[#191919]">K</span>
-        </SocialIconButton>
+        <Suspense>
+          <KakaoLoginButton kakaoOauthUrl={kakaoOauthUrl} />
+        </Suspense>
       </div>
     </div>
   );
