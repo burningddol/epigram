@@ -11,7 +11,11 @@ export async function uploadImage(file: File): Promise<string> {
   const formData = new FormData();
   formData.append("image", file);
 
-  const response = await apiClient.post<{ url: string }>("/api/images/upload", formData);
+  // Content-Type을 undefined로 지워야 브라우저가 boundary 포함한 multipart/form-data를 자동 설정한다.
+  // axios 기본 헤더(application/json)가 살아있으면 BFF가 JSON으로 오인해 파싱 실패한다.
+  const response = await apiClient.post<{ url: string }>("/api/images/upload", formData, {
+    headers: { "Content-Type": undefined },
+  });
 
   return response.data.url;
 }

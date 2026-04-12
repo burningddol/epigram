@@ -44,18 +44,15 @@ async function callBackend(
   url: string,
   method: string,
   accessToken: string | undefined,
-  body: string | undefined,
-  contentType: string | null
+  body: BodyInit | undefined,
+  contentType: string
 ): Promise<Response> {
-  const headers: HeadersInit = {};
+  const isMultipart = contentType.includes("multipart/form-data");
 
-  if (contentType) {
-    headers["Content-Type"] = contentType;
-  }
-
-  if (accessToken) {
-    headers["Authorization"] = `Bearer ${accessToken}`;
-  }
+  const headers: HeadersInit = {
+    "Content-Type": isMultipart ? contentType : "application/json",
+    ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+  };
 
   return fetch(url, {
     method,
@@ -135,9 +132,15 @@ async function handler(
 
   const backendUrl = buildBackendUrl(path, request.nextUrl.searchParams);
   const accessToken = request.cookies.get("accessToken")?.value;
-  const contentType = request.headers.get("Content-Type");
-  const body =
-    request.method !== "GET" && request.method !== "HEAD" ? await request.text() : undefined;
+  const contentType = request.headers.get("Content-Type") ?? "";
+  const isMultipart = contentType.includes("multipart/form-data");
+
+  let body: BodyInit | undefined;
+  if (request.method !== "GET" && request.method !== "HEAD") {
+    body = isMultipart
+      ? await request.blob()
+      : JSON.stringify(await request.json().catch(() => ({})));
+  }
 
   const refreshToken = request.cookies.get("refreshToken")?.value;
 
