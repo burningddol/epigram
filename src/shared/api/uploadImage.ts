@@ -4,8 +4,12 @@ import { apiClient } from "./client";
 const ASCII_ONLY = /^[\x20-\x7E]+$/;
 
 export async function uploadImage(file: File): Promise<string> {
+  if (!file.type.startsWith("image/")) {
+    throw new Error("이미지 파일만 업로드할 수 있습니다.");
+  }
+
   if (!ASCII_ONLY.test(file.name)) {
-    throw new Error(`이미지 파일명은 영문만 사용할 수 있습니다: "${file.name}"`);
+    throw new Error("파일명은 영문만 사용할 수 있습니다.");
   }
 
   const formData = new FormData();
