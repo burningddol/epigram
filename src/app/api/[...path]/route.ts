@@ -1,118 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// 인증 엔드포인트: 백엔드 응답의 토큰을 HttpOnly 쿠키로 변환해야 하는 경로
-const AUTH_TOKEN_ENDPOINTS = new Set(["auth/signUp", "auth/signIn", "auth/signIn/kakao"]);
+import { setAccessTokenCookie } from "../_lib/cookies";
+import {
+  buildBackendUrl,
+  readRequestBody,
+  callBackend,
+  buildProxyResponse,
+  attemptTokenRefresh,
+  buildUnauthorizedResponse,
+} from "../_lib/proxy";
 
-const IS_PRODUCTION = process.env.NODE_ENV === "production";
-
-function setAccessTokenCookie(response: NextResponse, value: string): void {
-  response.cookies.set({
-    name: "accessToken",
-    value,
-    httpOnly: true,
-    sameSite: "strict",
-    secure: IS_PRODUCTION,
-    path: "/",
-    maxAge: 3600,
-  });
-}
-
-function setRefreshTokenCookie(response: NextResponse, value: string): void {
-  response.cookies.set({
-    name: "refreshToken",
-    value,
-    httpOnly: true,
-    sameSite: "strict",
-    secure: IS_PRODUCTION,
-    path: "/",
-    maxAge: 604800,
-  });
-}
-
-function clearAuthCookies(response: NextResponse): void {
-  response.cookies.set({ name: "accessToken", value: "", path: "/", maxAge: 0 });
-  response.cookies.set({ name: "refreshToken", value: "", path: "/", maxAge: 0 });
-}
-
-function buildBackendUrl(path: string, searchParams: URLSearchParams): string {
-  const base = `${process.env.BACKEND_URL}/${process.env.TEAM_ID}/${path}`;
-  const query = searchParams.toString();
-  return query ? `${base}?${query}` : base;
-}
-
-async function callBackend(
-  url: string,
+async function withTokenRefresh(
+  backendUrl: string,
   method: string,
-  accessToken: string | undefined,
   body: BodyInit | undefined,
-  contentType: string
-): Promise<Response> {
-  const isMultipart = contentType.includes("multipart/form-data");
+  contentType: string,
+  refreshToken: string
+): Promise<NextResponse> {
+  const newAccessToken = await attemptTokenRefresh(refreshToken);
+  if (!newAccessToken) return buildUnauthorizedResponse();
 
-  const headers: HeadersInit = {
-    "Content-Type": isMultipart ? contentType : "application/json",
-    ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
-  };
-
-  return fetch(url, {
-    method,
-    headers,
-    body,
-    // 백엔드가 Next.js 캐시 없이 항상 최신 데이터를 반환하도록 강제
-    cache: "no-store",
-  });
-}
-
-interface BackendAuthPayload {
-  accessToken?: string;
-  refreshToken?: string;
-  [key: string]: unknown;
-}
-
-async function handleAuthEndpointResponse(backendResponse: Response): Promise<NextResponse> {
-  const contentType = backendResponse.headers.get("Content-Type") ?? "";
-  if (!contentType.includes("application/json")) {
-    return new NextResponse(backendResponse.body, { status: backendResponse.status });
-  }
-
-  const payload = (await backendResponse.json()) as BackendAuthPayload;
-  const { accessToken, refreshToken, ...rest } = payload;
-
-  const response = NextResponse.json(rest, { status: backendResponse.status });
-
-  if (accessToken) {
-    setAccessTokenCookie(response, accessToken);
-  }
-  if (refreshToken) {
-    setRefreshTokenCookie(response, refreshToken);
-  }
-
-  return response;
-}
-
-async function attemptTokenRefresh(refreshToken: string): Promise<string | null> {
-  const refreshUrl = `${process.env.BACKEND_URL}/${process.env.TEAM_ID}/auth/refresh-token`;
-
-  try {
-    const response = await fetch(refreshUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refreshToken }),
-      cache: "no-store",
-    });
-
-    if (!response.ok) return null;
-
-    const data = (await response.json()) as { accessToken?: string };
-    return data.accessToken ?? null;
-  } catch {
-    return null;
-  }
-}
-
-function buildUnauthorizedResponse(): NextResponse {
-  const response = NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  clearAuthCookies(response);
+  const backendResponse = await callBackend(backendUrl, method, newAccessToken, body, contentType);
+  const response = buildProxyResponse(backendResponse);
+  setAccessTokenCookie(response, newAccessToken);
   return response;
 }
 
@@ -123,115 +33,30 @@ async function handler(
   const { path: pathSegments } = await context.params;
   const path = pathSegments.join("/");
 
-  // 로그아웃: 백엔드 호출 없이 쿠키만 삭제
-  if (path === "auth/logout" && request.method === "POST") {
-    const response = NextResponse.json({ success: true }, { status: 200 });
-    clearAuthCookies(response);
-    return response;
-  }
-
   const backendUrl = buildBackendUrl(path, request.nextUrl.searchParams);
   const accessToken = request.cookies.get("accessToken")?.value;
-  const contentType = request.headers.get("Content-Type") ?? "";
-  const isMultipart = contentType.includes("multipart/form-data");
-
-  let body: BodyInit | undefined;
-  if (request.method !== "GET" && request.method !== "HEAD") {
-    body = isMultipart
-      ? await request.blob()
-      : JSON.stringify(await request.json().catch(() => ({})));
-  }
-
   const refreshToken = request.cookies.get("refreshToken")?.value;
+  const contentType = request.headers.get("Content-Type") ?? "";
 
-  // 토큰이 전혀 없으면 백엔드 요청 없이 즉시 null 반환 — 브라우저 콘솔 401 방지
+  // 토큰이 전혀 없으면 백엔드 요청 없이 null 반환 — 브라우저 콘솔 401 방지
   if (!accessToken && !refreshToken && path === "users/me") {
     return NextResponse.json(null, { status: 200 });
   }
 
-  // accessToken 없이 refreshToken만 있으면 바로 갱신 시도
+  const body = await readRequestBody(request);
+
   if (!accessToken && refreshToken) {
-    const newAccessToken = await attemptTokenRefresh(refreshToken);
-    if (!newAccessToken) {
-      return buildUnauthorizedResponse();
-    }
-
-    const backendResponseWithNewToken = await callBackend(
-      backendUrl,
-      request.method,
-      newAccessToken,
-      body,
-      contentType
-    );
-
-    const retryResponse =
-      AUTH_TOKEN_ENDPOINTS.has(path) && backendResponseWithNewToken.ok
-        ? await handleAuthEndpointResponse(backendResponseWithNewToken)
-        : new NextResponse(backendResponseWithNewToken.body, {
-            status: backendResponseWithNewToken.status,
-            headers: {
-              "Content-Type":
-                backendResponseWithNewToken.headers.get("Content-Type") ?? "application/json",
-            },
-          });
-
-    setAccessTokenCookie(retryResponse, newAccessToken);
-    return retryResponse;
+    return withTokenRefresh(backendUrl, request.method, body, contentType, refreshToken);
   }
 
-  let backendResponse = await callBackend(
-    backendUrl,
-    request.method,
-    accessToken,
-    body,
-    contentType
-  );
+  const backendResponse = await callBackend(backendUrl, request.method, accessToken, body, contentType);
 
-  // 401: refreshToken으로 갱신 후 재시도
   if (backendResponse.status === 401) {
-    if (!refreshToken) {
-      return buildUnauthorizedResponse();
-    }
-
-    const newAccessToken = await attemptTokenRefresh(refreshToken);
-    if (!newAccessToken) {
-      return buildUnauthorizedResponse();
-    }
-
-    // 새 토큰으로 재시도
-    backendResponse = await callBackend(
-      backendUrl,
-      request.method,
-      newAccessToken,
-      body,
-      contentType
-    );
-
-    const retryResponse =
-      AUTH_TOKEN_ENDPOINTS.has(path) && backendResponse.ok
-        ? await handleAuthEndpointResponse(backendResponse)
-        : new NextResponse(backendResponse.body, {
-            status: backendResponse.status,
-            headers: {
-              "Content-Type": backendResponse.headers.get("Content-Type") ?? "application/json",
-            },
-          });
-
-    // 새 accessToken을 쿠키에 갱신
-    setAccessTokenCookie(retryResponse, newAccessToken);
-    return retryResponse;
+    if (!refreshToken) return buildUnauthorizedResponse();
+    return withTokenRefresh(backendUrl, request.method, body, contentType, refreshToken);
   }
 
-  // 인증 엔드포인트 성공: 토큰 → 쿠키 변환
-  if (AUTH_TOKEN_ENDPOINTS.has(path) && backendResponse.ok) {
-    return handleAuthEndpointResponse(backendResponse);
-  }
-
-  // 일반 응답: 그대로 중계
-  return new NextResponse(backendResponse.body, {
-    status: backendResponse.status,
-    headers: { "Content-Type": backendResponse.headers.get("Content-Type") ?? "application/json" },
-  });
+  return buildProxyResponse(backendResponse);
 }
 
 export const GET = handler;
