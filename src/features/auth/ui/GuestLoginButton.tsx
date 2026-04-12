@@ -10,8 +10,8 @@ import { signIn } from "@/entities/user";
 import { Button } from "@/shared/ui/Button";
 
 const GUEST_CREDENTIALS = {
-  email: "guestid@guestid.com",
-  password: "qqqqqqqq",
+  email: "guestid123123@ndse.com",
+  password: "@qwer1234",
 } as const;
 
 export function GuestLoginButton(): ReactElement {
