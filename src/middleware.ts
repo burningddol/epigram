@@ -18,7 +18,9 @@ export function middleware(request: NextRequest): NextResponse | undefined {
   const isLoggedIn = request.cookies.has("accessToken") || request.cookies.has("refreshToken");
 
   if (isProtectedPath(pathname) && !isLoggedIn) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("redirect", pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
   if (AUTH_ONLY_PATHS.some((p) => pathname.startsWith(p)) && isLoggedIn) {

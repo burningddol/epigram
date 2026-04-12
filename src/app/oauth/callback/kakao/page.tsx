@@ -8,6 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { signInKakao } from "@/entities/user";
+import { getSafeRedirect, SESSION_REDIRECT_KEY } from "@/shared/lib";
 
 function KakaoCallbackHandler(): null {
   const router = useRouter();
@@ -26,7 +27,9 @@ function KakaoCallbackHandler(): null {
     signInKakao({ token: code, redirectUri })
       .then(({ user }) => {
         queryClient.setQueryData(["me"], user);
-        router.replace("/epigrams");
+        const savedRedirect = sessionStorage.getItem(SESSION_REDIRECT_KEY);
+        sessionStorage.removeItem(SESSION_REDIRECT_KEY);
+        router.replace(getSafeRedirect(savedRedirect));
       })
       .catch(() => router.replace("/login"));
   }, [router, searchParams, queryClient]);
