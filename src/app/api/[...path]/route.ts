@@ -44,20 +44,11 @@ async function callBackend(
   url: string,
   method: string,
   accessToken: string | undefined,
-  body: BodyInit | undefined,
-  contentType: string | null
+  body: BodyInit | undefined
 ): Promise<Response> {
-  const headers: HeadersInit = {};
-
-  // multipart/form-data는 Content-Type을 설정하지 않는다 —
-  // FormData를 body로 넘기면 fetch가 올바른 boundary를 자동 생성한다.
-  if (contentType && !contentType.includes("multipart/form-data")) {
-    headers["Content-Type"] = contentType;
-  }
-
-  if (accessToken) {
-    headers["Authorization"] = `Bearer ${accessToken}`;
-  }
+  const headers: HeadersInit = {
+    ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+  };
 
   return fetch(url, {
     method,
@@ -137,20 +128,12 @@ async function handler(
 
   const backendUrl = buildBackendUrl(path, request.nextUrl.searchParams);
   const accessToken = request.cookies.get("accessToken")?.value;
-  const contentType = request.headers.get("Content-Type");
 
-  // multipart/form-data는 원본 바이트를 Blob으로 감싸서 그대로 전달한다.
-  // Blob.type에 boundary가 포함된 원본 Content-Type이 담기므로
-  // fetch가 이를 그대로 사용해 경계값 불일치 없이 백엔드로 전달된다.
-  // 그 외 요청은 arrayBuffer로 읽어 바이너리를 보존한다.
+  // blob()으로 읽으면 원본 바이트와 Content-Type(boundary 포함)이 그대로 보존된다.
+  // fetch에 Blob을 body로 넘기면 Blob.type이 Content-Type 헤더로 자동 사용된다.
   let body: BodyInit | undefined;
   if (request.method !== "GET" && request.method !== "HEAD") {
-    if (contentType?.includes("multipart/form-data")) {
-      const rawBytes = await request.arrayBuffer();
-      body = new Blob([rawBytes], { type: contentType });
-    } else {
-      body = await request.arrayBuffer();
-    }
+    body = await request.blob();
   }
 
   const refreshToken = request.cookies.get("refreshToken")?.value;
@@ -171,8 +154,7 @@ async function handler(
       backendUrl,
       request.method,
       newAccessToken,
-      body,
-      contentType
+      body
     );
 
     const retryResponse =
@@ -194,8 +176,7 @@ async function handler(
     backendUrl,
     request.method,
     accessToken,
-    body,
-    contentType
+    body
   );
 
   // 401: refreshToken으로 갱신 후 재시도
@@ -214,8 +195,7 @@ async function handler(
       backendUrl,
       request.method,
       newAccessToken,
-      body,
-      contentType
+      body
     );
 
     const retryResponse =
