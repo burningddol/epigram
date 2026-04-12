@@ -121,16 +121,34 @@ function EpigramsSection(): ReactElement {
         {SAMPLE_EPIGRAMS.map((item, index) => (
           <li
             key={item.id}
-            className="animate-fade-in-up"
+            className="flex min-w-0 flex-col items-end gap-2 animate-fade-in-up"
             style={{ animationDelay: `${index * 0.12}s` }}
           >
-            <div className="flex flex-col gap-1 rounded-2xl border-l-[3px] border-blue-400 bg-white px-6 py-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-600 hover:shadow-md">
-              <p className="font-serif text-sm leading-relaxed text-black-600">{item.content}</p>
-              <p className="mt-2 font-serif text-sm text-blue-400">{item.author}</p>
+            <div className="relative w-full overflow-hidden rounded-2xl border border-line-100 bg-white p-6 shadow-[0px_3px_12px_0_rgba(0,0,0,0.04)] transition-shadow duration-200 hover:shadow-md">
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  backgroundImage:
+                    "repeating-linear-gradient(180deg, transparent 0px, transparent 24px, #f2f2f2 24px, #f2f2f2 25px)",
+                  backgroundPositionY: "1px",
+                }}
+              />
+              <div className="relative flex flex-col gap-5 font-serif">
+                <p className="break-all text-base font-medium leading-relaxed text-black-600 tablet:text-lg pc:text-xl">
+                  {item.content}
+                </p>
+                <p className="break-all text-right text-base font-medium text-blue-400 tablet:text-lg pc:text-xl">
+                  - {item.author} -
+                </p>
+              </div>
             </div>
-            <div className="mt-2 flex gap-2 px-2">
+            <div className="flex flex-wrap justify-end gap-3">
               {item.tags.map((tag) => (
-                <span key={tag} className="font-serif text-xs text-blue-400">
+                <span
+                  key={tag}
+                  className="font-serif text-sm font-medium text-blue-400 tablet:text-base pc:text-lg"
+                >
                   #{tag}
                 </span>
               ))}
@@ -192,20 +210,20 @@ const SAMPLE_EPIGRAMS = [
   {
     id: 1,
     content: "오랫동안 꿈을 그리는 사람은 마침내 그 꿈을 닮아 간다.",
-    author: "- 앙드레 말로 -",
+    author: "앙드레 말로",
     tags: ["나아가야할때", "꿈을이루고싶을때"],
   },
   {
     id: 2,
     content:
       "이 세상에는 위대한 진실이 하나 있어. 무언가를 온 마음을 다해 원하면, 반드시 그렇게 된다.",
-    author: "- 파울로 코엘료 -",
+    author: "파울로 코엘료",
     tags: ["나아가야할때", "꿈을이루고싶을때"],
   },
   {
     id: 3,
-    content: "오랫동안 꿈을 그리는 사람은 마침내 그 꿈을 닮아 간다.",
-    author: "- 앙드레 말로 -",
-    tags: ["나아가야할때", "꿈을이루고싶을때"],
+    content: "당신이 꿈꿀 수 있다면, 이룰 수도 있다.",
+    author: "월트 디즈니",
+    tags: ["영감", "꿈"],
   },
 ] as const;

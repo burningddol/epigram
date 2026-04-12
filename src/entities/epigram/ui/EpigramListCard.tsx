@@ -13,8 +13,7 @@ export function EpigramListCard({ epigram }: EpigramListCardProps): ReactElement
     <div className="flex min-w-0 flex-col items-end gap-2">
       <Link
         href={`/epigrams/${epigram.id}`}
-        className="group relative w-full overflow-hidden rounded-2xl border border-line-100 bg-white p-6 transition-shadow duration-200 hover:shadow-md"
-        style={{ boxShadow: "0px 3px 12px 0 rgba(0,0,0,0.04)" }}
+        className="group relative w-full overflow-hidden rounded-2xl border border-line-100 bg-white p-6 shadow-[0px_3px_12px_0_rgba(0,0,0,0.04)] transition-shadow duration-200 hover:shadow-md"
       >
         {/* Decorative ruled lines */}
         <div
