@@ -44,7 +44,7 @@ async function callBackend(
   url: string,
   method: string,
   accessToken: string | undefined,
-  body: string | undefined,
+  body: ArrayBuffer | undefined,
   contentType: string | null
 ): Promise<Response> {
   const headers: HeadersInit = {};
@@ -137,7 +137,9 @@ async function handler(
   const accessToken = request.cookies.get("accessToken")?.value;
   const contentType = request.headers.get("Content-Type");
   const body =
-    request.method !== "GET" && request.method !== "HEAD" ? await request.text() : undefined;
+    request.method !== "GET" && request.method !== "HEAD"
+      ? await request.arrayBuffer()
+      : undefined;
 
   const refreshToken = request.cookies.get("refreshToken")?.value;
 
