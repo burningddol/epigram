@@ -10,7 +10,7 @@ import { signIn } from "@/entities/user";
 import { Button } from "@/shared/ui/Button";
 
 const GUEST_CREDENTIALS = {
-  email: "guestid123123@ndse.com",
+  email: "guest13325@naver.com",
   password: "@qwer1234",
 } as const;
 
