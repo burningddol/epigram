@@ -139,14 +139,18 @@ async function handler(
   const accessToken = request.cookies.get("accessToken")?.value;
   const contentType = request.headers.get("Content-Type");
 
-  // multipart/form-data는 FormData로 파싱해서 그대로 전달한다.
-  // fetch가 올바른 boundary를 자동 생성하므로 Content-Type을 별도로 지정하지 않아도 된다.
+  // multipart/form-data는 원본 바이트를 Blob으로 감싸서 그대로 전달한다.
+  // Blob.type에 boundary가 포함된 원본 Content-Type이 담기므로
+  // fetch가 이를 그대로 사용해 경계값 불일치 없이 백엔드로 전달된다.
   // 그 외 요청은 arrayBuffer로 읽어 바이너리를 보존한다.
   let body: BodyInit | undefined;
   if (request.method !== "GET" && request.method !== "HEAD") {
-    body = contentType?.includes("multipart/form-data")
-      ? await request.formData()
-      : await request.arrayBuffer();
+    if (contentType?.includes("multipart/form-data")) {
+      const rawBytes = await request.arrayBuffer();
+      body = new Blob([rawBytes], { type: contentType });
+    } else {
+      body = await request.arrayBuffer();
+    }
   }
 
   const refreshToken = request.cookies.get("refreshToken")?.value;
