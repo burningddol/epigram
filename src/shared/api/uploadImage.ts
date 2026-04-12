@@ -3,9 +3,18 @@ import { apiClient } from "./client";
 // Only ASCII printable characters allowed — the backend rejects non-English filenames
 const ASCII_ONLY = /^[\x20-\x7E]+$/;
 
+const ALLOWED_IMAGE_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/gif",
+  "image/webp",
+  "image/avif",
+  "image/svg+xml",
+]);
+
 export async function uploadImage(file: File): Promise<string> {
-  if (!file.type.startsWith("image/")) {
-    throw new Error("이미지 파일만 업로드할 수 있습니다.");
+  if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
+    throw new Error("jpg, png, gif, webp 형식의 이미지만 업로드할 수 있습니다.");
   }
 
   if (!ASCII_ONLY.test(file.name)) {
