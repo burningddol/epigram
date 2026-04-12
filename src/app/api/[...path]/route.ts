@@ -44,9 +44,13 @@ async function callBackend(
   url: string,
   method: string,
   accessToken: string | undefined,
-  body: BodyInit | undefined
+  body: BodyInit | undefined,
+  contentType: string
 ): Promise<Response> {
+  const isMultipart = contentType.includes("multipart/form-data");
+
   const headers: HeadersInit = {
+    "Content-Type": isMultipart ? contentType : "application/json",
     ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
   };
 
@@ -128,12 +132,14 @@ async function handler(
 
   const backendUrl = buildBackendUrl(path, request.nextUrl.searchParams);
   const accessToken = request.cookies.get("accessToken")?.value;
+  const contentType = request.headers.get("Content-Type") ?? "";
+  const isMultipart = contentType.includes("multipart/form-data");
 
-  // blob()으로 읽으면 원본 바이트와 Content-Type(boundary 포함)이 그대로 보존된다.
-  // fetch에 Blob을 body로 넘기면 Blob.type이 Content-Type 헤더로 자동 사용된다.
   let body: BodyInit | undefined;
   if (request.method !== "GET" && request.method !== "HEAD") {
-    body = await request.blob();
+    body = isMultipart
+      ? await request.blob()
+      : JSON.stringify(await request.json().catch(() => ({})));
   }
 
   const refreshToken = request.cookies.get("refreshToken")?.value;
@@ -154,7 +160,8 @@ async function handler(
       backendUrl,
       request.method,
       newAccessToken,
-      body
+      body,
+      contentType
     );
 
     const retryResponse =
@@ -176,7 +183,8 @@ async function handler(
     backendUrl,
     request.method,
     accessToken,
-    body
+    body,
+    contentType
   );
 
   // 401: refreshToken으로 갱신 후 재시도
@@ -195,7 +203,8 @@ async function handler(
       backendUrl,
       request.method,
       newAccessToken,
-      body
+      body,
+      contentType
     );
 
     const retryResponse =
