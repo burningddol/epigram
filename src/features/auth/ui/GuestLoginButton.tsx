@@ -28,6 +28,7 @@ export function GuestLoginButton(): ReactElement {
     try {
       const { user } = await signIn(GUEST_CREDENTIALS);
       queryClient.setQueryData(["me"], user);
+      router.refresh();
       router.push(getSafeRedirect(searchParams.get("redirect")));
     } catch {
       setError("게스트 로그인에 실패했습니다. 잠시 후 다시 시도해주세요.");

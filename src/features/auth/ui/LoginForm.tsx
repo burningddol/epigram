@@ -34,6 +34,9 @@ export function LoginForm(): ReactElement {
     try {
       const { user } = await signIn(data);
       queryClient.setQueryData(["me"], user);
+      // router.refresh() 없이 push하면 캐시된 미인증 RSC 페이로드가 서빙되어
+      // 미들웨어가 다시 /login으로 리다이렉트한다.
+      router.refresh();
       router.push(getSafeRedirect(searchParams.get("redirect")));
     } catch {
       const message = "이메일 혹은 비밀번호를 확인해주세요.";
