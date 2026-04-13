@@ -185,7 +185,6 @@ export function SearchPage(): ReactElement {
     recentSearches,
     handleInputChange,
     handleSearch,
-    removeRecentSearch,
     clearAllRecentSearches,
   } = useSearch();
 
@@ -202,7 +201,6 @@ export function SearchPage(): ReactElement {
           recentSearches={recentSearches}
           onInputChange={handleInputChange}
           onSearch={handleSearch}
-          onRemoveRecent={removeRecentSearch}
           onClearAllRecent={clearAllRecentSearches}
         />
 

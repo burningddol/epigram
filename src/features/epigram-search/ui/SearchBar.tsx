@@ -2,43 +2,30 @@
 
 import { type KeyboardEvent, type ReactElement } from "react";
 
-import { Search, X } from "lucide-react";
+import { Search } from "lucide-react";
 
 interface SearchBarProps {
   inputValue: string;
   recentSearches: string[];
   onInputChange: (value: string) => void;
   onSearch: (keyword: string) => void;
-  onRemoveRecent: (keyword: string) => void;
   onClearAllRecent: () => void;
 }
 
 interface RecentSearchChipProps {
   keyword: string;
   onSelect: (keyword: string) => void;
-  onRemove: (keyword: string) => void;
 }
 
-function RecentSearchChip({ keyword, onSelect, onRemove }: RecentSearchChipProps): ReactElement {
+function RecentSearchChip({ keyword, onSelect }: RecentSearchChipProps): ReactElement {
   return (
-    <li className="group flex items-center gap-0.5 rounded-full bg-blue-200/60 px-3 py-1.5 text-sm text-black-600 transition-all duration-150 hover:bg-blue-200 hover:text-black-900 pc:px-4 pc:py-2 pc:text-sm">
+    <li>
       <button
         type="button"
         onClick={() => onSelect(keyword)}
-        className="max-w-[120px] truncate leading-none pc:max-w-[160px]"
+        className="rounded-full bg-blue-200/60 px-3 py-1.5 text-sm text-black-600 transition-all duration-150 hover:bg-blue-200 hover:text-black-900 pc:px-4 pc:py-2 pc:text-sm"
       >
         {keyword}
-      </button>
-      <button
-        type="button"
-        aria-label={`"${keyword}" 검색어 삭제`}
-        onClick={(e) => {
-          e.stopPropagation();
-          onRemove(keyword);
-        }}
-        className="ml-1 flex items-center text-blue-400 opacity-60 transition-opacity duration-150 hover:text-black-500 hover:opacity-100 group-hover:opacity-100"
-      >
-        <X size={11} strokeWidth={2.5} />
       </button>
     </li>
   );
@@ -49,7 +36,6 @@ export function SearchBar({
   recentSearches,
   onInputChange,
   onSearch,
-  onRemoveRecent,
   onClearAllRecent,
 }: SearchBarProps): ReactElement {
   function handleKeyDown(e: KeyboardEvent<HTMLInputElement>): void {
@@ -94,12 +80,7 @@ export function SearchBar({
           </div>
           <ul className="flex flex-wrap gap-2 pc:gap-2.5">
             {recentSearches.map((keyword) => (
-              <RecentSearchChip
-                key={keyword}
-                keyword={keyword}
-                onSelect={onSearch}
-                onRemove={onRemoveRecent}
-              />
+              <RecentSearchChip key={keyword} keyword={keyword} onSelect={onSearch} />
             ))}
           </ul>
         </div>
