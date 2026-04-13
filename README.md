@@ -4,6 +4,8 @@
 
 **배포** [epigram.vercel.app](https://epigram-flax.vercel.app/) · **기간** 2026.04.03 – 04.09 · **개발** 1인 (SDD + Claude AI 파이프라인)
 
+<img width="1894" height="936" alt="image" src="https://github.com/user-attachments/assets/91c8eb28-68d8-4074-bc5e-ae3f18897898" />
+
 ---
 
 ## 핵심 요약
