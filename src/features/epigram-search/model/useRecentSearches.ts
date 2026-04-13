@@ -20,7 +20,6 @@ function saveToStorage(searches: string[]): void {
 interface UseRecentSearchesResult {
   recentSearches: string[];
   addRecentSearch: (keyword: string) => void;
-  removeRecentSearch: (keyword: string) => void;
   clearAllRecentSearches: () => void;
 }
 
@@ -47,18 +46,10 @@ export function useRecentSearches(): UseRecentSearchesResult {
     });
   }, []);
 
-  const removeRecentSearch = useCallback((keyword: string) => {
-    setRecentSearches((prev) => {
-      const updated = prev.filter((k) => k !== keyword);
-      saveToStorage(updated);
-      return updated;
-    });
-  }, []);
-
   const clearAllRecentSearches = useCallback(() => {
     saveToStorage([]);
     setRecentSearches([]);
   }, []);
 
-  return { recentSearches, addRecentSearch, removeRecentSearch, clearAllRecentSearches };
+  return { recentSearches, addRecentSearch, clearAllRecentSearches };
 }

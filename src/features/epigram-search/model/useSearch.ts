@@ -12,7 +12,6 @@ interface UseSearchResult {
   recentSearches: string[];
   handleInputChange: (value: string) => void;
   handleSearch: (keyword: string) => void;
-  removeRecentSearch: (keyword: string) => void;
   clearAllRecentSearches: () => void;
 }
 
@@ -25,8 +24,7 @@ export function useSearch(): UseSearchResult {
 
   const [inputValue, setInputValue] = useState(activeKeyword);
 
-  const { recentSearches, addRecentSearch, removeRecentSearch, clearAllRecentSearches } =
-    useRecentSearches();
+  const { recentSearches, addRecentSearch, clearAllRecentSearches } = useRecentSearches();
 
   function handleInputChange(value: string): void {
     setInputValue(value);
@@ -50,7 +48,6 @@ export function useSearch(): UseSearchResult {
     recentSearches,
     handleInputChange,
     handleSearch,
-    removeRecentSearch,
     clearAllRecentSearches,
   };
 }
