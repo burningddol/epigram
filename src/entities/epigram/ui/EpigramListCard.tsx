@@ -1,4 +1,4 @@
-import type { ReactElement } from "react";
+import { memo, type ReactElement } from "react";
 
 import Link from "next/link";
 
@@ -8,7 +8,7 @@ interface EpigramListCardProps {
   epigram: Epigram;
 }
 
-export function EpigramListCard({ epigram }: EpigramListCardProps): ReactElement {
+function EpigramListCardBase({ epigram }: EpigramListCardProps): ReactElement {
   return (
     <div className="flex min-w-0 flex-col items-end gap-2">
       <Link
@@ -51,3 +51,5 @@ export function EpigramListCard({ epigram }: EpigramListCardProps): ReactElement
     </div>
   );
 }
+
+export const EpigramListCard = memo(EpigramListCardBase);

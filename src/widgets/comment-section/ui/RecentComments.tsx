@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactElement } from "react";
+import { memo, type ReactElement } from "react";
 
 import { ChevronDown } from "lucide-react";
 
@@ -18,7 +18,7 @@ interface CommentItemProps {
   comment: Comment;
 }
 
-function CommentItem({ comment }: CommentItemProps): ReactElement {
+function CommentItemBase({ comment }: CommentItemProps): ReactElement {
   const { open } = useModal();
 
   function handleProfileClick(): void {
@@ -50,6 +50,8 @@ function CommentItem({ comment }: CommentItemProps): ReactElement {
     </li>
   );
 }
+
+const CommentItem = memo(CommentItemBase);
 
 interface LoadMoreButtonProps {
   isFetchingNextPage: boolean;
