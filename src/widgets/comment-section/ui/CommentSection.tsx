@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { memo, useState } from "react";
 import type { ReactElement } from "react";
 
 import { MessageCircle, MoreVertical, Pencil, Trash2 } from "lucide-react";
@@ -30,7 +30,7 @@ interface CommentItemProps {
   currentUserId: number | undefined;
 }
 
-function CommentItem({ comment, epigramId, currentUserId }: CommentItemProps): ReactElement {
+function CommentItemBase({ comment, epigramId, currentUserId }: CommentItemProps): ReactElement {
   const [isEditing, setIsEditing] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { open } = useModal();
@@ -125,6 +125,8 @@ function CommentItem({ comment, epigramId, currentUserId }: CommentItemProps): R
     </li>
   );
 }
+
+const CommentItem = memo(CommentItemBase);
 
 function CommentSkeleton(): ReactElement {
   return (

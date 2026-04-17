@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactElement, type ReactNode, useMemo } from "react";
+import { memo, type ReactElement, type ReactNode, useMemo } from "react";
 
 import Link from "next/link";
 
@@ -63,7 +63,7 @@ function TagList({ tags, keyword }: TagListProps): ReactElement | null {
   );
 }
 
-export function SearchResultItem({ epigram, keyword }: SearchResultItemProps): ReactElement {
+function SearchResultItemBase({ epigram, keyword }: SearchResultItemProps): ReactElement {
   const authorLabel = epigram.referenceTitle
     ? `${epigram.author} 《${epigram.referenceTitle}》`
     : epigram.author;
@@ -86,3 +86,5 @@ export function SearchResultItem({ epigram, keyword }: SearchResultItemProps): R
     </Link>
   );
 }
+
+export const SearchResultItem = memo(SearchResultItemBase);
