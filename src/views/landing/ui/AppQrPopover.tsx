@@ -7,10 +7,7 @@ import Image from "next/image";
 
 import { Smartphone, X } from "lucide-react";
 
-export const APP_QR = {
-  src: "/images/expoqr.png",
-  alt: "Expo Go 앱으로 스캔하면 모바일 버전이 열립니다",
-} as const;
+import { APP_QR } from "./appQr";
 
 export function AppQrPopover(): ReactElement {
   const [isOpen, setIsOpen] = useState(false);
@@ -78,6 +75,7 @@ export function AppQrPopover(): ReactElement {
               alt={APP_QR.alt}
               width={180}
               height={180}
+              unoptimized
               className="h-44 w-44"
             />
             <p className="text-center text-xs text-black-500">

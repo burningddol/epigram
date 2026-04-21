@@ -5,7 +5,8 @@ import Link from "next/link";
 
 import { ChevronDown } from "lucide-react";
 
-import { APP_QR, AppQrPopover } from "./AppQrPopover";
+import { AppQrPopover } from "./AppQrPopover";
+import { APP_QR } from "./appQr";
 
 export function LandingPage(): ReactElement {
   return (
@@ -211,7 +212,8 @@ function CtaAppQrCard(): ReactElement {
         alt={APP_QR.alt}
         width={88}
         height={88}
-        className="h-[88px] w-[88px] rounded-md bg-white p-1"
+        unoptimized
+        className="h-[88px] w-[88px] shrink-0 rounded-md bg-white p-1"
       />
       <div className="flex flex-col gap-1">
         <span className="font-serif text-xs uppercase tracking-[0.2em] text-blue-400">
