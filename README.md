@@ -13,24 +13,20 @@
 
 **📖 짧은 글귀로 하루를 채우는 문학적인 웹 커뮤니티, Epigram**
 
-‘Epigram’은 Next.js 15 App Router · React 19 · BFF 프록시 패턴으로 구축된 웹 애플리케이션입니다.
-[React Native 기반 모바일 버전](https://github.com/burningddol/epigram-mobile)과 디자인 시스템 · API 레이어를 공유합니다.
+[React Native 기반 앱 버전](https://github.com/burningddol/epigram-mobile)과 디자인 시스템 · API 레이어를 공유합니다.
 
 <br />
 
-<br />
 
-## 🌐 직접 체험해보기
 
 별도 설치 없이 **웹 브라우저** 또는 **Expo Go 앱**으로 바로 실행해볼 수 있어요.
 
-[![Open Web](https://img.shields.io/badge/Open_in-Browser-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://epigram-flax.vercel.app) [![Open in Expo Go](https://img.shields.io/badge/Open_in-Expo_Go-000020?style=for-the-badge&logo=expo&logoColor=white)](https://qr.expo.dev/eas-update?slug=exp&projectId=7c9f7aa6-075b-44b2-bc1b-f93e44a47414&channel=preview)
+[![Open Web](https://img.shields.io/badge/Open_in-Browser-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://epigram-flax.vercel.app)   
+또는  
+1. App Store · Play Store 에서 **Expo Go** 설치
+2. 아래 QR을 Expo Go 로 스캔 
 
-<img src="public/images/expoqr.png" alt="Expo Go QR" width="180" />
-
-> 웹: [`epigram-flax.vercel.app`](https://epigram-flax.vercel.app) — Vercel 24/7 호스팅
->
-> 모바일: 위 QR을 Expo Go 로 스캔 (또는 모바일에서 [딥링크](exp://u.expo.dev/7c9f7aa6-075b-44b2-bc1b-f93e44a47414?channel-name=preview) 탭)
+<img width="200" height="200" alt="image" src="https://github.com/user-attachments/assets/cc0c71fa-0d9e-4fa1-b3ab-68d75284a38a" />
 
 <br />
 
