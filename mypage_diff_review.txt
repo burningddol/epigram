@@ -1,0 +1,1396 @@
+diff --git a/app/(tabs)/mypage.tsx b/app/(tabs)/mypage.tsx
+index 4bae484..a85adeb 100644
+--- a/app/(tabs)/mypage.tsx
++++ b/app/(tabs)/mypage.tsx
+@@ -1,26 +1,7 @@
+-import { Redirect } from "expo-router";
+ import type { ReactElement } from "react";
+-import { Text, View } from "react-native";
+-import { SafeAreaView } from "react-native-safe-area-context";
+ 
+-import { useMe } from "~/entities/user";
++import { MypageScreen } from "~/views/mypage";
+ 
+-export default function MypageScreen(): ReactElement | null {
+-  const { user, isLoading } = useMe();
+-
+-  if (isLoading) return null;
+-  if (!user) return <Redirect href="/login" />;
+-
+-  return (
+-    <SafeAreaView className="flex-1 bg-background">
+-      <View className="flex-1 items-center justify-center px-screen-x">
+-        <Text className="font-sans text-2xl font-bold text-black-900">
+-          마이페이지
+-        </Text>
+-        <Text className="mt-2 font-sans text-sm text-blue-400">
+-          감정 기록·활동 차트
+-        </Text>
+-      </View>
+-    </SafeAreaView>
+-  );
++export default function MypageRoute(): ReactElement | null {
++  return <MypageScreen />;
+ }
+diff --git a/package.json b/package.json
+index 4d2f39a..947c66d 100644
+--- a/package.json
++++ b/package.json
+@@ -27,6 +27,7 @@
+     "expo-font": "~14.0.11",
+     "expo-haptics": "~15.0.8",
+     "expo-image": "~3.0.11",
++    "expo-image-picker": "~17.0.10",
+     "expo-linking": "~8.0.11",
+     "expo-router": "~6.0.23",
+     "expo-secure-store": "~15.0.8",
+diff --git a/src/features/auth/index.ts b/src/features/auth/index.ts
+index 838a0fb..d482c56 100644
+--- a/src/features/auth/index.ts
++++ b/src/features/auth/index.ts
+@@ -2,6 +2,7 @@ export { loginSchema } from "./model/loginSchema";
+ export type { LoginFormValues } from "./model/loginSchema";
+ export { signUpSchema } from "./model/signUpSchema";
+ export type { SignUpFormValues } from "./model/signUpSchema";
++export { useLogout } from "./model/useLogout";
+ export { useSessionExpiryRedirect } from "./model/useSessionExpiryRedirect";
+ 
+ export { GuestLoginButton } from "./ui/GuestLoginButton";
+diff --git a/src/features/auth/model/useLogout.ts b/src/features/auth/model/useLogout.ts
+new file mode 100644
+index 0000000..08ed2ae
+--- /dev/null
++++ b/src/features/auth/model/useLogout.ts
+@@ -0,0 +1,37 @@
++import { useQueryClient } from "@tanstack/react-query";
++import { router } from "expo-router";
++import { Alert } from "react-native";
++
++import { logout } from "~/entities/user";
++
++interface UseLogoutReturn {
++  handleLogout: () => void;
++}
++
++export function useLogout(): UseLogoutReturn {
++  const queryClient = useQueryClient();
++
++  async function performLogout(): Promise<void> {
++    await logout();
++    queryClient.clear();
++    router.replace("/login");
++  }
++
++  function handleLogout(): void {
++    Alert.alert(
++      "로그아웃할까요?",
++      undefined,
++      [
++        { text: "취소", style: "cancel" },
++        {
++          text: "로그아웃",
++          style: "destructive",
++          onPress: () => performLogout(),
++        },
++      ],
++      { cancelable: true },
++    );
++  }
++
++  return { handleLogout };
++}
+diff --git a/src/features/emotion-select/index.ts b/src/features/emotion-select/index.ts
+new file mode 100644
+index 0000000..c4e4b6f
+--- /dev/null
++++ b/src/features/emotion-select/index.ts
+@@ -0,0 +1,2 @@
++export { EmotionSelector } from "./ui/EmotionSelector";
++export { useEmotionSelect } from "./model/useEmotionSelect";
+diff --git a/src/features/emotion-select/model/useEmotionSelect.ts b/src/features/emotion-select/model/useEmotionSelect.ts
+new file mode 100644
+index 0000000..5ff1bad
+--- /dev/null
++++ b/src/features/emotion-select/model/useEmotionSelect.ts
+@@ -0,0 +1,49 @@
++import { useMutation, useQueryClient } from "@tanstack/react-query";
++
++import {
++  emotionLogKeys,
++  postTodayEmotion,
++  useTodayEmotion,
++  type Emotion,
++  type EmotionLog,
++} from "~/entities/emotion-log";
++import { useMe } from "~/entities/user";
++
++interface UseEmotionSelectReturn {
++  todayEmotion: Emotion | null;
++  isSubmitting: boolean;
++  selectEmotion: (emotion: Emotion) => void;
++}
++
++export function useEmotionSelect(): UseEmotionSelectReturn {
++  const { user } = useMe();
++  const queryClient = useQueryClient();
++  const userId = user?.id ?? 0;
++  const todayKey = emotionLogKeys.today(userId);
++
++  const { data: todayLog } = useTodayEmotion(userId);
++
++  const { mutate, isPending } = useMutation({
++    mutationFn: postTodayEmotion,
++    onMutate: async (emotion) => {
++      await queryClient.cancelQueries({ queryKey: todayKey });
++      const previous = queryClient.getQueryData<EmotionLog | null>(todayKey);
++      queryClient.setQueryData<EmotionLog | null>(todayKey, (old) =>
++        old != null ? { ...old, emotion } : old,
++      );
++      return { previous };
++    },
++    onError: (_err, _emotion, context) => {
++      queryClient.setQueryData(todayKey, context?.previous);
++    },
++    onSuccess: () => {
++      queryClient.invalidateQueries({ queryKey: emotionLogKeys.all });
++    },
++  });
++
++  return {
++    todayEmotion: todayLog?.emotion ?? null,
++    isSubmitting: isPending,
++    selectEmotion: mutate,
++  };
++}
+diff --git a/src/features/emotion-select/ui/EmotionSelector.tsx b/src/features/emotion-select/ui/EmotionSelector.tsx
+new file mode 100644
+index 0000000..0228e25
+--- /dev/null
++++ b/src/features/emotion-select/ui/EmotionSelector.tsx
+@@ -0,0 +1,87 @@
++import { type ReactElement } from "react";
++import { Pressable, Text, View } from "react-native";
++
++import { type Emotion } from "~/entities/emotion-log";
++
++import { useEmotionSelect } from "../model/useEmotionSelect";
++
++interface EmotionOption {
++  value: Emotion;
++  emoji: string;
++  label: string;
++}
++
++const EMOTION_OPTIONS: readonly EmotionOption[] = [
++  { value: "MOVED", emoji: "🥰", label: "감동" },
++  { value: "HAPPY", emoji: "😊", label: "기쁨" },
++  { value: "WORRIED", emoji: "🤔", label: "고민" },
++  { value: "SAD", emoji: "😢", label: "슬픔" },
++  { value: "ANGRY", emoji: "😠", label: "분노" },
++];
++
++interface EmotionButtonProps {
++  option: EmotionOption;
++  isSelected: boolean;
++  disabled: boolean;
++  onPress: () => void;
++}
++
++function EmotionButton({
++  option,
++  isSelected,
++  disabled,
++  onPress,
++}: EmotionButtonProps): ReactElement {
++  const containerClass = isSelected
++    ? "bg-blue-100 border-blue-300"
++    : "bg-background border-line-200";
++  const labelClass = isSelected
++    ? "font-semibold text-black-700"
++    : "font-medium text-black-300";
++
++  return (
++    <Pressable
++      onPress={onPress}
++      disabled={disabled}
++      accessibilityRole="button"
++      accessibilityLabel={`${option.label} 감정 선택`}
++      accessibilityState={{ selected: isSelected, disabled }}
++      className="items-center gap-2"
++    >
++      <View
++        className={`h-16 w-16 items-center justify-center rounded-2xl border ${containerClass}`}
++      >
++        <Text style={{ fontSize: 32 }}>{option.emoji}</Text>
++      </View>
++      <Text className={`font-sans text-xs ${labelClass}`}>{option.label}</Text>
++    </Pressable>
++  );
++}
++
++export function EmotionSelector(): ReactElement {
++  const { todayEmotion, isSubmitting, selectEmotion } = useEmotionSelect();
++
++  function handlePress(emotion: Emotion): void {
++    if (isSubmitting || todayEmotion === emotion) return;
++    selectEmotion(emotion);
++  }
++
++  return (
++    <View className="gap-4 rounded-2xl bg-white px-4 py-5">
++      <Text className="font-sans text-base font-semibold text-black-600">
++        오늘의 감정은 어떤가요?
++      </Text>
++      <View className="flex-row items-start justify-between">
++        {EMOTION_OPTIONS.map((option) => (
++          <EmotionButton
++            key={option.value}
++            option={option}
++            isSelected={todayEmotion === option.value}
++            disabled={isSubmitting}
++            onPress={() => handlePress(option.value)}
++          />
++        ))}
++      </View>
++    </View>
++  );
++}
+diff --git a/src/features/profile-image-upload/index.ts b/src/features/profile-image-upload/index.ts
+new file mode 100644
+index 0000000..828fdf2
+--- /dev/null
++++ b/src/features/profile-image-upload/index.ts
+@@ -0,0 +1,2 @@
++export { ProfileImageUploadButton } from "./ui/ProfileImageUploadButton";
++export { useProfileImageUpload } from "./model/useProfileImageUpload";
+diff --git a/src/features/profile-image-upload/model/useProfileImageUpload.ts b/src/features/profile-image-upload/model/useProfileImageUpload.ts
+new file mode 100644
+index 0000000..d4a9a33
+--- /dev/null
++++ b/src/features/profile-image-upload/model/useProfileImageUpload.ts
+@@ -0,0 +1,65 @@
++import { useQueryClient } from "@tanstack/react-query";
++import * as ImagePicker from "expo-image-picker";
++import { useState } from "react";
++import { Alert } from "react-native";
++
++import { updateMe, userKeys } from "~/entities/user";
++import { toUploadImageFile, uploadImage } from "~/shared/api";
++
++interface UseProfileImageUploadReturn {
++  isUploading: boolean;
++  pickAndUpload: () => Promise<void>;
++}
++
++export function useProfileImageUpload(): UseProfileImageUploadReturn {
++  const queryClient = useQueryClient();
++  const [isUploading, setIsUploading] = useState(false);
++
++  async function ensurePermission(): Promise<boolean> {
++    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
++    if (status !== "granted") {
++      Alert.alert(
++        "권한 필요",
++        "프로필 이미지 업로드를 위해 사진 접근 권한이 필요합니다.",
++      );
++      return false;
++    }
++    return true;
++  }
++
++  async function pickAndUpload(): Promise<void> {
++    if (isUploading) return;
++
++    const allowed = await ensurePermission();
++    if (!allowed) return;
++
++    const result = await ImagePicker.launchImageLibraryAsync({
++      mediaTypes: ImagePicker.MediaTypeOptions.Images,
++      allowsEditing: true,
++      aspect: [1, 1],
++      quality: 0.8,
++    });
++
++    if (result.canceled) return;
++    const asset = result.assets[0];
++    if (!asset) return;
++
++    setIsUploading(true);
++    try {
++      const file = toUploadImageFile(asset);
++      const imageUrl = await uploadImage(file);
++      await updateMe({ image: imageUrl });
++      await queryClient.invalidateQueries({ queryKey: userKeys.me() });
++    } catch (error) {
++      const message =
++        error instanceof Error
++          ? error.message
++          : "이미지 업로드에 실패했습니다. 다시 시도해주세요.";
++      Alert.alert("업로드 실패", message);
++    } finally {
++      setIsUploading(false);
++    }
++  }
++
++  return { isUploading, pickAndUpload };
++}
+diff --git a/src/features/profile-image-upload/ui/ProfileImageUploadButton.tsx b/src/features/profile-image-upload/ui/ProfileImageUploadButton.tsx
+new file mode 100644
+index 0000000..83e072a
+--- /dev/null
++++ b/src/features/profile-image-upload/ui/ProfileImageUploadButton.tsx
+@@ -0,0 +1,90 @@
++import { Camera, User as UserIcon } from "lucide-react-native";
++import { type ReactElement } from "react";
++import {
++  ActivityIndicator,
++  Image,
++  Pressable,
++  View,
++  type ImageStyle,
++} from "react-native";
++
++import { useProfileImageUpload } from "../model/useProfileImageUpload";
++
++const AVATAR_SIZE = 100;
++
++interface ProfileImageUploadButtonProps {
++  image: string | null;
++  nickname: string;
++}
++
++function AvatarContent({
++  image,
++  nickname,
++}: ProfileImageUploadButtonProps): ReactElement {
++  const baseStyle: ImageStyle = {
++    width: AVATAR_SIZE,
++    height: AVATAR_SIZE,
++    borderRadius: AVATAR_SIZE / 2,
++  };
++
++  if (image) {
++    return (
++      <Image
++        source={{ uri: image }}
++        accessibilityLabel={nickname}
++        style={baseStyle}
++      />
++    );
++  }
++
++  return (
++    <View
++      className="items-center justify-center rounded-full bg-blue-200"
++      style={{ width: AVATAR_SIZE, height: AVATAR_SIZE }}
++    >
++      <UserIcon size={44} color="#2b6cb0" />
++    </View>
++  );
++}
++
++export function ProfileImageUploadButton({
++  image,
++  nickname,
++}: ProfileImageUploadButtonProps): ReactElement {
++  const { isUploading, pickAndUpload } = useProfileImageUpload();
++
++  return (
++    <Pressable
++      accessibilityRole="button"
++      accessibilityLabel="프로필 이미지 변경"
++      accessibilityState={{ disabled: isUploading }}
++      disabled={isUploading}
++      onPress={() => {
++        void pickAndUpload();
++      }}
++      className="overflow-hidden rounded-full"
++      style={{ width: AVATAR_SIZE, height: AVATAR_SIZE }}
++    >
++      <AvatarContent image={image} nickname={nickname} />
++
++      <View
++        pointerEvents="none"
++        style={{
++          position: "absolute",
++          right: 2,
++          bottom: 2,
++          width: 32,
++          height: 32,
++          borderRadius: 16,
++        }}
++        className="items-center justify-center bg-blue-500"
++      >
++        {isUploading ? (
++          <ActivityIndicator size="small" color="#ffffff" />
++        ) : (
++          <Camera size={16} color="#ffffff" />
++        )}
++      </View>
++    </Pressable>
++  );
++}
+diff --git a/src/shared/api/index.ts b/src/shared/api/index.ts
+index 815464d..dbb80e4 100644
+--- a/src/shared/api/index.ts
++++ b/src/shared/api/index.ts
+@@ -6,3 +6,5 @@ export {
+   setRefreshToken,
+   clearTokens,
+ } from "./tokenStorage";
++export { uploadImage, toUploadImageFile } from "./uploadImage";
++export type { UploadImageFile } from "./uploadImage";
+diff --git a/src/shared/api/uploadImage.ts b/src/shared/api/uploadImage.ts
+new file mode 100644
+index 0000000..7eaf2ea
+--- /dev/null
++++ b/src/shared/api/uploadImage.ts
+@@ -0,0 +1,61 @@
++import { apiClient } from "./client";
++
++const ALLOWED_IMAGE_MIME = new Set([
++  "image/jpeg",
++  "image/png",
++  "image/gif",
++  "image/webp",
++  "image/avif",
++]);
++
++const ASCII_ONLY = /^[\x20-\x7E]+$/;
++
++export interface UploadImageFile {
++  uri: string;
++  name: string;
++  mimeType: string;
++}
++
++function extractFileName(uri: string): string {
++  const parts = uri.split("/");
++  return parts[parts.length - 1] ?? "upload";
++}
++
++export async function uploadImage(file: UploadImageFile): Promise<string> {
++  if (!ALLOWED_IMAGE_MIME.has(file.mimeType)) {
++    throw new Error(
++      "jpg, png, gif, webp 형식의 이미지만 업로드할 수 있습니다.",
++    );
++  }
++
++  if (!ASCII_ONLY.test(file.name)) {
++    throw new Error("파일명은 영문만 사용할 수 있습니다.");
++  }
++
++  const formData = new FormData();
++  formData.append("image", {
++    uri: file.uri,
++    name: file.name,
++    type: file.mimeType,
++  } as unknown as Blob);
++
++  const response = await apiClient.post<{ url: string }>(
++    "/images/upload",
++    formData,
++    {
++      headers: { "Content-Type": "multipart/form-data" },
++    },
++  );
++
++  return response.data.url;
++}
++
++export function toUploadImageFile(asset: {
++  uri: string;
++  fileName?: string | null;
++  mimeType?: string | null;
++}): UploadImageFile {
++  const name = asset.fileName ?? extractFileName(asset.uri);
++  const mimeType = asset.mimeType ?? "image/jpeg";
++  return { uri: asset.uri, name, mimeType };
++}
+diff --git a/src/views/mypage/index.ts b/src/views/mypage/index.ts
+new file mode 100644
+index 0000000..1a28693
+--- /dev/null
++++ b/src/views/mypage/index.ts
+@@ -0,0 +1 @@
++export { MypageScreen } from "./ui/MypageScreen";
+diff --git a/src/views/mypage/ui/MypageScreen.tsx b/src/views/mypage/ui/MypageScreen.tsx
+new file mode 100644
+index 0000000..09e3424
+--- /dev/null
++++ b/src/views/mypage/ui/MypageScreen.tsx
+@@ -0,0 +1,64 @@
++import { Redirect } from "expo-router";
++import { LogOut } from "lucide-react-native";
++import { type ReactElement } from "react";
++import { Pressable, ScrollView, Text, View } from "react-native";
++import { SafeAreaView } from "react-native-safe-area-context";
++
++import { useMe } from "~/entities/user";
++import { useLogout } from "~/features/auth";
++import { EmotionSelector } from "~/features/emotion-select";
++import { ProfileImageUploadButton } from "~/features/profile-image-upload";
++import { LoadingState } from "~/shared/ui";
++import { MypageActivity } from "~/widgets/mypage-activity";
++
++interface LogoutButtonProps {
++  onPress: () => void;
++}
++
++function LogoutButton({ onPress }: LogoutButtonProps): ReactElement {
++  return (
++    <Pressable
++      onPress={onPress}
++      accessibilityRole="button"
++      accessibilityLabel="로그아웃"
++      className="flex-row items-center gap-1.5 rounded-full border border-line-200 px-4 py-1.5 active:bg-blue-100"
++    >
++      <LogOut size={14} color="#7b8caf" />
++      <Text className="font-sans text-xs text-black-400">로그아웃</Text>
++    </Pressable>
++  );
++}
++
++export function MypageScreen(): ReactElement | null {
++  const { user, isLoading } = useMe();
++  const { handleLogout } = useLogout();
++
++  if (isLoading) return <LoadingState />;
++  if (!user) return <Redirect href="/login" />;
++
++  return (
++    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
++      <ScrollView
++        contentContainerClassName="px-screen-x pb-10 pt-6"
++        showsVerticalScrollIndicator={false}
++      >
++        <View className="items-center gap-3">
++          <ProfileImageUploadButton
++            image={user.image}
++            nickname={user.nickname}
++          />
++          <Text className="font-sans text-xl font-bold text-black-800">
++            {user.nickname}
++          </Text>
++          <LogoutButton onPress={handleLogout} />
++        </View>
++        <View className="mt-8">
++          <EmotionSelector />
++        </View>
++        <View className="mt-4">
++          <MypageActivity userId={user.id} />
++        </View>
++      </ScrollView>
++    </SafeAreaView>
++  );
++}
+diff --git a/src/widgets/mypage-activity/index.ts b/src/widgets/mypage-activity/index.ts
+new file mode 100644
+index 0000000..7957f03
+--- /dev/null
++++ b/src/widgets/mypage-activity/index.ts
+@@ -0,0 +1 @@
++export { MypageActivity } from "./ui/MypageActivity";
+diff --git a/src/widgets/mypage-activity/ui/EmotionCalendar.tsx b/src/widgets/mypage-activity/ui/EmotionCalendar.tsx
+new file mode 100644
+index 0000000..1502e2c
+--- /dev/null
++++ b/src/widgets/mypage-activity/ui/EmotionCalendar.tsx
+@@ -0,0 +1,237 @@
++import { ChevronLeft, ChevronRight } from "lucide-react-native";
++import { useMemo, useState, type ReactElement } from "react";
++import { Pressable, Text, View } from "react-native";
++
++import { useMonthlyEmotions, type Emotion } from "~/entities/emotion-log";
++
++const EMOTION_EMOJI: Record<Emotion, string> = {
++  MOVED: "🥰",
++  HAPPY: "😊",
++  WORRIED: "🤔",
++  SAD: "😢",
++  ANGRY: "😠",
++};
++
++const WEEKDAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
++const TODAY = new Date();
++const TODAY_YEAR = TODAY.getFullYear();
++const TODAY_MONTH = TODAY.getMonth() + 1;
++const TODAY_DATE = TODAY.getDate();
++
++interface CalendarCell {
++  day: number;
++  isCurrentMonth: boolean;
++  dateKey: string;
++}
++
++function padZero(n: number): string {
++  return String(n).padStart(2, "0");
++}
++
++function buildCalendarCells(year: number, month: number): CalendarCell[] {
++  const firstDayOfWeek = new Date(year, month - 1, 1).getDay();
++  const daysInMonth = new Date(year, month, 0).getDate();
++  const daysInPrevMonth = new Date(year, month - 1, 0).getDate();
++  const cells: CalendarCell[] = [];
++
++  for (let i = firstDayOfWeek - 1; i >= 0; i--) {
++    const day = daysInPrevMonth - i;
++    const prevMonth = month === 1 ? 12 : month - 1;
++    const prevYear = month === 1 ? year - 1 : year;
++    cells.push({
++      day,
++      isCurrentMonth: false,
++      dateKey: `${prevYear}-${padZero(prevMonth)}-${padZero(day)}`,
++    });
++  }
++
++  for (let d = 1; d <= daysInMonth; d++) {
++    cells.push({
++      day: d,
++      isCurrentMonth: true,
++      dateKey: `${year}-${padZero(month)}-${padZero(d)}`,
++    });
++  }
++
++  const remainder = cells.length % 7;
++  if (remainder !== 0) {
++    const nextMonth = month === 12 ? 1 : month + 1;
++    const nextYear = month === 12 ? year + 1 : year;
++    const toAdd = 7 - remainder;
++    for (let i = 1; i <= toAdd; i++) {
++      cells.push({
++        day: i,
++        isCurrentMonth: false,
++        dateKey: `${nextYear}-${padZero(nextMonth)}-${padZero(i)}`,
++      });
++    }
++  }
++
++  return cells;
++}
++
++interface MonthHeaderProps {
++  year: number;
++  month: number;
++  onPrev: () => void;
++  onNext: () => void;
++}
++
++function MonthHeader({
++  year,
++  month,
++  onPrev,
++  onNext,
++}: MonthHeaderProps): ReactElement {
++  return (
++    <View className="mb-4 flex-row items-center justify-between">
++      <Text className="font-sans text-base font-semibold text-black-600">
++        {year}년 {month}월
++      </Text>
++      <View className="flex-row items-center gap-2">
++        <Pressable
++          accessibilityRole="button"
++          accessibilityLabel="이전 달"
++          onPress={onPrev}
++          className="h-8 w-8 items-center justify-center rounded-full active:bg-background"
++        >
++          <ChevronLeft size={18} color="#42526e" />
++        </Pressable>
++        <Pressable
++          accessibilityRole="button"
++          accessibilityLabel="다음 달"
++          onPress={onNext}
++          className="h-8 w-8 items-center justify-center rounded-full active:bg-background"
++        >
++          <ChevronRight size={18} color="#42526e" />
++        </Pressable>
++      </View>
++    </View>
++  );
++}
++
++interface DayCellProps {
++  cell: CalendarCell;
++  emotion: Emotion | undefined;
++  isToday: boolean;
++}
++
++function DayCell({ cell, emotion, isToday }: DayCellProps): ReactElement {
++  const borderClass = isToday ? "border-blue-500" : "border-line-200";
++  const bgClass = cell.isCurrentMonth ? "bg-white" : "bg-background/60";
++  const dayTextClass = cell.isCurrentMonth ? "text-black-500" : "text-gray-200";
++
++  return (
++    <View
++      className={`aspect-square flex-1 items-center justify-center border ${borderClass} ${bgClass}`}
++      style={{ minWidth: 0 }}
++    >
++      {emotion ? (
++        <>
++          <Text className="font-sans text-[10px] font-semibold text-gray-300">
++            {cell.day}
++          </Text>
++          <Text style={{ fontSize: 18, marginTop: 2 }}>
++            {EMOTION_EMOJI[emotion]}
++          </Text>
++        </>
++      ) : (
++        <Text className={`font-sans text-sm font-medium ${dayTextClass}`}>
++          {cell.day}
++        </Text>
++      )}
++    </View>
++  );
++}
++
++interface EmotionCalendarProps {
++  userId: number;
++}
++
++export function EmotionCalendar({
++  userId,
++}: EmotionCalendarProps): ReactElement {
++  const [year, setYear] = useState(TODAY_YEAR);
++  const [month, setMonth] = useState(TODAY_MONTH);
++
++  const { data: emotionLogs = [] } = useMonthlyEmotions({
++    userId,
++    year,
++    month,
++  });
++
++  const emotionByDate = useMemo(() => {
++    const map = new Map<string, Emotion>();
++    for (const log of emotionLogs) {
++      const d = new Date(log.createdAt);
++      const key = `${d.getFullYear()}-${padZero(d.getMonth() + 1)}-${padZero(d.getDate())}`;
++      map.set(key, log.emotion);
++    }
++    return map;
++  }, [emotionLogs]);
++
++  const cells = useMemo(() => buildCalendarCells(year, month), [year, month]);
++
++  function handlePrevMonth(): void {
++    if (month === 1) {
++      setYear((y) => y - 1);
++      setMonth(12);
++      return;
++    }
++    setMonth((m) => m - 1);
++  }
++
++  function handleNextMonth(): void {
++    if (month === 12) {
++      setYear((y) => y + 1);
++      setMonth(1);
++      return;
++    }
++    setMonth((m) => m + 1);
++  }
++
++  function isCellToday(cell: CalendarCell): boolean {
++    return (
++      cell.isCurrentMonth &&
++      year === TODAY_YEAR &&
++      month === TODAY_MONTH &&
++      cell.day === TODAY_DATE
++    );
++  }
++
++  return (
++    <View className="rounded-2xl bg-white px-4 py-5">
++      <MonthHeader
++        year={year}
++        month={month}
++        onPrev={handlePrevMonth}
++        onNext={handleNextMonth}
++      />
++
++      <View className="flex-row">
++        {WEEKDAY_LABELS.map((label) => (
++          <View key={label} className="flex-1 items-center py-2">
++            <Text className="font-sans text-xs font-semibold text-gray-300">
++              {label}
++            </Text>
++          </View>
++        ))}
++      </View>
++
++      <View className="flex-row flex-wrap">
++        {cells.map((cell, index) => (
++          <View
++            key={`${cell.dateKey}-${index}`}
++            style={{ width: `${100 / 7}%` }}
++          >
++            <DayCell
++              cell={cell}
++              emotion={emotionByDate.get(cell.dateKey)}
++              isToday={isCellToday(cell)}
++            />
++          </View>
++        ))}
++      </View>
++    </View>
++  );
++}
+diff --git a/src/widgets/mypage-activity/ui/EmotionPieChart.tsx b/src/widgets/mypage-activity/ui/EmotionPieChart.tsx
+new file mode 100644
+index 0000000..3138047
+--- /dev/null
++++ b/src/widgets/mypage-activity/ui/EmotionPieChart.tsx
+@@ -0,0 +1,182 @@
++import { useMemo, type ReactElement } from "react";
++import { Text, View } from "react-native";
++import Svg, { Circle, G } from "react-native-svg";
++
++import type { Emotion, EmotionLog } from "~/entities/emotion-log";
++
++interface EmotionMeta {
++  label: string;
++  emoji: string;
++  color: string;
++}
++
++const EMOTION_META: Record<Emotion, EmotionMeta> = {
++  MOVED: { label: "감동", emoji: "🥰", color: "#48bb98" },
++  HAPPY: { label: "기쁨", emoji: "😊", color: "#fbc85b" },
++  WORRIED: { label: "고민", emoji: "🤔", color: "#8e80e3" },
++  SAD: { label: "슬픔", emoji: "😢", color: "#5195ee" },
++  ANGRY: { label: "분노", emoji: "😠", color: "#e46e80" },
++};
++
++const EMOTION_ORDER: Emotion[] = ["MOVED", "HAPPY", "WORRIED", "SAD", "ANGRY"];
++
++const CHART_SIZE = 140;
++const RADIUS = 55;
++const STROKE_WIDTH = 18;
++const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
++
++interface ChartDatum {
++  emotion: Emotion;
++  count: number;
++  percentage: number;
++}
++
++function buildChartData(emotionLogs: EmotionLog[]): ChartDatum[] {
++  const counts = new Map<Emotion, number>();
++  for (const log of emotionLogs) {
++    counts.set(log.emotion, (counts.get(log.emotion) ?? 0) + 1);
++  }
++
++  const total = emotionLogs.length;
++  if (total === 0) return [];
++
++  return EMOTION_ORDER.filter((e) => counts.has(e)).map((emotion) => {
++    const count = counts.get(emotion) ?? 0;
++    return {
++      emotion,
++      count,
++      percentage: Math.round((count / total) * 100),
++    };
++  });
++}
++
++interface DonutChartProps {
++  data: ChartDatum[];
++  total: number;
++}
++
++function DonutChart({ data, total }: DonutChartProps): ReactElement {
++  let cumulative = 0;
++  const center = CHART_SIZE / 2;
++
++  return (
++    <Svg width={CHART_SIZE} height={CHART_SIZE}>
++      <G rotation="-90" origin={`${center}, ${center}`}>
++        {data.map(({ emotion, count }) => {
++          const dashLength = (count / total) * CIRCUMFERENCE;
++          const offset = -cumulative;
++          cumulative += dashLength;
++          return (
++            <Circle
++              key={emotion}
++              cx={center}
++              cy={center}
++              r={RADIUS}
++              fill="none"
++              stroke={EMOTION_META[emotion].color}
++              strokeWidth={STROKE_WIDTH}
++              strokeDasharray={`${dashLength} ${CIRCUMFERENCE - dashLength}`}
++              strokeDashoffset={offset}
++            />
++          );
++        })}
++      </G>
++    </Svg>
++  );
++}
++
++interface LegendRowProps {
++  datum: ChartDatum;
++}
++
++function LegendRow({ datum }: LegendRowProps): ReactElement {
++  const meta = EMOTION_META[datum.emotion];
++
++  return (
++    <View className="flex-row items-center gap-2">
++      <Text style={{ fontSize: 16 }}>{meta.emoji}</Text>
++      <Text className="w-8 font-sans text-xs text-black-400">{meta.label}</Text>
++      <View className="h-1.5 flex-1 overflow-hidden rounded-full bg-blue-200">
++        <View
++          className="h-full rounded-full"
++          style={{
++            width: `${datum.percentage}%`,
++            backgroundColor: meta.color,
++          }}
++        />
++      </View>
++      <Text className="w-9 text-right font-sans text-xs font-semibold text-black-600">
++        {datum.percentage}%
++      </Text>
++    </View>
++  );
++}
++
++interface EmotionPieChartProps {
++  emotionLogs: EmotionLog[];
++}
++
++export function EmotionPieChart({
++  emotionLogs,
++}: EmotionPieChartProps): ReactElement {
++  const chartData = useMemo(() => buildChartData(emotionLogs), [emotionLogs]);
++
++  if (chartData.length === 0) {
++    return (
++      <View className="rounded-2xl bg-white px-4 py-5">
++        <Text className="mb-3 font-sans text-base font-semibold text-black-600">
++          감정 차트
++        </Text>
++        <View className="items-center py-8">
++          <Text style={{ fontSize: 36, opacity: 0.3 }}>😊</Text>
++          <Text className="mt-2 font-sans text-sm text-gray-300">
++            이번 달 감정 기록이 없어요
++          </Text>
++        </View>
++      </View>
++    );
++  }
++
++  const total = chartData.reduce((sum, d) => sum + d.count, 0);
++  const topEmotion = chartData.reduce((max, d) =>
++    d.count > max.count ? d : max,
++  );
++  const topMeta = EMOTION_META[topEmotion.emotion];
++
++  return (
++    <View className="rounded-2xl bg-white px-4 py-5">
++      <Text className="mb-4 font-sans text-base font-semibold text-black-600">
++        감정 차트
++      </Text>
++
++      <View className="flex-row items-center gap-5">
++        <View
++          style={{ width: CHART_SIZE, height: CHART_SIZE }}
++          className="items-center justify-center"
++        >
++          <DonutChart data={chartData} total={total} />
++          <View
++            pointerEvents="none"
++            style={{
++              position: "absolute",
++              width: CHART_SIZE,
++              height: CHART_SIZE,
++            }}
++            className="items-center justify-center"
++          >
++            <Text style={{ fontSize: 28 }}>{topMeta.emoji}</Text>
++            <Text className="font-sans text-xs font-semibold text-black-500">
++              {topMeta.label}
++            </Text>
++          </View>
++        </View>
++
++        <View className="flex-1 gap-2">
++          {chartData.map((datum) => (
++            <LegendRow key={datum.emotion} datum={datum} />
++          ))}
++        </View>
++      </View>
++    </View>
++  );
++}
+diff --git a/src/widgets/mypage-activity/ui/LoadMoreButton.tsx b/src/widgets/mypage-activity/ui/LoadMoreButton.tsx
+new file mode 100644
+index 0000000..f0205db
+--- /dev/null
++++ b/src/widgets/mypage-activity/ui/LoadMoreButton.tsx
+@@ -0,0 +1,32 @@
++import { Plus } from "lucide-react-native";
++import { type ReactElement } from "react";
++import { Pressable, Text, View } from "react-native";
++
++interface LoadMoreButtonProps {
++  label: string;
++  isFetchingNextPage: boolean;
++  onPress: () => void;
++}
++
++export function LoadMoreButton({
++  label,
++  isFetchingNextPage,
++  onPress,
++}: LoadMoreButtonProps): ReactElement {
++  return (
++    <View className="items-center">
++      <Pressable
++        accessibilityRole="button"
++        accessibilityLabel={label}
++        disabled={isFetchingNextPage}
++        onPress={onPress}
++        className="flex-row items-center gap-2 rounded-full border border-line-200 bg-background px-6 py-3 active:bg-blue-100 disabled:opacity-60"
++      >
++        <Plus size={16} color="#5195ee" />
++        <Text className="font-sans text-sm font-medium text-blue-500">
++          {isFetchingNextPage ? "불러오는 중..." : label}
++        </Text>
++      </Pressable>
++    </View>
++  );
++}
+diff --git a/src/widgets/mypage-activity/ui/MyCommentItem.tsx b/src/widgets/mypage-activity/ui/MyCommentItem.tsx
+new file mode 100644
+index 0000000..ed90937
+--- /dev/null
++++ b/src/widgets/mypage-activity/ui/MyCommentItem.tsx
+@@ -0,0 +1,77 @@
++import { router } from "expo-router";
++import { type ReactElement } from "react";
++import { Alert, Pressable, Text, View } from "react-native";
++
++import { WriterAvatar, type Comment } from "~/entities/comment";
++import { useCommentDelete } from "~/features/comment-delete";
++import { formatRelativeTime } from "~/shared/lib/date";
++
++interface MyCommentItemProps {
++  comment: Comment;
++  userId: number;
++}
++
++export function MyCommentItem({
++  comment,
++  userId,
++}: MyCommentItemProps): ReactElement {
++  const epigramId = comment.epigramId;
++  const { deleteComment, isDeleting } = useCommentDelete(
++    comment.id,
++    epigramId,
++    userId,
++  );
++
++  function handleDeletePress(): void {
++    Alert.alert("댓글 삭제", "정말 삭제하시겠습니까?", [
++      { text: "취소", style: "cancel" },
++      {
++        text: "삭제",
++        style: "destructive",
++        onPress: () => deleteComment(),
++      },
++    ]);
++  }
++
++  function handleCardPress(): void {
++    router.push({
++      pathname: "/epigrams/[id]",
++      params: { id: String(epigramId) },
++    });
++  }
++
++  return (
++    <View className="gap-3 border-t border-line-200 bg-background px-4 py-5 first:border-t-0">
++      <View className="flex-row items-start gap-3">
++        <WriterAvatar writer={comment.writer} size={40} />
++
++        <View className="flex-1">
++          <View className="flex-row items-center justify-between">
++            <View className="flex-row items-center gap-2">
++              <Text className="font-sans text-xs text-black-300">
++                {comment.writer.nickname}
++              </Text>
++              <Text className="font-sans text-xs text-black-300">
++                {formatRelativeTime(comment.createdAt)}
++              </Text>
++            </View>
++            <Pressable
++              accessibilityRole="button"
++              accessibilityLabel="댓글 삭제"
++              disabled={isDeleting}
++              onPress={handleDeletePress}
++            >
++              <Text className="font-sans text-xs text-error">삭제</Text>
++            </Pressable>
++          </View>
++
++          <Pressable onPress={handleCardPress} className="mt-2">
++            <Text className="font-sans text-sm leading-relaxed text-black-700">
++              {comment.content}
++            </Text>
++          </Pressable>
++        </View>
++      </View>
++    </View>
++  );
++}
+diff --git a/src/widgets/mypage-activity/ui/MyCommentList.tsx b/src/widgets/mypage-activity/ui/MyCommentList.tsx
+new file mode 100644
+index 0000000..11ffdf1
+--- /dev/null
++++ b/src/widgets/mypage-activity/ui/MyCommentList.tsx
+@@ -0,0 +1,57 @@
++import { useEffect, type ReactElement } from "react";
++import { Text, View } from "react-native";
++
++import { useMyComments } from "~/entities/comment";
++
++import { LoadMoreButton } from "./LoadMoreButton";
++import { MyCommentItem } from "./MyCommentItem";
++
++const PAGE_SIZE = 3;
++
++interface MyCommentListProps {
++  userId: number;
++  onTotalCount: (count: number) => void;
++}
++
++export function MyCommentList({
++  userId,
++  onTotalCount,
++}: MyCommentListProps): ReactElement {
++  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
++    useMyComments({
++      userId,
++      limit: PAGE_SIZE,
++    });
++
++  const comments = data?.pages.flatMap((page) => page.list) ?? [];
++  const totalCount = data?.pages[0]?.totalCount ?? 0;
++
++  useEffect(() => {
++    onTotalCount(totalCount);
++  }, [totalCount, onTotalCount]);
++
++  if (comments.length === 0) {
++    return (
++      <Text className="py-10 text-center font-sans text-sm text-gray-300">
++        작성한 댓글이 없어요.
++      </Text>
++    );
++  }
++
++  return (
++    <View className="gap-0 overflow-hidden rounded-2xl bg-background">
++      {comments.map((comment) => (
++        <MyCommentItem key={comment.id} comment={comment} userId={userId} />
++      ))}
++      {hasNextPage && (
++        <View className="py-4">
++          <LoadMoreButton
++            label="댓글 더보기"
++            isFetchingNextPage={isFetchingNextPage}
++            onPress={() => void fetchNextPage()}
++          />
++        </View>
++      )}
++    </View>
++  );
++}
+diff --git a/src/widgets/mypage-activity/ui/MyEpigramList.tsx b/src/widgets/mypage-activity/ui/MyEpigramList.tsx
+new file mode 100644
+index 0000000..6f23915
+--- /dev/null
++++ b/src/widgets/mypage-activity/ui/MyEpigramList.tsx
+@@ -0,0 +1,66 @@
++import { router } from "expo-router";
++import { useCallback, useEffect, type ReactElement } from "react";
++import { Text, View } from "react-native";
++
++import { useEpigrams } from "~/entities/epigram";
++import { EpigramCard } from "~/widgets/epigram-card";
++
++import { LoadMoreButton } from "./LoadMoreButton";
++
++const PAGE_SIZE = 3;
++
++interface MyEpigramListProps {
++  userId: number;
++  onTotalCount: (count: number) => void;
++}
++
++export function MyEpigramList({
++  userId,
++  onTotalCount,
++}: MyEpigramListProps): ReactElement {
++  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useEpigrams({
++    limit: PAGE_SIZE,
++    writerId: userId,
++  });
++
++  const epigrams = data?.pages.flatMap((page) => page.list) ?? [];
++  const totalCount = data?.pages[0]?.totalCount ?? 0;
++
++  useEffect(() => {
++    onTotalCount(totalCount);
++  }, [totalCount, onTotalCount]);
++
++  const handleCardPress = useCallback((epigramId: number) => {
++    router.push({
++      pathname: "/epigrams/[id]",
++      params: { id: String(epigramId) },
++    });
++  }, []);
++
++  if (epigrams.length === 0) {
++    return (
++      <Text className="py-10 text-center font-sans text-sm text-gray-300">
++        작성한 에피그램이 없어요.
++      </Text>
++    );
++  }
++
++  return (
++    <View className="gap-4">
++      {epigrams.map((epigram) => (
++        <EpigramCard
++          key={epigram.id}
++          epigram={epigram}
++          onPress={handleCardPress}
++        />
++      ))}
++      {hasNextPage && (
++        <LoadMoreButton
++          label="에피그램 더보기"
++          isFetchingNextPage={isFetchingNextPage}
++          onPress={() => void fetchNextPage()}
++        />
++      )}
++    </View>
++  );
++}
+diff --git a/src/widgets/mypage-activity/ui/MypageActivity.tsx b/src/widgets/mypage-activity/ui/MypageActivity.tsx
+new file mode 100644
+index 0000000..6841cd9
+--- /dev/null
++++ b/src/widgets/mypage-activity/ui/MypageActivity.tsx
+@@ -0,0 +1,32 @@
++import { type ReactElement } from "react";
++import { View } from "react-native";
++
++import { useMonthlyEmotions } from "~/entities/emotion-log";
++
++import { EmotionCalendar } from "./EmotionCalendar";
++import { EmotionPieChart } from "./EmotionPieChart";
++import { TabbedSection } from "./TabbedSection";
++
++const NOW = new Date();
++
++interface MypageActivityProps {
++  userId: number;
++}
++
++export function MypageActivity({ userId }: MypageActivityProps): ReactElement {
++  const { data: monthlyLogs = [] } = useMonthlyEmotions({
++    userId,
++    year: NOW.getFullYear(),
++    month: NOW.getMonth() + 1,
++  });
++
++  return (
++    <View className="gap-4">
++      <EmotionCalendar userId={userId} />
++      <EmotionPieChart emotionLogs={monthlyLogs} />
++      <View className="mt-4">
++        <TabbedSection userId={userId} />
++      </View>
++    </View>
++  );
++}
+diff --git a/src/widgets/mypage-activity/ui/TabbedSection.tsx b/src/widgets/mypage-activity/ui/TabbedSection.tsx
+new file mode 100644
+index 0000000..fd7b5c5
+--- /dev/null
++++ b/src/widgets/mypage-activity/ui/TabbedSection.tsx
+@@ -0,0 +1,72 @@
++import { useCallback, useState, type ReactElement } from "react";
++import { Pressable, Text, View } from "react-native";
++
++import { MyCommentList } from "./MyCommentList";
++import { MyEpigramList } from "./MyEpigramList";
++
++type ActiveTab = "epigrams" | "comments";
++
++interface TabButtonProps {
++  label: string;
++  isActive: boolean;
++  onPress: () => void;
++}
++
++function TabButton({ label, isActive, onPress }: TabButtonProps): ReactElement {
++  const textClass = isActive ? "text-black-600" : "text-gray-300";
++
++  return (
++    <Pressable
++      accessibilityRole="tab"
++      accessibilityState={{ selected: isActive }}
++      onPress={onPress}
++    >
++      <Text className={`font-sans text-base font-semibold ${textClass}`}>
++        {label}
++      </Text>
++    </Pressable>
++  );
++}
++
++interface TabbedSectionProps {
++  userId: number;
++}
++
++export function TabbedSection({ userId }: TabbedSectionProps): ReactElement {
++  const [activeTab, setActiveTab] = useState<ActiveTab>("epigrams");
++  const [epigramCount, setEpigramCount] = useState(0);
++  const [commentCount, setCommentCount] = useState(0);
++
++  const handleEpigramCount = useCallback(
++    (count: number) => setEpigramCount(count),
++    [],
++  );
++  const handleCommentCount = useCallback(
++    (count: number) => setCommentCount(count),
++    [],
++  );
++
++  return (
++    <View className="gap-5">
++      <View className="flex-row items-center gap-5">
++        <TabButton
++          label={`내 에피그램(${epigramCount})`}
++          isActive={activeTab === "epigrams"}
++          onPress={() => setActiveTab("epigrams")}
++        />
++        <TabButton
++          label={`내 댓글(${commentCount})`}
++          isActive={activeTab === "comments"}
++          onPress={() => setActiveTab("comments")}
++        />
++      </View>
++
++      <View style={{ display: activeTab === "epigrams" ? "flex" : "none" }}>
++        <MyEpigramList userId={userId} onTotalCount={handleEpigramCount} />
++      </View>
++      <View style={{ display: activeTab === "comments" ? "flex" : "none" }}>
++        <MyCommentList userId={userId} onTotalCount={handleCommentCount} />
++      </View>
++    </View>
++  );
++}

@@ -91,12 +91,6 @@ function MyCommentItem({ comment, epigramId, userId }: MyCommentItemProps): Reac
               </span>
             </div>
             <div className="flex items-center gap-4">
-              <Link
-                href={`/epigrams/${epigramId}/edit?commentId=${comment.id}`}
-                className="text-sm text-black-600 transition hover:text-black-800"
-              >
-                수정
-              </Link>
               <button
                 type="button"
                 onClick={handleDeleteClick}
