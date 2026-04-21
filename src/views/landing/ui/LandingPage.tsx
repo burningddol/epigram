@@ -5,6 +5,8 @@ import Link from "next/link";
 
 import { ChevronDown } from "lucide-react";
 
+import { APP_QR, AppQrPopover } from "./AppQrPopover";
+
 export function LandingPage(): ReactElement {
   return (
     <div className="flex flex-col">
@@ -47,13 +49,15 @@ function HeroSection(): ReactElement {
             다른 사람들과 감정을 공유해 보세요.
           </p>
         </div>
-        {/* border + fill-on-hover premium CTA */}
-        <Link
-          href="/epigrams"
-          className="inline-flex h-12 w-36 items-center justify-center rounded-xl border border-blue-950 bg-blue-950 text-sm font-semibold text-white shadow-sm transition-all duration-300 hover:bg-transparent hover:text-blue-950 hover:shadow-md active:scale-95"
-        >
-          시작하기
-        </Link>
+        <div className="flex flex-col items-center gap-3 tablet:flex-row">
+          <Link
+            href="/epigrams"
+            className="inline-flex h-12 w-36 items-center justify-center rounded-xl border border-blue-950 bg-blue-950 text-sm font-semibold text-white shadow-sm transition-all duration-300 hover:bg-transparent hover:text-blue-950 hover:shadow-md active:scale-95"
+          >
+            웹으로 시작하기
+          </Link>
+          <AppQrPopover />
+        </div>
       </div>
 
       <div className="absolute bottom-8 flex flex-col items-center gap-1">
@@ -186,13 +190,40 @@ function CtaSection(): ReactElement {
         </p>
       </div>
 
-      <Link
-        href="/epigrams"
-        className="relative inline-flex h-12 w-36 items-center justify-center rounded-xl border border-blue-400/60 text-sm font-semibold text-white transition-all duration-300 hover:border-white hover:bg-white/10 active:scale-95"
-      >
-        시작하기
-      </Link>
+      <div className="relative flex flex-col items-center gap-6 tablet:flex-row tablet:gap-10">
+        <Link
+          href="/epigrams"
+          className="inline-flex h-12 w-36 items-center justify-center rounded-xl border border-blue-400/60 text-sm font-semibold text-white transition-all duration-300 hover:border-white hover:bg-white/10 active:scale-95"
+        >
+          웹으로 시작하기
+        </Link>
+        <CtaAppQrCard />
+      </div>
     </section>
+  );
+}
+
+function CtaAppQrCard(): ReactElement {
+  return (
+    <div className="flex items-center gap-4 rounded-2xl border border-blue-400/30 bg-white/5 p-4 backdrop-blur-sm">
+      <Image
+        src={APP_QR.src}
+        alt={APP_QR.alt}
+        width={88}
+        height={88}
+        className="h-[88px] w-[88px] rounded-md bg-white p-1"
+      />
+      <div className="flex flex-col gap-1">
+        <span className="font-serif text-xs uppercase tracking-[0.2em] text-blue-400">
+          mobile app
+        </span>
+        <p className="font-serif text-sm text-white">
+          Expo Go 앱으로
+          <br />
+          QR을 스캔하세요
+        </p>
+      </div>
+    </div>
   );
 }
 
