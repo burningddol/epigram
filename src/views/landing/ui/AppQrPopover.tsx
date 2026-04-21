@@ -76,7 +76,7 @@ export function AppQrPopover(): ReactElement {
               width={180}
               height={180}
               unoptimized
-              className="h-44 w-44"
+              className="h-44 w-44 bg-white"
             />
             <p className="text-center text-xs text-black-500">
               Expo Go 앱으로
