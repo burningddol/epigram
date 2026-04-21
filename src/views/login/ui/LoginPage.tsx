@@ -1,4 +1,4 @@
-import type { ReactElement, ReactNode } from "react";
+import type { ReactElement } from "react";
 
 import { Suspense } from "react";
 
@@ -56,52 +56,10 @@ function SocialLoginSection({ kakaoOauthUrl }: SocialLoginSectionProps): ReactEl
         <hr className="flex-1 border-line-200" />
       </div>
       <div className="flex justify-center gap-4">
-        <SocialIconButton
-          href="https://nid.naver.com/oauth2.0/authorize"
-          label="네이버로 로그인"
-          bgColor="#03C75A"
-        >
-          <span className="text-sm font-bold leading-none text-white">N</span>
-        </SocialIconButton>
-        <SocialIconButton
-          href="https://accounts.google.com/o/oauth2/v2/auth"
-          label="구글로 로그인"
-          bgColor="#ffffff"
-          className="border border-line-200"
-        >
-          <span className="text-sm font-bold leading-none text-[#4285F4]">G</span>
-        </SocialIconButton>
         <Suspense>
           <KakaoLoginButton kakaoOauthUrl={kakaoOauthUrl} />
         </Suspense>
       </div>
     </div>
-  );
-}
-
-interface SocialIconButtonProps {
-  href: string;
-  label: string;
-  bgColor: string;
-  className?: string;
-  children: ReactNode;
-}
-
-function SocialIconButton({
-  href,
-  label,
-  bgColor,
-  className = "",
-  children,
-}: SocialIconButtonProps): ReactElement {
-  return (
-    <a
-      href={href}
-      aria-label={label}
-      className={`flex h-10 w-10 items-center justify-center rounded-full transition-all duration-150 hover:scale-110 hover:opacity-90 active:scale-95 ${className}`}
-      style={{ backgroundColor: bgColor }}
-    >
-      {children}
-    </a>
   );
 }
