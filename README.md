@@ -17,14 +17,13 @@
 
 <br />
 
-
-
 별도 설치 없이 **웹 브라우저** 또는 **Expo Go 앱**으로 바로 실행해볼 수 있어요.
 
-[![Open Web](https://img.shields.io/badge/Open_in-Browser-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://epigram-flax.vercel.app)   
-또는  
+[![Open Web](https://img.shields.io/badge/Open_in-Browser-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://epigram-flax.vercel.app)  
+또는
+
 1. App Store · Play Store 에서 **Expo Go** 설치
-2. 아래 QR을 Expo Go 로 스캔 
+2. 아래 QR을 Expo Go 로 스캔
 
 <img width="200" height="200" alt="image" src="https://github.com/user-attachments/assets/cc0c71fa-0d9e-4fa1-b3ab-68d75284a38a" />
 
