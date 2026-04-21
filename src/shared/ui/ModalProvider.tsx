@@ -1,20 +1,37 @@
 "use client";
 
-import type { ReactElement } from "react";
-import { Fragment } from "react";
+import type { ReactElement, ReactNode } from "react";
+import { createContext, useCallback, useContext, useState } from "react";
 
-import { useModalStore } from "@/shared/model/modalStore";
+type RenderModal = (onClose: () => void) => ReactNode;
 
-export function ModalProvider(): ReactElement | null {
-  const { modals, closeModal } = useModalStore();
+interface ModalContextValue {
+  open: (render: RenderModal) => void;
+  close: () => void;
+}
 
-  if (modals.length === 0) return null;
+const ModalContext = createContext<ModalContextValue | null>(null);
+
+export function ModalProvider({ children }: { children: ReactNode }): ReactElement {
+  const [render, setRender] = useState<RenderModal | null>(null);
+
+  const close = useCallback(() => setRender(null), []);
+
+  const open = useCallback((next: RenderModal) => {
+    // setState로 함수를 저장하려면 함수형 setter로 한 번 wrap 해야 함
+    setRender(() => next);
+  }, []);
 
   return (
-    <>
-      {modals.map((modal) => (
-        <Fragment key={modal.id}>{modal.render(() => closeModal(modal.id))}</Fragment>
-      ))}
-    </>
+    <ModalContext.Provider value={{ open, close }}>
+      {children}
+      {render?.(close)}
+    </ModalContext.Provider>
   );
+}
+
+export function useModalContext(): ModalContextValue {
+  const ctx = useContext(ModalContext);
+  if (!ctx) throw new Error("useModalContext must be used within <ModalProvider>");
+  return ctx;
 }
