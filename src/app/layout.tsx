@@ -38,11 +38,12 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
     >
       <body className="min-h-full flex flex-col">
         <QueryProvider>
-          <Header />
-          <main id="main-content" className="flex flex-1 flex-col">
-            {children}
-          </main>
-          <ModalProvider />
+          <ModalProvider>
+            <Header />
+            <main id="main-content" className="flex flex-1 flex-col">
+              {children}
+            </main>
+          </ModalProvider>
         </QueryProvider>
       </body>
     </html>
