@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, type ReactElement } from "react";
+import { type ReactElement } from "react";
 
 import Image from "next/image";
 
@@ -30,23 +30,36 @@ interface ChartDatum {
   percentage: number;
 }
 
-function buildChartData(emotionLogs: EmotionLog[]): ChartDatum[] {
-  const counts = new Map<Emotion, number>();
+function findTopEmotion(chartData: ChartDatum[]): ChartDatum {
+  let top = chartData[0];
+  for (const datum of chartData) {
+    if (datum.count > top.count) {
+      top = datum;
+    }
+  }
+  return top;
+}
 
+function buildChartData(emotionLogs: EmotionLog[]): ChartDatum[] {
+  if (emotionLogs.length === 0) return [];
+
+  const counts = new Map<Emotion, number>();
   for (const log of emotionLogs) {
     counts.set(log.emotion, (counts.get(log.emotion) ?? 0) + 1);
   }
 
   const total = emotionLogs.length;
-
-  return EMOTION_ORDER.filter((emotion) => counts.has(emotion)).map((emotion) => {
-    const count = counts.get(emotion)!;
-    return {
+  const result: ChartDatum[] = [];
+  for (const emotion of EMOTION_ORDER) {
+    const count = counts.get(emotion);
+    if (count === undefined) continue;
+    result.push({
       emotion,
       count,
       percentage: Math.round((count / total) * 100),
-    };
-  });
+    });
+  }
+  return result;
 }
 
 interface EmotionPieChartProps {
@@ -54,7 +67,7 @@ interface EmotionPieChartProps {
 }
 
 export function EmotionPieChart({ emotionLogs }: EmotionPieChartProps): ReactElement {
-  const chartData = useMemo(() => buildChartData(emotionLogs), [emotionLogs]);
+  const chartData = buildChartData(emotionLogs);
 
   if (chartData.length === 0) {
     return (
@@ -74,7 +87,7 @@ export function EmotionPieChart({ emotionLogs }: EmotionPieChartProps): ReactEle
     );
   }
 
-  const topEmotion = chartData.reduce((max, d) => (d.count > max.count ? d : max));
+  const topEmotion = findTopEmotion(chartData);
 
   return (
     <section className="w-full rounded-2xl bg-white px-6 py-6 shadow-sm ring-1 ring-blue-200">

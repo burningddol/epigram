@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, type ReactElement } from "react";
+import { useEffect, useState, type ReactElement } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -215,9 +215,6 @@ function TabbedSection({ userId }: TabbedSectionProps): ReactElement {
   const [epigramCount, setEpigramCount] = useState(0);
   const [commentCount, setCommentCount] = useState(0);
 
-  const handleEpigramCount = useCallback((count: number) => setEpigramCount(count), []);
-  const handleCommentCount = useCallback((count: number) => setCommentCount(count), []);
-
   return (
     <div className="flex flex-col gap-8">
       {/* Tab header */}
@@ -246,10 +243,10 @@ function TabbedSection({ userId }: TabbedSectionProps): ReactElement {
 
       {/* Tab content — both lists stay mounted so counts stay accurate after tab switch */}
       <div className={activeTab !== "epigrams" ? "hidden" : ""}>
-        <MyEpigramList userId={userId} onTotalCount={handleEpigramCount} />
+        <MyEpigramList userId={userId} onTotalCount={setEpigramCount} />
       </div>
       <div className={activeTab !== "comments" ? "hidden" : ""}>
-        <MyCommentList userId={userId} onTotalCount={handleCommentCount} />
+        <MyCommentList userId={userId} onTotalCount={setCommentCount} />
       </div>
     </div>
   );
