@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, type ReactElement } from "react";
+import type { ReactElement } from "react";
 
 import { ChevronDown } from "lucide-react";
 
@@ -12,13 +12,12 @@ import { formatRelativeTime } from "@/shared/lib/date";
 import type { Comment } from "@/entities/comment";
 
 const COMMENTS_PAGE_SIZE = 4;
-const SKELETON_ITEMS = Array.from({ length: COMMENTS_PAGE_SIZE });
 
 interface CommentItemProps {
   comment: Comment;
 }
 
-function CommentItemBase({ comment }: CommentItemProps): ReactElement {
+function CommentItem({ comment }: CommentItemProps): ReactElement {
   const { open } = useModal();
 
   function handleProfileClick(): void {
@@ -51,8 +50,6 @@ function CommentItemBase({ comment }: CommentItemProps): ReactElement {
   );
 }
 
-const CommentItem = memo(CommentItemBase);
-
 interface LoadMoreButtonProps {
   isFetchingNextPage: boolean;
   onClick: () => void;
@@ -79,44 +76,54 @@ function LoadMoreButton({ isFetchingNextPage, onClick }: LoadMoreButtonProps): R
   );
 }
 
+function RecentCommentSkeleton(): ReactElement {
+  return (
+    <li className="border-t border-line-200 px-6 py-8 first:border-t-0">
+      <div className="flex items-start gap-4">
+        <div className="h-12 w-12 animate-pulse rounded-full bg-blue-200" />
+        <div className="min-w-0 flex flex-1 flex-col gap-3">
+          <div className="h-3 w-24 animate-pulse rounded bg-blue-200" />
+          <div className="h-4 w-full animate-pulse rounded bg-blue-100" />
+        </div>
+      </div>
+    </li>
+  );
+}
+
 export function RecentComments(): ReactElement {
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } = useRecentComments({
     limit: COMMENTS_PAGE_SIZE,
   });
 
-  const sentinelRef = useIntersectionObserver(
-    () => {
-      if (hasNextPage && !isFetchingNextPage) fetchNextPage();
-    },
-    { rootMargin: "200px" }
-  );
+  function handleSentinelIntersect(): void {
+    if (hasNextPage && !isFetchingNextPage) fetchNextPage();
+  }
+
+  function handleLoadMoreClick(): void {
+    fetchNextPage();
+  }
+
+  const sentinelRef = useIntersectionObserver(handleSentinelIntersect, { rootMargin: "200px" });
 
   const comments = data?.pages.flatMap((page) => page.list) ?? [];
+  const hasComments = comments.length > 0;
 
   return (
     <section aria-label="최신 댓글">
       <h2 className="mb-4 text-xl font-bold text-black-900">최신 댓글</h2>
       {isLoading && (
         <ul className="flex flex-col">
-          {SKELETON_ITEMS.map((_, i) => (
-            <li key={i} className="border-t border-line-200 px-6 py-8 first:border-t-0">
-              <div className="flex items-start gap-4">
-                <div className="h-12 w-12 animate-pulse rounded-full bg-blue-200" />
-                <div className="min-w-0 flex flex-1 flex-col gap-3">
-                  <div className="h-3 w-24 animate-pulse rounded bg-blue-200" />
-                  <div className="h-4 w-full animate-pulse rounded bg-blue-100" />
-                </div>
-              </div>
-            </li>
+          {Array.from({ length: COMMENTS_PAGE_SIZE }).map((_, i) => (
+            <RecentCommentSkeleton key={`recent-comment-skeleton-${i}`} />
           ))}
         </ul>
       )}
-      {!isLoading && comments.length === 0 && (
+      {!isLoading && !hasComments && (
         <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-line-200 py-12 text-black-300">
           <p className="text-sm">등록된 댓글이 없습니다.</p>
         </div>
       )}
-      {!isLoading && comments.length > 0 && (
+      {!isLoading && hasComments && (
         <>
           <ul className="flex flex-col">
             {comments.map((comment) => (
@@ -124,7 +131,7 @@ export function RecentComments(): ReactElement {
             ))}
           </ul>
           {hasNextPage && (
-            <LoadMoreButton isFetchingNextPage={isFetchingNextPage} onClick={fetchNextPage} />
+            <LoadMoreButton isFetchingNextPage={isFetchingNextPage} onClick={handleLoadMoreClick} />
           )}
         </>
       )}

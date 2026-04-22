@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useState } from "react";
+import { useState } from "react";
 import type { ReactElement } from "react";
 
 import { MessageCircle, MoreVertical, Pencil, Trash2 } from "lucide-react";
@@ -19,6 +19,7 @@ import type { Comment } from "@/entities/comment";
 
 const COMMENTS_PAGE_SIZE = 5;
 const SKELETON_COUNT = 3;
+const MENU_BLUR_CLOSE_DELAY_MS = 150;
 
 interface CommentSectionProps {
   epigramId: number;
@@ -30,7 +31,7 @@ interface CommentItemProps {
   currentUserId: number | undefined;
 }
 
-function CommentItemBase({ comment, epigramId, currentUserId }: CommentItemProps): ReactElement {
+function CommentItem({ comment, epigramId, currentUserId }: CommentItemProps): ReactElement {
   const [isEditing, setIsEditing] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { open } = useModal();
@@ -42,6 +43,29 @@ function CommentItemBase({ comment, epigramId, currentUserId }: CommentItemProps
     open((onClose) => <UserProfileModal writer={comment.writer} onClose={onClose} />);
   }
 
+  function handleEditCancel(): void {
+    setIsEditing(false);
+  }
+
+  function handleMenuToggle(): void {
+    setIsMenuOpen((prev) => !prev);
+  }
+
+  function handleMenuBlur(): void {
+    // blur 직후 메뉴 내부 클릭이 소실되지 않도록 짧게 지연시킨다.
+    setTimeout(() => setIsMenuOpen(false), MENU_BLUR_CLOSE_DELAY_MS);
+  }
+
+  function handleEditStart(): void {
+    setIsMenuOpen(false);
+    setIsEditing(true);
+  }
+
+  function handleDelete(): void {
+    setIsMenuOpen(false);
+    handleDeleteClick();
+  }
+
   if (isEditing) {
     return (
       <li>
@@ -50,7 +74,7 @@ function CommentItemBase({ comment, epigramId, currentUserId }: CommentItemProps
           epigramId={epigramId}
           initialContent={comment.content}
           initialIsPrivate={comment.isPrivate}
-          onCancel={() => setIsEditing(false)}
+          onCancel={handleEditCancel}
         />
       </li>
     );
@@ -82,8 +106,8 @@ function CommentItemBase({ comment, epigramId, currentUserId }: CommentItemProps
             <div className="relative flex-shrink-0">
               <button
                 type="button"
-                onClick={() => setIsMenuOpen((prev) => !prev)}
-                onBlur={() => setTimeout(() => setIsMenuOpen(false), 150)}
+                onClick={handleMenuToggle}
+                onBlur={handleMenuBlur}
                 className="rounded-full p-1 text-black-300 transition-colors hover:bg-blue-100 hover:text-black-700"
                 aria-label="댓글 옵션"
               >
@@ -94,10 +118,7 @@ function CommentItemBase({ comment, epigramId, currentUserId }: CommentItemProps
                 <div className="absolute right-0 top-7 z-10 flex flex-col rounded-xl border border-line-200 bg-white py-1 shadow-lg">
                   <button
                     type="button"
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      setIsEditing(true);
-                    }}
+                    onClick={handleEditStart}
                     className="flex items-center gap-2 px-4 py-2 text-sm text-black-500 transition-colors hover:bg-blue-50 hover:text-black-900"
                   >
                     <Pencil size={12} />
@@ -105,10 +126,7 @@ function CommentItemBase({ comment, epigramId, currentUserId }: CommentItemProps
                   </button>
                   <button
                     type="button"
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      handleDeleteClick();
-                    }}
+                    onClick={handleDelete}
                     className="flex items-center gap-2 px-4 py-2 text-sm text-error transition-colors hover:bg-red-50"
                   >
                     <Trash2 size={12} />
@@ -125,8 +143,6 @@ function CommentItemBase({ comment, epigramId, currentUserId }: CommentItemProps
     </li>
   );
 }
-
-const CommentItem = memo(CommentItemBase);
 
 function CommentSkeleton(): ReactElement {
   return (
@@ -147,15 +163,15 @@ export function CommentSection({ epigramId }: CommentSectionProps): ReactElement
     limit: COMMENTS_PAGE_SIZE,
   });
 
-  const sentinelRef = useIntersectionObserver(
-    () => {
-      if (hasNextPage && !isFetchingNextPage) fetchNextPage();
-    },
-    { rootMargin: "200px" }
-  );
+  function handleSentinelIntersect(): void {
+    if (hasNextPage && !isFetchingNextPage) fetchNextPage();
+  }
+
+  const sentinelRef = useIntersectionObserver(handleSentinelIntersect, { rootMargin: "200px" });
 
   const comments = data?.pages.flatMap((page) => page.list) ?? [];
   const totalCount = data?.pages[0]?.totalCount;
+  const hasComments = comments.length > 0;
 
   return (
     <section aria-label="댓글">
@@ -170,12 +186,12 @@ export function CommentSection({ epigramId }: CommentSectionProps): ReactElement
       {isLoading && (
         <ul className="flex flex-col gap-3">
           {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
-            <CommentSkeleton key={i} />
+            <CommentSkeleton key={`comment-skeleton-${i}`} />
           ))}
         </ul>
       )}
 
-      {!isLoading && comments.length === 0 && (
+      {!isLoading && !hasComments && (
         <div className="rounded-2xl border border-dashed border-line-200">
           <EmptyState
             icon={
@@ -191,7 +207,7 @@ export function CommentSection({ epigramId }: CommentSectionProps): ReactElement
         </div>
       )}
 
-      {!isLoading && comments.length > 0 && (
+      {!isLoading && hasComments && (
         <ul className="flex flex-col gap-3">
           {comments.map((comment) => (
             <CommentItem
