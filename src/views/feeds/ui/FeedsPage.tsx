@@ -13,44 +13,92 @@ import { SectionErrorFallback } from "@/shared/ui/SectionErrorFallback";
 
 const FEEDS_PAGE_SIZE = 10;
 
+function FeedsSkeleton(): ReactElement {
+  return (
+    <div className="grid grid-cols-1 gap-4 tablet:grid-cols-2">
+      {Array.from({ length: FEEDS_PAGE_SIZE }).map((_, index) => (
+        <div key={index} className="h-40 animate-pulse rounded-2xl bg-blue-100" />
+      ))}
+    </div>
+  );
+}
+
+function FeedsEmptyState(): ReactElement {
+  return (
+    <div className="rounded-2xl border border-dashed border-line-200 bg-white">
+      <EmptyState
+        icon={
+          <BookOpenText className="h-7 w-7 text-blue-400" strokeWidth={1.5} aria-hidden="true" />
+        }
+        title="등록된 에피그램이 없습니다"
+        description="첫 번째 에피그램을 작성해 보세요."
+        action={
+          <Link
+            href="/addepigram"
+            className="inline-flex h-9 items-center justify-center rounded-xl border border-black-400 px-5 text-xs font-semibold text-black-500 transition-all duration-200 hover:bg-black-500 hover:text-white active:scale-95"
+          >
+            에피그램 만들기
+          </Link>
+        }
+      />
+    </div>
+  );
+}
+
+interface LoadMoreButtonProps {
+  isLoading: boolean;
+  onClick: () => void;
+}
+
+function LoadMoreButton({ isLoading, onClick }: LoadMoreButtonProps): ReactElement {
+  return (
+    <div className="flex justify-center pt-2">
+      <button
+        type="button"
+        onClick={onClick}
+        disabled={isLoading}
+        className="group flex items-center gap-2 rounded-full border border-line-200 bg-white px-6 py-2.5 text-sm font-medium text-black-400 shadow-sm transition-all duration-200 hover:border-blue-400 hover:text-blue-700 hover:shadow-md active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        {isLoading ? (
+          <>
+            <span
+              className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+              aria-hidden="true"
+            />
+            불러오는 중...
+          </>
+        ) : (
+          <>
+            <ChevronDown
+              className="h-4 w-4 transition-transform duration-200 group-hover:translate-y-0.5"
+              aria-hidden="true"
+            />
+            + 에피그램 더보기
+          </>
+        )}
+      </button>
+    </div>
+  );
+}
+
 function FeedsGrid(): ReactElement {
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } = useEpigrams({
     limit: FEEDS_PAGE_SIZE,
   });
 
+  if (isLoading) {
+    return <FeedsSkeleton />;
+  }
+
   const epigrams = data?.pages.flatMap((page) => page.list) ?? [];
 
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-1 gap-4 tablet:grid-cols-2">
-        {Array.from({ length: FEEDS_PAGE_SIZE }).map((_, i) => (
-          <div key={i} className="h-40 animate-pulse rounded-2xl bg-blue-100" />
-        ))}
-      </div>
-    );
+  if (epigrams.length === 0) {
+    return <FeedsEmptyState />;
   }
 
-  if (epigrams.length === 0) {
-    return (
-      <div className="rounded-2xl border border-dashed border-line-200 bg-white">
-        <EmptyState
-          icon={
-            <BookOpenText className="h-7 w-7 text-blue-400" strokeWidth={1.5} aria-hidden="true" />
-          }
-          title="등록된 에피그램이 없습니다"
-          description="첫 번째 에피그램을 작성해 보세요."
-          action={
-            <Link
-              href="/addepigram"
-              className="inline-flex h-9 items-center justify-center rounded-xl border border-black-400 px-5 text-xs font-semibold text-black-500 transition-all duration-200 hover:bg-black-500 hover:text-white active:scale-95"
-            >
-              에피그램 만들기
-            </Link>
-          }
-        />
-      </div>
-    );
-  }
+  const handleLoadMore = (): void => {
+    fetchNextPage();
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -61,29 +109,7 @@ function FeedsGrid(): ReactElement {
           </li>
         ))}
       </ul>
-      {hasNextPage && (
-        <div className="flex justify-center pt-2">
-          <button
-            type="button"
-            onClick={() => fetchNextPage()}
-            disabled={isFetchingNextPage}
-            className="group flex items-center gap-2 rounded-full border border-line-200 bg-white px-6 py-2.5 text-sm font-medium text-black-400 shadow-sm transition-all duration-200 hover:border-blue-400 hover:text-blue-700 hover:shadow-md active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {isFetchingNextPage ? (
-              <span
-                className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
-                aria-hidden="true"
-              />
-            ) : (
-              <ChevronDown
-                className="h-4 w-4 transition-transform duration-200 group-hover:translate-y-0.5"
-                aria-hidden="true"
-              />
-            )}
-            {isFetchingNextPage ? "불러오는 중..." : "+ 에피그램 더보기"}
-          </button>
-        </div>
-      )}
+      {hasNextPage && <LoadMoreButton isLoading={isFetchingNextPage} onClick={handleLoadMore} />}
     </div>
   );
 }
@@ -101,7 +127,6 @@ export function FeedsPage(): ReactElement {
         </ErrorBoundary>
       </div>
 
-      {/* fixed FAB — 에피그램 만들기 */}
       <Link
         href="/addepigram"
         aria-label="에피그램 만들기"
@@ -111,7 +136,6 @@ export function FeedsPage(): ReactElement {
         에피그램 만들기
       </Link>
 
-      {/* 스크롤 위 버튼 — FAB 바로 위 */}
       {isVisible && (
         <button
           type="button"
