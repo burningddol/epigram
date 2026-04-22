@@ -1,14 +1,15 @@
 "use client";
 
-import type { ReactElement } from "react";
+import Link from "next/link";
 
 import { ArrowUp, Plus } from "lucide-react";
-import Link from "next/link";
 
 import { EmotionSelector } from "@/features/emotion-select";
 import { useScrollToTop } from "@/shared/hooks/useScrollToTop";
 import { RecentComments } from "@/widgets/comment-section";
 import { EpigramFeed } from "@/widgets/epigram-feed";
+
+import type { ReactElement } from "react";
 
 function ScrollToTopButton(): ReactElement | null {
   const { isVisible, scrollToTop } = useScrollToTop();
