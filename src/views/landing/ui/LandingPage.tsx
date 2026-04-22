@@ -39,7 +39,7 @@ function HeroSection(): ReactElement {
         {"\u201C"}
       </span>
 
-      <div className="relative flex flex-col items-center gap-8 animate-fade-in-up">
+      <div className="relative z-10 flex flex-col items-center gap-8 animate-fade-in-up">
         <div className="flex flex-col gap-3">
           <h1 className="font-serif text-2xl font-normal leading-tight text-black-500 tablet:text-4xl desktop:text-5xl">
             나만 갖고 있기엔
