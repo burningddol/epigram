@@ -21,6 +21,9 @@ export function useEpigramDelete(epigramId: number): UseEpigramDeleteReturn {
     mutationFn: () => apiClient.delete(`/api/epigrams/${epigramId}`).then((res) => res.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["epigrams"] });
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey.includes("comments"),
+      });
       router.push("/epigrams");
     },
   });
