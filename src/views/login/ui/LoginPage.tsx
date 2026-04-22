@@ -11,8 +11,6 @@ import { LoginForm } from "@/features/auth/ui/LoginForm";
 import { EpigramLogo } from "@/shared/ui/EpigramLogo";
 
 export function LoginPage(): ReactElement {
-  const kakaoOauthUrl = process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID ?? "";
-
   return (
     <div className="flex flex-1 flex-col tablet:flex-row">
       <AuthLeftPanel />
@@ -28,14 +26,9 @@ export function LoginPage(): ReactElement {
                 <LoginForm />
                 <GuestLoginButton />
               </Suspense>
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-blue-400">회원이 아니신가요?</span>
-                <Link href="/signup" className="text-sm font-medium text-black-600 hover:underline">
-                  가입하기
-                </Link>
-              </div>
+              <SignupPrompt />
             </div>
-            <SocialLoginSection kakaoOauthUrl={kakaoOauthUrl} />
+            <SocialLoginSection />
           </div>
         </div>
       </div>
@@ -43,11 +36,20 @@ export function LoginPage(): ReactElement {
   );
 }
 
-interface SocialLoginSectionProps {
-  kakaoOauthUrl: string;
+function SignupPrompt(): ReactElement {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-sm text-blue-400">회원이 아니신가요?</span>
+      <Link href="/signup" className="text-sm font-medium text-black-600 hover:underline">
+        가입하기
+      </Link>
+    </div>
+  );
 }
 
-function SocialLoginSection({ kakaoOauthUrl }: SocialLoginSectionProps): ReactElement {
+function SocialLoginSection(): ReactElement {
+  const kakaoOauthUrl = process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID ?? "";
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-[14px]">
