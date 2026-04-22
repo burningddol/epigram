@@ -13,7 +13,13 @@ import { useMe } from "@/entities/user";
 import { ProfileImageUpload, useLogout } from "@/features/auth";
 import { MypageActivity } from "@/widgets/mypage-activity";
 
-const EMOTION_OPTIONS: { value: Emotion; icon: string; label: string }[] = [
+interface EmotionOption {
+  value: Emotion;
+  icon: string;
+  label: string;
+}
+
+const EMOTION_OPTIONS: EmotionOption[] = [
   { value: "MOVED", icon: "/icon/012-heart face.png", label: "감동" },
   { value: "HAPPY", icon: "/icon/035-smiling face.png", label: "기쁨" },
   { value: "WORRIED", icon: "/icon/044-thinking.png", label: "고민" },
@@ -21,11 +27,15 @@ const EMOTION_OPTIONS: { value: Emotion; icon: string; label: string }[] = [
   { value: "ANGRY", icon: "/icon/Frame 65.png", label: "분노" },
 ];
 
-// Computed once at module load — date does not change during a session
-const _today = new Date();
-const TODAY_LABEL = `${_today.getFullYear()}.${String(_today.getMonth() + 1).padStart(2, "0")}.${String(_today.getDate()).padStart(2, "0")}`;
+function formatTodayLabel(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}.${month}.${day}`;
+}
 
-// ─── Skeletons ────────────────────────────────────────────────────────────────
+// 모듈 로드 시점에 한 번만 계산 — 세션 중 날짜는 바뀌지 않는다
+const TODAY_LABEL = formatTodayLabel(new Date());
 
 function ProfileSkeleton(): ReactElement {
   return (
@@ -36,8 +46,6 @@ function ProfileSkeleton(): ReactElement {
     </div>
   );
 }
-
-// ─── Emotion Selector ─────────────────────────────────────────────────────────
 
 interface EmotionSelectorProps {
   selectedEmotion: Emotion | null;
@@ -102,8 +110,6 @@ function EmotionSelector({
     </div>
   );
 }
-
-// ─── MypagePage ───────────────────────────────────────────────────────────────
 
 export function MypagePage(): ReactElement {
   const queryClient = useQueryClient();

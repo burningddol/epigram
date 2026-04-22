@@ -95,9 +95,6 @@ export function EpigramDetailPage({ epigramId }: EpigramDetailPageProps): ReactE
   const { user: me, isLoading: isMeLoading } = useMe();
   const { handleDeleteClick } = useEpigramDelete(epigramId);
 
-  const isLoading = isEpigramLoading || isMeLoading;
-  const isOwner = !isLoading && epigram !== undefined && me !== null && epigram.writerId === me.id;
-
   useEffect(() => {
     if (!isCopied) return;
     const timer = setTimeout(() => setIsCopied(false), 2000);
@@ -109,9 +106,11 @@ export function EpigramDetailPage({ epigramId }: EpigramDetailPageProps): ReactE
     setIsCopied(true);
   }
 
-  if (isLoading || !epigram) {
+  if (isEpigramLoading || isMeLoading || !epigram) {
     return <SkeletonLoader />;
   }
+
+  const isOwner = me !== null && epigram.writerId === me.id;
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-10 tablet:max-w-3xl tablet:px-6 pc:max-w-screen-xl pc:px-16 pc:py-16 desktop:max-w-screen-2xl desktop:px-24">

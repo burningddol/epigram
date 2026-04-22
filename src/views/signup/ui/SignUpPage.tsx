@@ -2,8 +2,7 @@ import type { ReactElement } from "react";
 
 import Link from "next/link";
 
-import { AuthLeftPanel } from "@/features/auth/ui/AuthLeftPanel";
-import { SignUpForm } from "@/features/auth/ui/SignUpForm";
+import { AuthLeftPanel, SignUpForm } from "@/features/auth";
 import { EpigramLogo } from "@/shared/ui/EpigramLogo";
 
 export function SignUpPage(): ReactElement {

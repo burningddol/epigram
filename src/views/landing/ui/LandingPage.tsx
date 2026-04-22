@@ -71,6 +71,16 @@ function HeroSection(): ReactElement {
   );
 }
 
+const EMOTION_TAGS = ["#우울해요", "#슬플때에필로그", "#위로가", "#마음이착잡할때"] as const;
+
+const EMOTION_BADGES = [
+  { icon: "/icon/012-heart face.png", label: "감동" },
+  { icon: "/icon/035-smiling face.png", label: "기쁨" },
+  { icon: "/icon/044-thinking.png", label: "고민" },
+  { icon: "/icon/034-sad.png", label: "슬픔" },
+  { icon: "/icon/Frame 65.png", label: "분노" },
+] as const;
+
 function EmotionSection(): ReactElement {
   return (
     <section className="flex flex-col items-center gap-10 bg-blue-200 px-6 py-20 tablet:px-[72px] desktop:px-[120px]">
@@ -108,6 +118,28 @@ function EmotionSection(): ReactElement {
     </section>
   );
 }
+
+const SAMPLE_EPIGRAMS = [
+  {
+    id: 1,
+    content: "오랫동안 꿈을 그리는 사람은 마침내 그 꿈을 닮아 간다.",
+    author: "앙드레 말로",
+    tags: ["나아가야할때", "꿈을이루고싶을때"],
+  },
+  {
+    id: 2,
+    content:
+      "이 세상에는 위대한 진실이 하나 있어. 무언가를 온 마음을 다해 원하면, 반드시 그렇게 된다.",
+    author: "파울로 코엘료",
+    tags: ["나아가야할때", "꿈을이루고싶을때"],
+  },
+  {
+    id: 3,
+    content: "당신이 꿈꿀 수 있다면, 이룰 수도 있다.",
+    author: "월트 디즈니",
+    tags: ["영감", "꿈"],
+  },
+] as const;
 
 function EpigramsSection(): ReactElement {
   return (
@@ -228,35 +260,3 @@ function CtaAppQrCard(): ReactElement {
     </div>
   );
 }
-
-const EMOTION_TAGS = ["#우울해요", "#슬플때에필로그", "#위로가", "#마음이착잡할때"] as const;
-
-const EMOTION_BADGES = [
-  { icon: "/icon/012-heart face.png", label: "감동" },
-  { icon: "/icon/035-smiling face.png", label: "기쁨" },
-  { icon: "/icon/044-thinking.png", label: "고민" },
-  { icon: "/icon/034-sad.png", label: "슬픔" },
-  { icon: "/icon/Frame 65.png", label: "분노" },
-] as const;
-
-const SAMPLE_EPIGRAMS = [
-  {
-    id: 1,
-    content: "오랫동안 꿈을 그리는 사람은 마침내 그 꿈을 닮아 간다.",
-    author: "앙드레 말로",
-    tags: ["나아가야할때", "꿈을이루고싶을때"],
-  },
-  {
-    id: 2,
-    content:
-      "이 세상에는 위대한 진실이 하나 있어. 무언가를 온 마음을 다해 원하면, 반드시 그렇게 된다.",
-    author: "파울로 코엘료",
-    tags: ["나아가야할때", "꿈을이루고싶을때"],
-  },
-  {
-    id: 3,
-    content: "당신이 꿈꿀 수 있다면, 이룰 수도 있다.",
-    author: "월트 디즈니",
-    tags: ["영감", "꿈"],
-  },
-] as const;

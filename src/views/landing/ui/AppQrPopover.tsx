@@ -17,7 +17,10 @@ export function AppQrPopover(): ReactElement {
     if (!isOpen) return;
 
     function handleClickOutside(event: MouseEvent): void {
-      if (!containerRef.current?.contains(event.target as Node)) {
+      // event.target은 EventTarget | null 타입이지만 DOM 이벤트에서는 실제로 Node를 반환한다.
+      // Node.contains 시그니처 호환을 위해 단언이 불가피하다.
+      const target = event.target as Node | null;
+      if (!containerRef.current?.contains(target)) {
         setIsOpen(false);
       }
     }
