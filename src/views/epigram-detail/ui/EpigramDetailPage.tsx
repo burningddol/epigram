@@ -93,7 +93,7 @@ export function EpigramDetailPage({ epigramId }: EpigramDetailPageProps): ReactE
 
   const { data: epigram, isLoading: isEpigramLoading } = useEpigramDetail(epigramId);
   const { user: me, isLoading: isMeLoading } = useMe();
-  const { handleDeleteClick } = useEpigramDelete(epigramId);
+  const { handleDeleteClick } = useEpigramDelete(epigramId, me?.id);
 
   const isLoading = isEpigramLoading || isMeLoading;
   const isOwner = !isLoading && epigram !== undefined && me !== null && epigram.writerId === me.id;

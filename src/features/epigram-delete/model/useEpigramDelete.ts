@@ -12,15 +12,22 @@ interface UseEpigramDeleteReturn {
   isDeleting: boolean;
 }
 
-export function useEpigramDelete(epigramId: number): UseEpigramDeleteReturn {
+export function useEpigramDelete(epigramId: number, userId?: number): UseEpigramDeleteReturn {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { open } = useModal();
 
   const { mutate, isPending: isDeleting } = useMutation({
     mutationFn: () => apiClient.delete(`/api/epigrams/${epigramId}`).then((res) => res.data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["epigrams"] });
+    onSuccess: async () => {
+      // 에피그램 삭제 시 백엔드에서 댓글도 함께 삭제되므로, 작성자의 댓글 캐시도 무효화한다.
+      const invalidations = [queryClient.invalidateQueries({ queryKey: ["epigrams"] })];
+      if (userId !== undefined) {
+        invalidations.push(
+          queryClient.invalidateQueries({ queryKey: ["users", userId, "comments"] })
+        );
+      }
+      await Promise.all(invalidations);
       router.push("/epigrams");
     },
   });
