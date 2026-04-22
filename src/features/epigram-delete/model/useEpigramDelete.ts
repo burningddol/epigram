@@ -12,7 +12,7 @@ interface UseEpigramDeleteReturn {
   isDeleting: boolean;
 }
 
-export function useEpigramDelete(epigramId: number, userId?: number): UseEpigramDeleteReturn {
+export function useEpigramDelete(epigramId: number): UseEpigramDeleteReturn {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { open } = useModal();
@@ -20,12 +20,10 @@ export function useEpigramDelete(epigramId: number, userId?: number): UseEpigram
   const { mutate, isPending: isDeleting } = useMutation({
     mutationFn: () => apiClient.delete(`/api/epigrams/${epigramId}`).then((res) => res.data),
     onSuccess: () => {
-      // fire-and-forget: await 시 ["epigrams", epigramId] active 쿼리가 refetch되어 404가 나면서 navigation이 막힌다.
-      // 에피그램 삭제 시 백엔드에서 댓글도 함께 삭제되므로 작성자의 댓글 캐시도 함께 무효화한다.
       queryClient.invalidateQueries({ queryKey: ["epigrams"] });
-      if (userId !== undefined) {
-        queryClient.invalidateQueries({ queryKey: ["users", userId, "comments"] });
-      }
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey.includes("comments"),
+      });
       router.push("/epigrams");
     },
   });
