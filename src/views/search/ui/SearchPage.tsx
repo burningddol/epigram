@@ -12,8 +12,8 @@ import { ErrorBoundary } from "@/shared/ui/ErrorBoundary";
 import { SectionErrorFallback } from "@/shared/ui/SectionErrorFallback";
 
 const SEARCH_LIMIT = 10;
-
-// ─── Skeleton ────────────────────────────────────────────────────────────────
+const ANIMATION_DELAY_MAX_INDEX = 5;
+const ANIMATION_DELAY_STEP_MS = 40;
 
 function SearchResultSkeletonItem(): ReactElement {
   return (
@@ -31,14 +31,12 @@ function SearchResultSkeletonItem(): ReactElement {
 function SearchResultSkeleton(): ReactElement {
   return (
     <div>
-      {Array.from({ length: 4 }).map((_, i) => (
-        <SearchResultSkeletonItem key={i} />
+      {Array.from({ length: 4 }).map((_, index) => (
+        <SearchResultSkeletonItem key={index} />
       ))}
     </div>
   );
 }
-
-// ─── Empty / Initial states ───────────────────────────────────────────────────
 
 interface SearchNoResultsProps {
   keyword: string;
@@ -84,8 +82,6 @@ function InitialState(): ReactElement {
   );
 }
 
-// ─── Scroll-to-top ────────────────────────────────────────────────────────────
-
 interface ScrollToTopButtonProps {
   isVisible: boolean;
   onScrollToTop: () => void;
@@ -108,8 +104,6 @@ function ScrollToTopButton({
     </button>
   );
 }
-
-// ─── Search results list (infinite scroll) ────────────────────────────────────
 
 interface SearchResultsProps {
   keyword: string;
@@ -152,7 +146,9 @@ function SearchResults({ keyword }: SearchResultsProps): ReactElement {
           <li
             key={epigram.id}
             className="animate-fade-in-up"
-            style={{ animationDelay: `${Math.min(index, 5) * 40}ms` }}
+            style={{
+              animationDelay: `${Math.min(index, ANIMATION_DELAY_MAX_INDEX) * ANIMATION_DELAY_STEP_MS}ms`,
+            }}
           >
             <SearchResultItem epigram={epigram} keyword={keyword} />
           </li>
@@ -175,8 +171,6 @@ function SearchResults({ keyword }: SearchResultsProps): ReactElement {
     </div>
   );
 }
-
-// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export function SearchPage(): ReactElement {
   const {
