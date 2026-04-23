@@ -18,7 +18,9 @@ export function useEpigramDelete(epigramId: number): UseEpigramDeleteReturn {
   const { open } = useModal();
 
   const { mutate, isPending: isDeleting } = useMutation({
-    mutationFn: () => apiClient.delete(`/api/epigrams/${epigramId}`).then((res) => res.data),
+    mutationFn: async () => {
+      await apiClient.delete(`/api/epigrams/${epigramId}`);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["epigrams"] });
       queryClient.invalidateQueries({

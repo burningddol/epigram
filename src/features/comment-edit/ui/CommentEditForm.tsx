@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactElement, KeyboardEvent } from "react";
+import type { ChangeEvent, KeyboardEvent, ReactElement } from "react";
 
 import { Lock, Unlock } from "lucide-react";
 
@@ -35,16 +35,27 @@ export function CommentEditForm({
     handleCancel,
   } = useCommentEdit({ commentId, epigramId, initialContent, initialIsPrivate, onCancel });
 
-  function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>): void {
-    if (e.key === "Escape") handleCancel();
-    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) handleSubmit();
+  function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>): void {
+    if (event.key === "Escape") {
+      handleCancel();
+      return;
+    }
+    const isSubmitShortcut = event.key === "Enter" && (event.ctrlKey || event.metaKey);
+    if (isSubmitShortcut) handleSubmit();
   }
+
+  function handleContentChange(event: ChangeEvent<HTMLTextAreaElement>): void {
+    setContent(event.target.value);
+  }
+
+  const privateToggleLabel = isPrivate ? "비공개 (공개로 전환)" : "공개 (비공개로 전환)";
+  const privateStatusText = isPrivate ? "비공개" : "공개";
 
   return (
     <div className="flex flex-col gap-2 rounded-2xl border border-blue-400 bg-white p-3 shadow-sm">
       <textarea
         value={content}
-        onChange={(e) => setContent(e.target.value)}
+        onChange={handleContentChange}
         onKeyDown={handleKeyDown}
         maxLength={100}
         rows={2}
@@ -59,10 +70,10 @@ export function CommentEditForm({
           type="button"
           onClick={handlePrivateToggle}
           className="flex items-center gap-1 text-xs text-blue-400 transition-colors hover:text-blue-700"
-          aria-label={isPrivate ? "비공개 (공개로 전환)" : "공개 (비공개로 전환)"}
+          aria-label={privateToggleLabel}
         >
           {isPrivate ? <Lock size={12} /> : <Unlock size={12} />}
-          <span>{isPrivate ? "비공개" : "공개"}</span>
+          <span>{privateStatusText}</span>
         </button>
 
         <div className="flex gap-2">

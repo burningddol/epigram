@@ -12,13 +12,15 @@ interface UseEmotionSelectReturn {
   selectEmotion: (emotion: Emotion) => void;
 }
 
+const TODAY_EMOTION_ROOT_KEY = ["emotionLogs", "today"] as const;
+
 export function useEmotionSelect(): UseEmotionSelectReturn {
   const { user } = useMe();
   const queryClient = useQueryClient();
 
-  const { data: todayEmotionLog } = useTodayEmotion(user?.id ?? 0);
-
-  const todayKey = ["emotionLogs", "today", user?.id ?? 0];
+  const userId = user?.id ?? 0;
+  const { data: todayEmotionLog } = useTodayEmotion(userId);
+  const todayKey = [...TODAY_EMOTION_ROOT_KEY, userId];
 
   const { mutate, isPending } = useMutation({
     mutationFn: postTodayEmotion,
@@ -29,7 +31,7 @@ export function useEmotionSelect(): UseEmotionSelectReturn {
       const previous = queryClient.getQueryData<EmotionLog | null>(todayKey);
 
       queryClient.setQueryData<EmotionLog | null>(todayKey, (old) =>
-        old != null ? { ...old, emotion } : null
+        old != null ? { ...old, emotion } : old
       );
 
       return { previous };
@@ -39,7 +41,7 @@ export function useEmotionSelect(): UseEmotionSelectReturn {
       queryClient.setQueryData(todayKey, context?.previous);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["emotionLogs", "today"] });
+      queryClient.invalidateQueries({ queryKey: TODAY_EMOTION_ROOT_KEY });
     },
   });
 

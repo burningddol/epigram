@@ -30,6 +30,14 @@ const AUTHOR_OPTIONS: AuthorRadioOption[] = [
 ];
 
 const MAX_CONTENT_LENGTH = 500;
+const CONTENT_WARN_THRESHOLD = MAX_CONTENT_LENGTH * 0.9;
+const MAX_TAG_COUNT = 3;
+
+function getContentCounterClass(length: number): string {
+  if (length > MAX_CONTENT_LENGTH) return "font-semibold text-error";
+  if (length >= CONTENT_WARN_THRESHOLD) return "text-black-300";
+  return "text-blue-400";
+}
 
 interface EpigramCreateFormProps {
   userNickname?: string;
@@ -64,35 +72,12 @@ export function EpigramCreateForm({ userNickname }: EpigramCreateFormProps): Rea
     submitError,
   } = useEpigramCreate(userNickname);
 
-  const contentValue = watch("content");
+  const contentLength = watch("content")?.length ?? 0;
   const authorType = watch("authorType");
-  const contentLength = contentValue?.length ?? 0;
-  const isContentNearLimit = contentLength >= MAX_CONTENT_LENGTH * 0.9;
   const isContentOverLimit = contentLength > MAX_CONTENT_LENGTH;
 
-  function getContentCounterClass(): string {
-    if (isContentOverLimit) return "font-semibold text-error";
-    if (isContentNearLimit) return "text-black-300";
-    return "text-blue-400";
-  }
-
-  function handleTagKeyDown(
-    e: KeyboardEvent<HTMLInputElement>,
-    currentTags: string[],
-    onChange: (tags: string[]) => void
-  ): void {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleAddTag(currentTags, onChange);
-    }
-  }
-
   return (
-    <form
-      onSubmit={handleSubmit((values) => submit(values))}
-      className="flex flex-col gap-8"
-      noValidate
-    >
+    <form onSubmit={handleSubmit(submit)} className="flex flex-col gap-8" noValidate>
       <fieldset className="flex flex-col gap-2">
         <label htmlFor="content" className="text-sm font-semibold text-blue-900">
           내용 <span className="text-error">*</span>
@@ -109,7 +94,10 @@ export function EpigramCreateForm({ userNickname }: EpigramCreateFormProps): Rea
             )}
           />
           <span
-            className={`absolute bottom-3 right-4 text-xs transition-colors duration-200 ${getContentCounterClass()}`}
+            className={cn(
+              "absolute bottom-3 right-4 text-xs transition-colors duration-200",
+              getContentCounterClass(contentLength)
+            )}
           >
             {contentLength} / {MAX_CONTENT_LENGTH}
           </span>
@@ -183,67 +171,78 @@ export function EpigramCreateForm({ userNickname }: EpigramCreateFormProps): Rea
       <Controller
         name="tags"
         control={control}
-        render={({ field }) => (
-          <fieldset className="flex flex-col gap-2">
-            <legend className="text-sm font-semibold text-blue-900">태그</legend>
+        render={({ field }) => {
+          const isTagLimitReached = field.value.length >= MAX_TAG_COUNT;
+          const isAddTagDisabled = isTagLimitReached || !tagInput.trim();
 
-            <div className="relative">
-              <input
-                value={tagInput}
-                onChange={(e) => handleTagInputChange(e.target.value)}
-                onKeyDown={(e) => handleTagKeyDown(e, field.value, field.onChange)}
-                placeholder="입력하여 태그 작성 (최대 10자)"
-                disabled={field.value.length >= 3}
-                className={cn(
-                  "h-11 w-full rounded-xl bg-blue-200 px-4 pr-20 text-sm text-black-950",
-                  "outline-none transition-all duration-200 placeholder:text-blue-400",
-                  "focus:bg-blue-100 focus:ring-2 focus:ring-black-500",
-                  "disabled:cursor-not-allowed disabled:opacity-50",
-                  errors.tags && "bg-blue-100 ring-2 ring-error"
-                )}
-              />
-              <button
-                type="button"
-                onClick={() => handleAddTag(field.value, field.onChange)}
-                disabled={field.value.length >= 3 || !tagInput.trim()}
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg bg-blue-900 px-3 py-1 text-xs font-semibold text-white transition-all duration-150 hover:bg-black-600 active:scale-95 disabled:cursor-not-allowed disabled:bg-blue-300"
-              >
-                추가
-              </button>
-            </div>
+          function handleTagKeyDown(event: KeyboardEvent<HTMLInputElement>): void {
+            if (event.key !== "Enter") return;
+            event.preventDefault();
+            handleAddTag(field.value, field.onChange);
+          }
 
-            {field.value.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
-                {field.value.map((tag) => (
-                  <span
-                    key={tag}
-                    className="animate-fade-in flex items-center gap-1 rounded-full bg-blue-200 px-3 py-1 text-sm font-medium text-blue-700 transition-colors hover:bg-blue-300"
-                  >
-                    #{tag}
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveTag(tag, field.value, field.onChange)}
-                      className="ml-0.5 rounded-full p-0.5 text-blue-400 transition-colors hover:bg-blue-400 hover:text-white"
-                      aria-label={`태그 '${tag}' 삭제`}
-                    >
-                      <X size={12} strokeWidth={2.5} />
-                    </button>
-                  </span>
-                ))}
+          return (
+            <fieldset className="flex flex-col gap-2">
+              <legend className="text-sm font-semibold text-blue-900">태그</legend>
+
+              <div className="relative">
+                <input
+                  value={tagInput}
+                  onChange={(e) => handleTagInputChange(e.target.value)}
+                  onKeyDown={handleTagKeyDown}
+                  placeholder="입력하여 태그 작성 (최대 10자)"
+                  disabled={isTagLimitReached}
+                  className={cn(
+                    "h-11 w-full rounded-xl bg-blue-200 px-4 pr-20 text-sm text-black-950",
+                    "outline-none transition-all duration-200 placeholder:text-blue-400",
+                    "focus:bg-blue-100 focus:ring-2 focus:ring-black-500",
+                    "disabled:cursor-not-allowed disabled:opacity-50",
+                    errors.tags && "bg-blue-100 ring-2 ring-error"
+                  )}
+                />
+                <button
+                  type="button"
+                  onClick={() => handleAddTag(field.value, field.onChange)}
+                  disabled={isAddTagDisabled}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg bg-blue-900 px-3 py-1 text-xs font-semibold text-white transition-all duration-150 hover:bg-black-600 active:scale-95 disabled:cursor-not-allowed disabled:bg-blue-300"
+                >
+                  추가
+                </button>
               </div>
-            ) : null}
 
-            <p className="text-xs text-blue-400">
-              {field.value.length >= 3
-                ? "태그는 최대 3개까지 추가할 수 있습니다."
-                : `${field.value.length}/3개 추가됨`}
-            </p>
+              {field.value.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {field.value.map((tag) => (
+                    <span
+                      key={tag}
+                      className="animate-fade-in flex items-center gap-1 rounded-full bg-blue-200 px-3 py-1 text-sm font-medium text-blue-700 transition-colors hover:bg-blue-300"
+                    >
+                      #{tag}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveTag(tag, field.value, field.onChange)}
+                        className="ml-0.5 rounded-full p-0.5 text-blue-400 transition-colors hover:bg-blue-400 hover:text-white"
+                        aria-label={`태그 '${tag}' 삭제`}
+                      >
+                        <X size={12} strokeWidth={2.5} />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              ) : null}
 
-            {errors.tags ? (
-              <p className="animate-fade-in text-xs text-error">{errors.tags.message}</p>
-            ) : null}
-          </fieldset>
-        )}
+              <p className="text-xs text-blue-400">
+                {isTagLimitReached
+                  ? "태그는 최대 3개까지 추가할 수 있습니다."
+                  : `${field.value.length}/${MAX_TAG_COUNT}개 추가됨`}
+              </p>
+
+              {errors.tags ? (
+                <p className="animate-fade-in text-xs text-error">{errors.tags.message}</p>
+              ) : null}
+            </fieldset>
+          );
+        }}
       />
 
       {submitError ? (

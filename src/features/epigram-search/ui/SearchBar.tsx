@@ -1,6 +1,6 @@
 "use client";
 
-import { type KeyboardEvent, type ReactElement } from "react";
+import { type ChangeEvent, type KeyboardEvent, type ReactElement } from "react";
 
 import { Search } from "lucide-react";
 
@@ -38,10 +38,17 @@ export function SearchBar({
   onSearch,
   onClearAllRecent,
 }: SearchBarProps): ReactElement {
-  function handleKeyDown(e: KeyboardEvent<HTMLInputElement>): void {
-    if (e.key === "Enter") {
-      onSearch(inputValue);
-    }
+  function handleInputChange(event: ChangeEvent<HTMLInputElement>): void {
+    onInputChange(event.target.value);
+  }
+
+  function handleKeyDown(event: KeyboardEvent<HTMLInputElement>): void {
+    if (event.key !== "Enter") return;
+    onSearch(inputValue);
+  }
+
+  function handleSearchClick(): void {
+    onSearch(inputValue);
   }
 
   return (
@@ -50,7 +57,7 @@ export function SearchBar({
         <input
           type="search"
           value={inputValue}
-          onChange={(e) => onInputChange(e.target.value)}
+          onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           placeholder="검색어를 입력하세요"
           autoComplete="off"
@@ -59,7 +66,7 @@ export function SearchBar({
         <button
           type="button"
           aria-label="검색"
-          onClick={() => onSearch(inputValue)}
+          onClick={handleSearchClick}
           className="absolute right-0 flex items-center justify-center text-blue-400 transition-all duration-150 hover:scale-110 hover:text-black-700 active:scale-95 pc:[&>svg]:h-7 pc:[&>svg]:w-7"
         >
           <Search size={20} strokeWidth={2} className="tablet:h-6 tablet:w-6" />
