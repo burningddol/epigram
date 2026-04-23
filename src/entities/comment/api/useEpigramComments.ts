@@ -6,6 +6,9 @@ import {
 
 import { apiClient } from "@/shared/api/client";
 
+import { buildCursorParams } from "./buildCursorParams";
+
+import { commentQueryKeys } from "../model/queryKeys";
 import { commentListResponseSchema, type CommentListResponse } from "../model/schema";
 
 interface UseEpigramCommentsParams {
@@ -21,12 +24,10 @@ export function useEpigramComments({
   Error
 > {
   return useInfiniteQuery({
-    queryKey: ["epigrams", epigramId, "comments", { limit }],
+    queryKey: commentQueryKeys.byEpigramWithParams(epigramId, { limit }),
     enabled: epigramId > 0,
     queryFn: async ({ pageParam }) => {
-      const params = new URLSearchParams({ limit: String(limit) });
-      if (pageParam !== undefined) params.set("cursor", String(pageParam));
-
+      const params = buildCursorParams(limit, pageParam);
       const response = await apiClient.get<unknown>(
         `/api/epigrams/${epigramId}/comments?${params}`
       );

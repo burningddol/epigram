@@ -6,6 +6,9 @@ import {
 
 import { apiClient } from "@/shared/api/client";
 
+import { buildCursorParams } from "./buildCursorParams";
+
+import { commentQueryKeys } from "../model/queryKeys";
 import { commentListResponseSchema, type CommentListResponse } from "../model/schema";
 
 interface UseMyCommentsParams {
@@ -21,12 +24,10 @@ export function useMyComments({
   Error
 > {
   return useInfiniteQuery({
-    queryKey: ["users", userId, "comments", { limit }],
+    queryKey: commentQueryKeys.byUserWithParams(userId, { limit }),
     enabled: userId > 0,
     queryFn: async ({ pageParam }) => {
-      const params = new URLSearchParams({ limit: String(limit) });
-      if (pageParam !== undefined) params.set("cursor", String(pageParam));
-
+      const params = buildCursorParams(limit, pageParam);
       const response = await apiClient.get<unknown>(`/api/users/${userId}/comments?${params}`);
       return commentListResponseSchema.parse(response.data);
     },

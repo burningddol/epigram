@@ -6,6 +6,9 @@ import {
 
 import { apiClient } from "@/shared/api/client";
 
+import { buildCursorParams } from "./buildCursorParams";
+
+import { commentQueryKeys } from "../model/queryKeys";
 import { commentListResponseSchema, type CommentListResponse } from "../model/schema";
 
 interface UseRecentCommentsParams {
@@ -19,11 +22,9 @@ export function useRecentComments({
   Error
 > {
   return useInfiniteQuery({
-    queryKey: ["comments", { limit }],
+    queryKey: commentQueryKeys.recent({ limit }),
     queryFn: async ({ pageParam }) => {
-      const params = new URLSearchParams({ limit: String(limit) });
-      if (pageParam !== undefined) params.set("cursor", String(pageParam));
-
+      const params = buildCursorParams(limit, pageParam);
       const response = await apiClient.get<unknown>(`/api/comments?${params}`);
       return commentListResponseSchema.parse(response.data);
     },
