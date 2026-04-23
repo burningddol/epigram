@@ -5,10 +5,8 @@ import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query
 import { fetchRecentCommentsPageServer } from "@/entities/comment/api/server";
 import { fetchEpigramsPageServer, fetchTodayEpigramServer } from "@/entities/epigram/api/server";
 import { EpigramsPage } from "@/views/epigrams";
-
-// Must match the values used in EpigramFeed and RecentComments widgets
-const FEED_PAGE_SIZE = 5;
-const COMMENTS_PAGE_SIZE = 4;
+import { FEED_PAGE_SIZE } from "@/widgets/epigram-feed";
+import { RECENT_COMMENTS_PAGE_SIZE } from "@/widgets/comment-section";
 
 export default async function Page(): Promise<ReactElement> {
   const queryClient = new QueryClient({
@@ -35,10 +33,10 @@ export default async function Page(): Promise<ReactElement> {
       .catch(() => {}),
     queryClient
       .prefetchInfiniteQuery({
-        queryKey: ["comments", { limit: COMMENTS_PAGE_SIZE }],
+        queryKey: ["comments", { limit: RECENT_COMMENTS_PAGE_SIZE }],
         queryFn: ({ pageParam }) =>
           fetchRecentCommentsPageServer({
-            limit: COMMENTS_PAGE_SIZE,
+            limit: RECENT_COMMENTS_PAGE_SIZE,
             pageParam: pageParam as number | undefined,
           }),
         initialPageParam: undefined as number | undefined,
