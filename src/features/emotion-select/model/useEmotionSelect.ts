@@ -37,7 +37,6 @@ export function useEmotionSelect(): UseEmotionSelectReturn {
       return { previous };
     },
     onError: (_err, _emotion, context) => {
-      // 실패 시 이전 값으로 롤백
       queryClient.setQueryData(todayKey, context?.previous);
     },
     onSuccess: () => {

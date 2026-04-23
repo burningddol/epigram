@@ -34,7 +34,6 @@ function formatTodayLabel(date: Date): string {
   return `${year}.${month}.${day}`;
 }
 
-// 모듈 로드 시점에 한 번만 계산 — 세션 중 날짜는 바뀌지 않는다
 const TODAY_LABEL = formatTodayLabel(new Date());
 
 function ProfileSkeleton(): ReactElement {

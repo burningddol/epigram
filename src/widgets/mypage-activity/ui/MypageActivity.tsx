@@ -29,8 +29,6 @@ interface MypageActivityProps {
   userId: number;
 }
 
-// ─── Load More Button ─────────────────────────────────────────────────────────
-
 interface LoadMoreButtonProps {
   isFetchingNextPage: boolean;
   label: string;
@@ -56,8 +54,6 @@ function LoadMoreButton({
     </div>
   );
 }
-
-// ─── Comment Card ─────────────────────────────────────────────────────────────
 
 const DEFAULT_AVATAR = "/icon/035-smiling face.png";
 
@@ -113,8 +109,6 @@ function MyCommentItem({ comment, epigramId, userId }: MyCommentItemProps): Reac
   );
 }
 
-// ─── Epigram List ─────────────────────────────────────────────────────────────
-
 interface MyEpigramListProps {
   userId: number;
   onTotalCount: (count: number) => void;
@@ -155,8 +149,6 @@ function MyEpigramList({ userId, onTotalCount }: MyEpigramListProps): ReactEleme
     </div>
   );
 }
-
-// ─── Comment List ─────────────────────────────────────────────────────────────
 
 interface MyCommentListProps {
   userId: number;
@@ -204,8 +196,6 @@ function MyCommentList({ userId, onTotalCount }: MyCommentListProps): ReactEleme
   );
 }
 
-// ─── Tabbed Section ───────────────────────────────────────────────────────────
-
 interface TabbedSectionProps {
   userId: number;
 }
@@ -251,8 +241,6 @@ function TabbedSection({ userId }: TabbedSectionProps): ReactElement {
     </div>
   );
 }
-
-// ─── MypageActivity ───────────────────────────────────────────────────────────
 
 export function MypageActivity({ userId }: MypageActivityProps): ReactElement {
   const { data: monthlyLogs = [] } = useMonthlyEmotions({

@@ -45,7 +45,6 @@ export function ProfileImageUpload({
     try {
       const imageUrl = await uploadImage(file);
       await updateMe({ image: imageUrl });
-      // Clear preview so displayUrl falls back to the new currentImageUrl from parent
       setPreviewUrl(null);
       URL.revokeObjectURL(objectUrl);
       // Non-blocking: UI already shows the cleared preview
