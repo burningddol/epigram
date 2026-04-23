@@ -1,7 +1,8 @@
 "use client";
 
-import { useMutation, useQueryClient, type QueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+import { matchesCommentQuery } from "@/entities/comment";
 import { apiClient } from "@/shared/api/client";
 import { useModal } from "@/shared/hooks/useModal";
 import { ConfirmModal } from "@/shared/ui/Modal";
@@ -13,8 +14,8 @@ interface UseCommentDeleteReturn {
 
 export function useCommentDelete(
   commentId: number,
-  epigramId: number,
-  userId?: number
+  _epigramId: number,
+  _userId?: number
 ): UseCommentDeleteReturn {
   const queryClient = useQueryClient();
   const { open } = useModal();
@@ -23,7 +24,11 @@ export function useCommentDelete(
     mutationFn: async (): Promise<void> => {
       await apiClient.delete(`/api/comments/${commentId}`);
     },
-    onSuccess: () => invalidateCommentCaches(queryClient, epigramId, userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        predicate: (query) => matchesCommentQuery(query.queryKey),
+      });
+    },
   });
 
   function handleDeleteClick(): void {
@@ -39,20 +44,4 @@ export function useCommentDelete(
   }
 
   return { handleDeleteClick, isDeleting };
-}
-
-async function invalidateCommentCaches(
-  queryClient: QueryClient,
-  epigramId: number,
-  userId?: number
-): Promise<void> {
-  const tasks: Array<Promise<void>> = [
-    queryClient.invalidateQueries({ queryKey: ["epigrams", epigramId, "comments"] }),
-  ];
-
-  if (userId !== undefined) {
-    tasks.push(queryClient.invalidateQueries({ queryKey: ["users", userId, "comments"] }));
-  }
-
-  await Promise.all(tasks);
 }
