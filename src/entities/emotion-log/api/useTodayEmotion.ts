@@ -8,7 +8,8 @@ async function fetchTodayEmotion(userId: number): Promise<EmotionLog | null> {
   const response = await apiClient.get<unknown>("/api/emotionLogs/today", {
     params: { userId },
   });
-  return emotionLogSchema.nullable().parse(response.data ?? null);
+  // axios는 204 No Content 응답 시 response.data를 빈 문자열로 해석 — `??`(null/undefined만)이 아니라 `||`(falsy 전체)로 정규화해야 nullable()이 처리 가능.
+  return emotionLogSchema.nullable().parse(response.data || null);
 }
 
 export function useTodayEmotion(userId: number): UseQueryResult<EmotionLog | null, Error> {
