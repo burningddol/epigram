@@ -32,25 +32,29 @@ export function EmotionSelector(): ReactElement {
   const { isLoggedIn, todayEmotion, isSubmitting, selectEmotion } = useEmotionSelect();
   const { open } = useModal();
 
+  function openLoginPrompt(): void {
+    open((onClose) => (
+      <ConfirmModal
+        title="로그인이 필요합니다"
+        description="감정을 기록하려면 로그인이 필요합니다. 로그인 페이지로 이동할까요?"
+        confirmLabel="로그인하기"
+        cancelLabel="취소"
+        onConfirm={() => {
+          router.push("/login");
+          onClose();
+        }}
+        onClose={onClose}
+      />
+    ));
+  }
+
   function handleEmotionClick(emotion: Emotion): void {
     if (!isLoggedIn) {
-      open((onClose) => (
-        <ConfirmModal
-          title="로그인이 필요합니다"
-          description="감정을 기록하려면 로그인이 필요합니다. 로그인 페이지로 이동할까요?"
-          confirmLabel="로그인하기"
-          cancelLabel="취소"
-          onConfirm={() => {
-            router.push("/login");
-            onClose();
-          }}
-          onClose={onClose}
-        />
-      ));
+      openLoginPrompt();
       return;
     }
-
-    if (isSubmitting || todayEmotion === emotion) return;
+    if (isSubmitting) return;
+    if (todayEmotion === emotion) return;
 
     selectEmotion(emotion);
   }
