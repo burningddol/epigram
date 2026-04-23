@@ -121,47 +121,55 @@ function UserSection({ size }: UserSectionProps): ReactElement {
   );
 }
 
+interface HeaderBarProps {
+  containerClassName: string;
+  size: "sm" | "lg";
+  navTextSize: "sm" | "md";
+  innerGapClassName: string;
+}
+
+function HeaderBar({
+  containerClassName,
+  size,
+  navTextSize,
+  innerGapClassName,
+}: HeaderBarProps): ReactElement {
+  return (
+    <div className={containerClassName}>
+      <div className={cn("flex items-center", innerGapClassName)}>
+        <Logo size={size} />
+        <nav className="flex gap-6" aria-label="주요 메뉴">
+          {NAV_LINKS.map((link) => (
+            <NavLink key={link.href} href={link.href} label={link.label} textSize={navTextSize} />
+          ))}
+        </nav>
+      </div>
+      <UserSection size={size} />
+    </div>
+  );
+}
+
 export function Header(): ReactElement {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-line-100 bg-white/90 backdrop-blur-md">
-      {/* Mobile (base ~ 743px): 로고 + 텍스트 링크 / 유저 */}
-      <div className="flex h-[52px] items-center justify-between px-6 tablet:hidden">
-        <div className="flex items-center gap-6">
-          <Logo size="sm" />
-          <nav className="flex gap-6" aria-label="주요 메뉴">
-            {NAV_LINKS.map((link) => (
-              <NavLink key={link.href} href={link.href} label={link.label} textSize="sm" />
-            ))}
-          </nav>
-        </div>
-        <UserSection size="sm" />
-      </div>
-
-      {/* Tablet (744px ~ 1279px): 로고 + 텍스트 링크 / 유저 */}
-      <div className="hidden h-[60px] items-center justify-between px-[72px] tablet:flex pc:hidden">
-        <div className="flex items-center gap-6">
-          <Logo size="sm" />
-          <nav className="flex gap-6" aria-label="주요 메뉴">
-            {NAV_LINKS.map((link) => (
-              <NavLink key={link.href} href={link.href} label={link.label} textSize="sm" />
-            ))}
-          </nav>
-        </div>
-        <UserSection size="sm" />
-      </div>
-
-      {/* Desktop (1280px+): 로고 + 텍스트 링크 / 유저 */}
-      <div className="hidden h-[80px] items-center justify-between px-[120px] pc:flex">
-        <div className="flex items-center gap-9">
-          <Logo size="lg" />
-          <nav className="flex gap-6" aria-label="주요 메뉴">
-            {NAV_LINKS.map((link) => (
-              <NavLink key={link.href} href={link.href} label={link.label} textSize="md" />
-            ))}
-          </nav>
-        </div>
-        <UserSection size="lg" />
-      </div>
+      <HeaderBar
+        containerClassName="flex h-[52px] items-center justify-between px-6 tablet:hidden"
+        size="sm"
+        navTextSize="sm"
+        innerGapClassName="gap-6"
+      />
+      <HeaderBar
+        containerClassName="hidden h-[60px] items-center justify-between px-[72px] tablet:flex pc:hidden"
+        size="sm"
+        navTextSize="sm"
+        innerGapClassName="gap-6"
+      />
+      <HeaderBar
+        containerClassName="hidden h-[80px] items-center justify-between px-[120px] pc:flex"
+        size="lg"
+        navTextSize="md"
+        innerGapClassName="gap-9"
+      />
     </header>
   );
 }

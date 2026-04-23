@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type ReactElement } from "react";
+import { useState, type ReactElement } from "react";
 
 import Image from "next/image";
 
@@ -8,7 +8,7 @@ import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 
 import { useMonthlyEmotions } from "@/entities/emotion-log";
 
-import type { Emotion } from "@/entities/emotion-log";
+import type { Emotion, EmotionLog } from "@/entities/emotion-log";
 
 const EMOTION_ICONS: Record<Emotion, string> = {
   MOVED: "/icon/012-heart face.png",
@@ -40,44 +40,56 @@ interface CalendarCell {
   dateKey: string;
 }
 
+function formatDateKey(year: number, month: number, day: number): string {
+  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
+function getPrevMonth(year: number, month: number): { year: number; month: number } {
+  if (month === 1) return { year: year - 1, month: 12 };
+  return { year, month: month - 1 };
+}
+
+function getNextMonth(year: number, month: number): { year: number; month: number } {
+  if (month === 12) return { year: year + 1, month: 1 };
+  return { year, month: month + 1 };
+}
+
 function buildCalendarCells(year: number, month: number): CalendarCell[] {
   const firstDayOfWeek = new Date(year, month - 1, 1).getDay();
   const daysInMonth = new Date(year, month, 0).getDate();
   const daysInPrevMonth = new Date(year, month - 1, 0).getDate();
+  const prev = getPrevMonth(year, month);
+  const next = getNextMonth(year, month);
 
   const cells: CalendarCell[] = [];
 
   for (let i = firstDayOfWeek - 1; i >= 0; i--) {
     const day = daysInPrevMonth - i;
-    const prevMonth = month === 1 ? 12 : month - 1;
-    const prevYear = month === 1 ? year - 1 : year;
     cells.push({
       day,
       isCurrentMonth: false,
-      dateKey: `${prevYear}-${String(prevMonth).padStart(2, "0")}-${String(day).padStart(2, "0")}`,
+      dateKey: formatDateKey(prev.year, prev.month, day),
     });
   }
 
-  for (let d = 1; d <= daysInMonth; d++) {
+  for (let day = 1; day <= daysInMonth; day++) {
     cells.push({
-      day: d,
+      day,
       isCurrentMonth: true,
-      dateKey: `${year}-${String(month).padStart(2, "0")}-${String(d).padStart(2, "0")}`,
+      dateKey: formatDateKey(year, month, day),
     });
   }
 
   const remainder = cells.length % 7;
-  if (remainder !== 0) {
-    const nextMonth = month === 12 ? 1 : month + 1;
-    const nextYear = month === 12 ? year + 1 : year;
-    const toAdd = 7 - remainder;
-    for (let i = 1; i <= toAdd; i++) {
-      cells.push({
-        day: i,
-        isCurrentMonth: false,
-        dateKey: `${nextYear}-${String(nextMonth).padStart(2, "0")}-${String(i).padStart(2, "0")}`,
-      });
-    }
+  if (remainder === 0) return cells;
+
+  const toAdd = 7 - remainder;
+  for (let day = 1; day <= toAdd; day++) {
+    cells.push({
+      day,
+      isCurrentMonth: false,
+      dateKey: formatDateKey(next.year, next.month, day),
+    });
   }
 
   return cells;
@@ -89,20 +101,25 @@ interface MonthNavigationProps {
   size?: "sm" | "md";
 }
 
+const NAV_BUTTON_BASE =
+  "flex items-center justify-center rounded-full transition hover:bg-background active:scale-90";
+
+const NAV_SIZE_CLASSES: Record<"sm" | "md", { button: string; icon: string }> = {
+  sm: { button: "h-8 w-8", icon: "h-4 w-4 text-black-600" },
+  md: { button: "h-9 w-9", icon: "h-5 w-5 text-black-600" },
+};
+
 function MonthNavigation({ onPrev, onNext, size = "md" }: MonthNavigationProps): ReactElement {
-  const btnClass =
-    size === "sm"
-      ? "flex h-8 w-8 items-center justify-center rounded-full transition hover:bg-background active:scale-90"
-      : "flex h-9 w-9 items-center justify-center rounded-full transition hover:bg-background active:scale-90";
-  const iconClass = size === "sm" ? "h-4 w-4 text-black-600" : "h-5 w-5 text-black-600";
+  const { button, icon } = NAV_SIZE_CLASSES[size];
+  const btnClass = `${NAV_BUTTON_BASE} ${button}`;
 
   return (
     <div className="flex items-center gap-2">
       <button type="button" aria-label="이전 달" onClick={onPrev} className={btnClass}>
-        <ChevronLeft className={iconClass} strokeWidth={2.5} />
+        <ChevronLeft className={icon} strokeWidth={2.5} />
       </button>
       <button type="button" aria-label="다음 달" onClick={onNext} className={btnClass}>
-        <ChevronRight className={iconClass} strokeWidth={2.5} />
+        <ChevronRight className={icon} strokeWidth={2.5} />
       </button>
     </div>
   );
@@ -110,6 +127,15 @@ function MonthNavigation({ onPrev, onNext, size = "md" }: MonthNavigationProps):
 
 interface EmotionCalendarProps {
   userId: number;
+}
+
+function buildEmotionByDate(emotionLogs: EmotionLog[]): Map<string, Emotion> {
+  const map = new Map<string, Emotion>();
+  for (const log of emotionLogs) {
+    const dateKey = new Date(log.createdAt).toLocaleDateString("sv");
+    map.set(dateKey, log.emotion);
+  }
+  return map;
 }
 
 export function EmotionCalendar({ userId }: EmotionCalendarProps): ReactElement {
@@ -120,35 +146,19 @@ export function EmotionCalendar({ userId }: EmotionCalendarProps): ReactElement 
 
   const { data: emotionLogs = [] } = useMonthlyEmotions({ userId, year, month });
 
-  const emotionByDate = useMemo(
-    () =>
-      new Map<string, Emotion>(
-        emotionLogs.map((log) => {
-          const dateKey = new Date(log.createdAt).toLocaleDateString("sv");
-          return [dateKey, log.emotion];
-        })
-      ),
-    [emotionLogs]
-  );
-
-  const cells = useMemo(() => buildCalendarCells(year, month), [year, month]);
+  const emotionByDate = buildEmotionByDate(emotionLogs);
+  const cells = buildCalendarCells(year, month);
 
   function handlePrevMonth(): void {
-    if (month === 1) {
-      setYear((y) => y - 1);
-      setMonth(12);
-    } else {
-      setMonth((m) => m - 1);
-    }
+    const prev = getPrevMonth(year, month);
+    setYear(prev.year);
+    setMonth(prev.month);
   }
 
   function handleNextMonth(): void {
-    if (month === 12) {
-      setYear((y) => y + 1);
-      setMonth(1);
-    } else {
-      setMonth((m) => m + 1);
-    }
+    const next = getNextMonth(year, month);
+    setYear(next.year);
+    setMonth(next.month);
   }
 
   function handleFilterSelect(emotion: Emotion | null): void {
@@ -156,10 +166,14 @@ export function EmotionCalendar({ userId }: EmotionCalendarProps): ReactElement 
     setIsFilterOpen(false);
   }
 
+  function handleToggleFilter(): void {
+    setIsFilterOpen((open) => !open);
+  }
+
   function isToday(cell: CalendarCell): boolean {
-    return (
-      cell.isCurrentMonth && year === TODAY_YEAR && month === TODAY_MONTH && cell.day === TODAY_DATE
-    );
+    if (!cell.isCurrentMonth) return false;
+    if (year !== TODAY_YEAR || month !== TODAY_MONTH) return false;
+    return cell.day === TODAY_DATE;
   }
 
   function getVisibleEmotion(cell: CalendarCell): Emotion | undefined {
@@ -193,7 +207,7 @@ export function EmotionCalendar({ userId }: EmotionCalendarProps): ReactElement 
           <div className="relative">
             <button
               type="button"
-              onClick={() => setIsFilterOpen((v) => !v)}
+              onClick={handleToggleFilter}
               className="flex items-center gap-1 rounded-xl bg-background px-3 py-1.5 text-xs font-semibold text-gray-200 transition hover:bg-blue-200 tablet:text-sm"
             >
               필터: {filterLabel}
