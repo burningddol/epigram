@@ -48,7 +48,7 @@ export function GuestLoginButton(): ReactElement {
       >
         게스트로 둘러보기
       </Button>
-      {error !== null && <p className="text-xs text-red-500">{error}</p>}
+      {error && <p className="text-xs text-red-500">{error}</p>}
     </div>
   );
 }
