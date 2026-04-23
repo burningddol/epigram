@@ -2,6 +2,7 @@
 export { userSchema } from "./model/schema";
 export type { User } from "./model/schema";
 export type { UserWithEmail, SignUpResponse, SignInResponse } from "./model/types";
+export { userQueryKeys } from "./model/queryKeys";
 
 // api
 export { signUp, signIn, logout } from "./api/auth";

@@ -1,7 +1,9 @@
 // Server-only: DO NOT import in client components
 import { BACKEND_BASE } from "@/shared/config/backend";
 
+import { buildEpigramListParams } from "./buildListParams";
 import { epigramListResponseSchema, epigramSchema } from "../model/schema";
+
 import type { Epigram, EpigramListResponse } from "../model/schema";
 
 interface FetchEpigramsPageParams {
@@ -11,17 +13,10 @@ interface FetchEpigramsPageParams {
   writerId?: number;
 }
 
-export async function fetchEpigramsPageServer({
-  limit,
-  pageParam,
-  keyword,
-  writerId,
-}: FetchEpigramsPageParams): Promise<EpigramListResponse> {
-  const params = new URLSearchParams({ limit: String(limit) });
-  if (pageParam !== undefined) params.set("cursor", String(pageParam));
-  if (keyword) params.set("keyword", keyword);
-  if (writerId !== undefined) params.set("writerId", String(writerId));
-
+export async function fetchEpigramsPageServer(
+  args: FetchEpigramsPageParams
+): Promise<EpigramListResponse> {
+  const params = buildEpigramListParams(args);
   const res = await fetch(`${BACKEND_BASE}/epigrams?${params}`, {
     next: { revalidate: 30, tags: ["epigrams"] },
     signal: AbortSignal.timeout(5000),
