@@ -3,6 +3,7 @@
 import type { ReactElement } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -15,6 +16,7 @@ import { signUpSchema, type SignUpFormValues } from "../model/signUpSchema";
 
 export function SignUpForm(): ReactElement {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -28,7 +30,11 @@ export function SignUpForm(): ReactElement {
 
   async function onSubmit(data: SignUpFormValues): Promise<void> {
     try {
-      await signUp(data);
+      const { user } = await signUp(data);
+      queryClient.setQueryData(["me"], user);
+      // router.refresh() 없이 push하면 캐시된 미인증 RSC 페이로드가 서빙되어
+      // 미들웨어가 다시 /login으로 리다이렉트한다.
+      router.refresh();
       router.push("/");
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 500) {
