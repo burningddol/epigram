@@ -1,26 +1,22 @@
 <!--
   SYNC IMPACT REPORT
   ==================
-  Version Change: (none) → 1.0.0
-  Modified Principles: 신규 작성 — 기존 플레이스홀더 전부 교체
+  Version Change: 1.0.0 → 1.1.0
+  Modified Principles:
+    - I. 명확성 우선 — 주석 규칙 실질적 확장
+      · "왜" 주석을 최후 수단으로 격상
+      · 주석 작성 전 코드 개선 가능성 검토 메타 체크 추가
+      · 기존 "왜" 주석이 현상 정당화로 변질되었는지 리팩토링 중 재검토 의무
 
-  Added Sections:
-    - I. 명확성 우선
-    - II. 타입 안전성 (NON-NEGOTIABLE)
-    - III. 컴포넌트 설계 원칙
-    - IV. 상태 관리 전략
-    - V. 에러 처리
-    - VI. 성능과 사용성
-    - VII. 보안
-    - 기술 스택 및 아키텍처
-    - 개발 워크플로우
-
+  Added Sections: 없음 (기존 섹션 확장)
   Removed Sections: 없음
 
+  Rationale: 2026-04-23 Phase 4 entities 리팩토링에서 스키마 nullable 미반영 상태를
+    "왜" 주석으로 정당화한 사례(emotion-log/api/useTodayEmotion.ts) 발견 → 규칙 강화.
+
   Templates Requiring Updates:
-    ✅ .specify/memory/constitution.md — 이 파일 (작성 완료)
-    ⚠ .specify/templates/plan-template.md — Constitution Check 항목을 아래 원칙에 맞춰 수동 조정 권장
-    ⚠ .specify/templates/tasks-template.md — GitHub 이슈/PR 워크플로우 단계를 태스크 포맷에 반영 권장
+    ✅ .specify/memory/constitution.md — 이 파일 (개정 완료)
+    ✅ ~/.claude/CLAUDE.md — 글로벌 개인 설정에 동일 규칙 동기화 완료
 
   Deferred TODOs: 없음
 -->
@@ -35,7 +31,9 @@
 
 - 중첩 삼항 연산자를 사용하지 않는다. 조건이 2개 이상이면 `if/else` 또는 `switch`를 사용한다.
 - 변수명과 함수명은 목적을 명확히 드러내야 한다.
-- 명백한 코드를 설명하는 주석은 작성하지 않는다. "무엇"이 아닌 "왜"를 설명하는 주석은 허용한다.
+- 명백한 코드를 설명하는 주석은 작성하지 않는다. "무엇"이 아닌 "왜"를 설명하는 주석만 허용하되, **주석은 최후 수단**이다.
+- "왜" 주석을 쓰고 싶어지면 먼저 코드를 바꿔서 주석 없이 의도가 드러나게 만들 수 있는지 확인한다 (타입·함수명·구조로 표현 가능하면 주석 불필요).
+- 기존 "왜" 주석을 리팩토링 중 만나면 유지 결정 전에 **"이 주석이 설명하는 제약이 코드 개선으로 제거 가능한가?"**를 반드시 검토한다. 현상을 정당화하는 주석(예: 런타임 검증과 스키마 정의의 중복을 해설)은 코드부터 고친다.
 - 최대 중첩 깊이: 2단계. 그 이상이면 헬퍼 함수로 추출한다.
 - 함수 상단에서 null/undefined를 처리하는 guard clause(early return)를 사용한다.
 - 불필요한 지역 변수를 만들지 않는다.
@@ -354,4 +352,4 @@ PR 머지 전 다음 항목을 반드시 확인한다:
 - 원칙 위반이 불가피한 경우, PR 본문에 사유를 명시하고 팀의 동의를 받는다.
 - 복잡도가 정당화되어야 하는 경우, `plan.md`의 Complexity Tracking 섹션에 기록한다.
 
-**Version**: 1.0.0 | **Ratified**: 2026-04-03 | **Last Amended**: 2026-04-03
+**Version**: 1.1.0 | **Ratified**: 2026-04-03 | **Last Amended**: 2026-04-23
