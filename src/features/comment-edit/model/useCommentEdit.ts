@@ -34,7 +34,6 @@ interface UseCommentEditReturn {
 
 export function useCommentEdit({
   commentId,
-  epigramId,
   initialContent,
   initialIsPrivate,
   onCancel,
