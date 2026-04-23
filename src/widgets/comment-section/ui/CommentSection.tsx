@@ -115,21 +115,26 @@ function CommentItem({ comment, epigramId, currentUserId }: CommentItemProps): R
               </button>
 
               {isMenuOpen && (
-                <div className="absolute right-0 top-7 z-10 flex flex-col rounded-xl border border-line-200 bg-white py-1 shadow-lg">
+                <div
+                  role="menu"
+                  className="absolute right-0 top-8 z-10 flex w-28 flex-col overflow-hidden rounded-xl border border-line-200 bg-white py-0 shadow-lg"
+                >
                   <button
                     type="button"
+                    role="menuitem"
                     onClick={handleEditStart}
-                    className="flex items-center gap-2 px-4 py-2 text-sm text-black-500 transition-colors hover:bg-blue-50 hover:text-black-900"
+                    className="flex items-center justify-center gap-2 whitespace-nowrap px-4 pr-5 py-2 text-left text-sm text-black-500 transition-colors hover:bg-blue-50 hover:text-black-900"
                   >
-                    <Pencil size={12} />
+                    <Pencil size={14} aria-hidden="true" />
                     수정
                   </button>
                   <button
                     type="button"
+                    role="menuitem"
                     onClick={handleDelete}
-                    className="flex items-center gap-2 px-4 py-2 text-sm text-error transition-colors hover:bg-red-50"
+                    className="flex items-center justify-center gap-2 whitespace-nowrap px-4 pr-5 py-2 text-left text-sm text-error transition-colors hover:bg-red-50"
                   >
-                    <Trash2 size={12} />
+                    <Trash2 size={14} aria-hidden="true" />
                     삭제
                   </button>
                 </div>

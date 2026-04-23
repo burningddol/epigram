@@ -5,7 +5,7 @@ import { useEffect, useState, type ReactElement } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import { ArrowLeft, ExternalLink, MoreVertical, Share2 } from "lucide-react";
+import { ArrowLeft, ExternalLink, MoreVertical, Pencil, Share2, Trash2 } from "lucide-react";
 
 import { useEpigramDetail } from "@/entities/epigram";
 import { useMe } from "@/entities/user";
@@ -51,19 +51,26 @@ function ActionMenu({ epigramId, onDelete }: ActionMenuProps): ReactElement {
       {isOpen && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
-          <div className="absolute right-0 top-8 z-20 min-w-[100px] rounded-xl border border-line-200 bg-white py-1 shadow-lg">
+          <div
+            role="menu"
+            className="absolute right-0 top-9 z-20 flex w-28 flex-col overflow-hidden rounded-xl border border-line-200 bg-white py-0 shadow-lg"
+          >
             <button
               type="button"
+              role="menuitem"
               onClick={handleEdit}
-              className="w-full px-4 py-2 text-left text-sm text-black-700 hover:bg-blue-50"
+              className="flex items-center justify-center gap-2 whitespace-nowrap px-4 pr-5 py-3 text-left text-sm text-black-500 transition-colors hover:bg-blue-50 hover:text-black-900"
             >
+              <Pencil size={14} aria-hidden="true" />
               수정
             </button>
             <button
               type="button"
+              role="menuitem"
               onClick={handleDelete}
-              className="w-full px-4 py-2 text-left text-sm text-red-500 hover:bg-red-50"
+              className="flex items-center justify-center gap-2 whitespace-nowrap px-4 pr-5 py-3 text-left text-sm text-error transition-colors hover:bg-red-50"
             >
+              <Trash2 size={14} aria-hidden="true" />
               삭제
             </button>
           </div>
