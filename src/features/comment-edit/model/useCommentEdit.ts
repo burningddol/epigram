@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { apiClient } from "@/shared/api/client";
-import type { Comment } from "@/entities/comment";
+import { matchesCommentQuery, type Comment } from "@/entities/comment";
 
 interface UpdateCommentBody {
   content: string;
@@ -51,7 +51,9 @@ export function useCommentEdit({
     mutationFn: (body: UpdateCommentBody) =>
       apiClient.patch<Comment>(`/api/comments/${commentId}`, body).then((res) => res.data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["epigrams", epigramId, "comments"] });
+      queryClient.invalidateQueries({
+        predicate: (query) => matchesCommentQuery(query.queryKey),
+      });
       onCancel();
     },
   });
