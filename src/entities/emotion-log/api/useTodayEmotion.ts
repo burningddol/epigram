@@ -8,9 +8,7 @@ async function fetchTodayEmotion(userId: number): Promise<EmotionLog | null> {
   const response = await apiClient.get<unknown>("/api/emotionLogs/today", {
     params: { userId },
   });
-  // 백엔드는 오늘 기록이 없을 때 null/빈 응답을 반환하므로 스키마 파싱 전에 걸러낸다.
-  if (response.data == null || typeof response.data !== "object") return null;
-  return emotionLogSchema.parse(response.data);
+  return emotionLogSchema.nullable().parse(response.data ?? null);
 }
 
 export function useTodayEmotion(userId: number): UseQueryResult<EmotionLog | null, Error> {
