@@ -1,7 +1,7 @@
 "use client";
 
 import type { MouseEvent, ReactElement, ReactNode } from "react";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 import { Button } from "@/shared/ui/Button";
 
@@ -11,29 +11,22 @@ interface ModalProps {
 }
 
 export function Modal({ onClose, children }: ModalProps): ReactElement {
-  const previousFocusRef = useRef<HTMLElement | null>(null);
-  const mainContentRef = useRef<HTMLElement | null>(null);
-
   useEffect(() => {
-    previousFocusRef.current = document.activeElement as HTMLElement;
-    mainContentRef.current = document.getElementById("main-content");
+    const activeElement = document.activeElement;
+    const previousFocus = activeElement instanceof HTMLElement ? activeElement : null;
+    const mainContent = document.getElementById("main-content");
 
-    if (mainContentRef.current) {
-      mainContentRef.current.setAttribute("inert", "");
-    }
+    mainContent?.setAttribute("inert", "");
 
     return () => {
-      if (mainContentRef.current) {
-        mainContentRef.current.removeAttribute("inert");
-      }
-      previousFocusRef.current?.focus();
+      mainContent?.removeAttribute("inert");
+      previousFocus?.focus();
     };
   }, []);
 
   function handleBackdropClick(e: MouseEvent<HTMLDivElement>): void {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
+    if (e.target !== e.currentTarget) return;
+    onClose();
   }
 
   return (
