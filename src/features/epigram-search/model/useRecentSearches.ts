@@ -1,7 +1,13 @@
-import { useState, useEffect, useCallback, startTransition } from "react";
+import { useEffect, useState, startTransition } from "react";
 
 const STORAGE_KEY = "epigram_recent_searches";
 const MAX_RECENT_SEARCHES = 10;
+
+interface UseRecentSearchesResult {
+  recentSearches: string[];
+  addRecentSearch: (keyword: string) => void;
+  clearAllRecentSearches: () => void;
+}
 
 function loadFromStorage(): string[] {
   if (typeof window === "undefined") return [];
@@ -17,39 +23,32 @@ function saveToStorage(searches: string[]): void {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(searches));
 }
 
-interface UseRecentSearchesResult {
-  recentSearches: string[];
-  addRecentSearch: (keyword: string) => void;
-  clearAllRecentSearches: () => void;
-}
-
 export function useRecentSearches(): UseRecentSearchesResult {
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
 
-  // Load from localStorage after mount to avoid SSR/client hydration mismatch.
-  // startTransition: marks this low-priority so React can yield to urgent updates (e.g. input focus)
+  // 초기 로드는 SSR/hydration mismatch 방지를 위해 마운트 이후에 수행.
+  // startTransition으로 우선순위를 낮춰 입력 포커스 등 긴급 업데이트가 우선되도록 양보한다.
   useEffect(() => {
     startTransition(() => {
       setRecentSearches(loadFromStorage());
     });
   }, []);
 
-  const addRecentSearch = useCallback((keyword: string) => {
+  function addRecentSearch(keyword: string): void {
     const trimmed = keyword.trim();
     if (!trimmed) return;
 
     setRecentSearches((prev) => {
-      const deduplicated = prev.filter((k) => k !== trimmed);
-      const updated = [trimmed, ...deduplicated].slice(0, MAX_RECENT_SEARCHES);
-      saveToStorage(updated);
-      return updated;
+      const next = [trimmed, ...prev.filter((k) => k !== trimmed)].slice(0, MAX_RECENT_SEARCHES);
+      saveToStorage(next);
+      return next;
     });
-  }, []);
+  }
 
-  const clearAllRecentSearches = useCallback(() => {
+  function clearAllRecentSearches(): void {
     saveToStorage([]);
     setRecentSearches([]);
-  }, []);
+  }
 
   return { recentSearches, addRecentSearch, clearAllRecentSearches };
 }

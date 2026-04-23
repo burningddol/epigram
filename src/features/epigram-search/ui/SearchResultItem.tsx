@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, type ReactElement, type ReactNode, useMemo } from "react";
+import { type ReactElement, type ReactNode } from "react";
 
 import Link from "next/link";
 
@@ -16,35 +16,34 @@ interface HighlightedTextProps {
   keyword: string;
 }
 
-function buildHighlightedSegments(text: string, regex: RegExp): ReactNode {
-  // Regex split creates alternating text/match parts; odd indices are the highlighted matches
-  const parts = text.split(regex);
-
-  return parts.map((part, index) =>
-    index % 2 === 1 ? (
-      <mark key={index} className="bg-transparent px-0 font-semibold text-illust-blue not-italic">
-        {part}
-      </mark>
-    ) : (
-      part
-    )
-  );
-}
-
-function HighlightedText({ text, keyword }: HighlightedTextProps): ReactElement {
-  const regex = useMemo(() => {
-    if (!keyword.trim()) return null;
-    const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    return new RegExp(`(${escaped})`, "i");
-  }, [keyword]);
-
-  if (!regex) return <>{text}</>;
-  return <>{buildHighlightedSegments(text, regex)}</>;
-}
-
 interface TagListProps {
   tags: Epigram["tags"];
   keyword: string;
+}
+
+function buildKeywordRegex(keyword: string): RegExp | null {
+  const trimmed = keyword.trim();
+  if (!trimmed) return null;
+  const escaped = trimmed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`(${escaped})`, "i");
+}
+
+function renderHighlightedParts(text: string, regex: RegExp): ReactNode {
+  // split은 매칭/비매칭을 번갈아 반환 — 홀수 index가 하이라이트할 매칭 부분.
+  return text.split(regex).map((part, index) => {
+    if (index % 2 === 0) return part;
+    return (
+      <mark key={index} className="bg-transparent px-0 font-semibold text-illust-blue not-italic">
+        {part}
+      </mark>
+    );
+  });
+}
+
+function HighlightedText({ text, keyword }: HighlightedTextProps): ReactElement {
+  const regex = buildKeywordRegex(keyword);
+  if (!regex) return <>{text}</>;
+  return <>{renderHighlightedParts(text, regex)}</>;
 }
 
 function TagList({ tags, keyword }: TagListProps): ReactElement | null {
@@ -63,10 +62,13 @@ function TagList({ tags, keyword }: TagListProps): ReactElement | null {
   );
 }
 
-function SearchResultItemBase({ epigram, keyword }: SearchResultItemProps): ReactElement {
-  const authorLabel = epigram.referenceTitle
-    ? `${epigram.author} 《${epigram.referenceTitle}》`
-    : epigram.author;
+function getAuthorLabel(epigram: Epigram): string {
+  if (!epigram.referenceTitle) return epigram.author;
+  return `${epigram.author} 《${epigram.referenceTitle}》`;
+}
+
+export function SearchResultItem({ epigram, keyword }: SearchResultItemProps): ReactElement {
+  const authorLabel = getAuthorLabel(epigram);
 
   return (
     <Link
@@ -86,5 +88,3 @@ function SearchResultItemBase({ epigram, keyword }: SearchResultItemProps): Reac
     </Link>
   );
 }
-
-export const SearchResultItem = memo(SearchResultItemBase);
