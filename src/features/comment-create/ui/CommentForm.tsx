@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactElement, KeyboardEvent } from "react";
+import type { ChangeEvent, KeyboardEvent, ReactElement } from "react";
 
 import Image from "next/image";
 
@@ -27,10 +27,14 @@ export function CommentForm({ epigramId, userImage }: CommentFormProps): ReactEl
     handleSubmit,
   } = useCommentCreate(epigramId);
 
-  function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>): void {
-    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
-      handleSubmit();
-    }
+  function handleTextareaChange(event: ChangeEvent<HTMLTextAreaElement>): void {
+    handleContentChange(event.target.value);
+  }
+
+  function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>): void {
+    if (event.key !== "Enter") return;
+    if (!event.ctrlKey && !event.metaKey) return;
+    handleSubmit();
   }
 
   return (
@@ -48,7 +52,7 @@ export function CommentForm({ epigramId, userImage }: CommentFormProps): ReactEl
       <div className="flex flex-1 flex-col gap-2 rounded-2xl border border-blue-200 bg-white p-3 transition-all focus-within:border-blue-400 focus-within:shadow-sm">
         <textarea
           value={content}
-          onChange={(e) => handleContentChange(e.target.value)}
+          onChange={handleTextareaChange}
           onKeyDown={handleKeyDown}
           placeholder="100자 이내로 입력해주세요."
           maxLength={100}
