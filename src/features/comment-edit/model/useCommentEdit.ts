@@ -8,8 +8,8 @@ import { apiClient } from "@/shared/api/client";
 import type { Comment } from "@/entities/comment";
 
 interface UpdateCommentBody {
-  isPrivate?: boolean;
-  content?: string;
+  content: string;
+  isPrivate: boolean;
 }
 
 interface UseCommentEditParams {
@@ -56,16 +56,16 @@ export function useCommentEdit({
     },
   });
 
-  const canSubmit = content.trim().length > 0;
+  const trimmedContent = content.trim();
+  const canSubmit = trimmedContent.length > 0;
 
   function handlePrivateToggle(): void {
     setIsPrivate((prev) => !prev);
   }
 
   function handleSubmit(): void {
-    const trimmed = content.trim();
-    if (!trimmed) return;
-    mutate({ content: trimmed, isPrivate });
+    if (!canSubmit) return;
+    mutate({ content: trimmedContent, isPrivate });
   }
 
   function handleCancel(): void {
