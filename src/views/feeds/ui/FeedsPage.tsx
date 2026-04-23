@@ -11,7 +11,7 @@ import { EmptyState } from "@/shared/ui/EmptyState";
 import { ErrorBoundary } from "@/shared/ui/ErrorBoundary";
 import { SectionErrorFallback } from "@/shared/ui/SectionErrorFallback";
 
-const FEEDS_PAGE_SIZE = 10;
+export const FEEDS_PAGE_SIZE = 10;
 
 function FeedsSkeleton(): ReactElement {
   return (

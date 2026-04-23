@@ -10,7 +10,7 @@ import { EmptyState } from "@/shared/ui/EmptyState";
 import { ErrorBoundary } from "@/shared/ui/ErrorBoundary";
 import { SectionErrorFallback } from "@/shared/ui/SectionErrorFallback";
 
-const FEED_PAGE_SIZE = 5;
+export const FEED_PAGE_SIZE = 5;
 const FEED_SKELETON_COUNT = 3;
 
 interface FeedSectionProps {

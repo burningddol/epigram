@@ -3,10 +3,7 @@ import type { ReactElement } from "react";
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 
 import { fetchEpigramsPageServer } from "@/entities/epigram/api/server";
-import { FeedsPage } from "@/views/feeds";
-
-// Must match FEEDS_PAGE_SIZE in FeedsPage
-const FEEDS_PAGE_SIZE = 10;
+import { FeedsPage, FEEDS_PAGE_SIZE } from "@/views/feeds";
 
 export default async function FeedsRoute(): Promise<ReactElement> {
   const queryClient = new QueryClient({

@@ -11,7 +11,7 @@ import { formatRelativeTime } from "@/shared/lib/date";
 
 import type { Comment } from "@/entities/comment";
 
-const COMMENTS_PAGE_SIZE = 4;
+export const COMMENTS_PAGE_SIZE = 4;
 
 interface CommentItemProps {
   comment: Comment;

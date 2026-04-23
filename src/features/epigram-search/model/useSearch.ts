@@ -19,7 +19,6 @@ export function useSearch(): UseSearchResult {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // URL이 단일 진실 공급원 — 별도 상태 없이 직접 파생
   const activeKeyword = searchParams.get("keyword") ?? "";
 
   const [inputValue, setInputValue] = useState(activeKeyword);
