@@ -8,12 +8,12 @@ export interface UpdateMeBody {
 }
 
 export async function getMe(): Promise<User | null> {
-  const response = await apiClient.get<User | null>("/api/users/me");
+  const response = await apiClient.get<unknown>("/api/users/me");
   if (response.data === null) return null;
   return userSchema.parse(response.data);
 }
 
 export async function updateMe(body: UpdateMeBody): Promise<User> {
-  const response = await apiClient.patch("/api/users/me", body);
+  const response = await apiClient.patch<unknown>("/api/users/me", body);
   return userSchema.parse(response.data);
 }
