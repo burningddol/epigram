@@ -35,7 +35,7 @@ export function SignUpForm(): ReactElement {
       // router.refresh() 없이 push하면 캐시된 미인증 RSC 페이로드가 서빙되어
       // 미들웨어가 다시 /login으로 리다이렉트한다.
       router.refresh();
-      router.push("/");
+      router.push("/epigrams");
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 500) {
         setError("nickname", { message: "이미 사용 중인 닉네임입니다." });
