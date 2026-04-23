@@ -1,10 +1,3 @@
-/**
- * comment 엔티티 쿼리키 팩토리.
- *
- * features/comment-create·comment-edit·comment-delete 등 소비자들이
- * 에피그램·유저별 댓글 캐시를 일관된 키로 무효화할 수 있도록 한 곳에 모은다.
- * 하드코딩된 `["epigrams", id, "comments"]` 반복 대신 이 팩토리를 사용한다.
- */
 export const commentQueryKeys = {
   all: ["comments"] as const,
   recent: (params: { limit: number }) => ["comments", params] as const,
@@ -15,3 +8,11 @@ export const commentQueryKeys = {
   byUserWithParams: (userId: number, params: { limit: number }) =>
     ["users", userId, "comments", params] as const,
 } as const;
+
+export function matchesCommentQuery(queryKey: readonly unknown[]): boolean {
+  const [prefix, , third] = queryKey;
+  if (prefix === "comments") return true;
+  if (prefix === "epigrams" && third === "comments") return true;
+  if (prefix === "users" && third === "comments") return true;
+  return false;
+}

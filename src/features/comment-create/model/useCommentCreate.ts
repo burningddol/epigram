@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { apiClient } from "@/shared/api/client";
 
-import type { Comment } from "@/entities/comment";
+import { matchesCommentQuery, type Comment } from "@/entities/comment";
 
 interface CreateCommentBody {
   epigramId: number;
@@ -43,7 +43,9 @@ export function useCommentCreate(epigramId: number): UseCommentCreateReturn {
   } = useMutation({
     mutationFn: createComment,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["epigrams", epigramId, "comments"] });
+      queryClient.invalidateQueries({
+        predicate: (query) => matchesCommentQuery(query.queryKey),
+      });
       setContent("");
       setIsPrivate(false);
     },

@@ -1,7 +1,7 @@
 export { writerSchema, commentSchema, commentListResponseSchema } from "./model/schema";
 export type { Writer, Comment, CommentListResponse } from "./model/schema";
 
-export { commentQueryKeys } from "./model/queryKeys";
+export { commentQueryKeys, matchesCommentQuery } from "./model/queryKeys";
 
 export { useRecentComments } from "./api/useRecentComments";
 export { useEpigramComments } from "./api/useEpigramComments";
