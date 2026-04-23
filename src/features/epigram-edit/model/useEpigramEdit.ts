@@ -35,6 +35,16 @@ function resolveAuthor(values: EpigramCreateFormValues): string {
   return values.authorName ?? "";
 }
 
+function toUpdateBody(values: EpigramCreateFormValues): UpdateEpigramBody {
+  return {
+    content: values.content,
+    author: resolveAuthor(values),
+    referenceTitle: values.referenceTitle?.trim() || undefined,
+    referenceUrl: values.referenceUrl?.trim() || undefined,
+    tags: values.tags,
+  };
+}
+
 export function useEpigramEdit(epigramId: number): UseEpigramEditReturn {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -58,13 +68,7 @@ export function useEpigramEdit(epigramId: number): UseEpigramEditReturn {
   }
 
   function submit(values: EpigramCreateFormValues): void {
-    mutate({
-      content: values.content,
-      author: resolveAuthor(values),
-      referenceTitle: values.referenceTitle?.trim() || undefined,
-      referenceUrl: values.referenceUrl?.trim() || undefined,
-      tags: values.tags,
-    });
+    mutate(toUpdateBody(values));
   }
 
   return {

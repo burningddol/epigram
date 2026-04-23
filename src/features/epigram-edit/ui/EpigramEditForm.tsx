@@ -59,11 +59,10 @@ export function EpigramEditForm({ epigramId, defaultValues }: EpigramEditFormPro
     hasError,
   } = useEpigramEdit(epigramId);
 
-  const contentValue = watch("content");
+  const contentLength = watch("content")?.length ?? 0;
   const authorType = watch("authorType");
-  const contentLength = contentValue?.length ?? 0;
-  const isContentNearLimit = contentLength >= MAX_CONTENT_LENGTH * 0.9;
   const isContentOverLimit = contentLength > MAX_CONTENT_LENGTH;
+  const isContentNearLimit = contentLength >= MAX_CONTENT_LENGTH * 0.9;
 
   function getContentCounterClass(): string {
     if (isContentOverLimit) return "font-semibold text-error";
