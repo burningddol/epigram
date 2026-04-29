@@ -5,15 +5,12 @@ import { Suspense, useEffect } from "react";
 
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { useQueryClient } from "@tanstack/react-query";
-
 import { signInKakao } from "@/entities/user";
 import { getSafeRedirect, SESSION_REDIRECT_KEY } from "@/shared/lib";
 
 function KakaoCallbackHandler(): null {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const queryClient = useQueryClient();
 
   useEffect(() => {
     const code = searchParams.get("code");
@@ -25,15 +22,13 @@ function KakaoCallbackHandler(): null {
     const redirectUri = `${window.location.origin}/oauth/callback/kakao`;
 
     signInKakao({ token: code, redirectUri })
-      .then(({ user }) => {
-        queryClient.setQueryData(["me"], user);
+      .then(() => {
         const savedRedirect = sessionStorage.getItem(SESSION_REDIRECT_KEY);
         sessionStorage.removeItem(SESSION_REDIRECT_KEY);
-        router.replace(getSafeRedirect(savedRedirect));
-        router.refresh();
+        window.location.replace(getSafeRedirect(savedRedirect));
       })
       .catch(() => router.replace("/login"));
-  }, [router, searchParams, queryClient]);
+  }, [router, searchParams]);
 
   return null;
 }

@@ -3,10 +3,8 @@
 import type { ReactElement } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
-
-import { useQueryClient } from "@tanstack/react-query";
 
 import { signIn } from "@/entities/user";
 import { getSafeRedirect } from "@/shared/lib";
@@ -16,9 +14,7 @@ import { Input } from "@/shared/ui/Input";
 import { loginSchema, type LoginFormValues } from "../model/loginSchema";
 
 export function LoginForm(): ReactElement {
-  const router = useRouter();
   const searchParams = useSearchParams();
-  const queryClient = useQueryClient();
 
   const {
     register,
@@ -32,10 +28,8 @@ export function LoginForm(): ReactElement {
 
   async function onSubmit(data: LoginFormValues): Promise<void> {
     try {
-      const { user } = await signIn(data);
-      queryClient.setQueryData(["me"], user);
-      router.replace(getSafeRedirect(searchParams.get("redirect")));
-      router.refresh();
+      await signIn(data);
+      window.location.replace(getSafeRedirect(searchParams.get("redirect")));
     } catch {
       const message = "이메일 혹은 비밀번호를 확인해주세요.";
       setError("email", { message });
