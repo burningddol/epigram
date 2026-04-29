@@ -30,6 +30,7 @@ function KakaoCallbackHandler(): null {
         const savedRedirect = sessionStorage.getItem(SESSION_REDIRECT_KEY);
         sessionStorage.removeItem(SESSION_REDIRECT_KEY);
         router.replace(getSafeRedirect(savedRedirect));
+        router.refresh();
       })
       .catch(() => router.replace("/login"));
   }, [router, searchParams, queryClient]);
