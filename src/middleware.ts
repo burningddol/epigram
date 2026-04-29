@@ -12,9 +12,6 @@ function isProtectedPath(pathname: string): boolean {
 // 로그인 상태에서 접근하면 홈으로 리다이렉트
 const AUTH_ONLY_PATHS = ["/login", "/signup", "/oauth/signup/kakao"];
 
-// 미들웨어 리다이렉트 응답이 브라우저/Next 클라이언트 캐시에 남으면
-// 로그인 후에도 보호 경로로 이동했을 때 캐시된 "→ /login" 응답이 재사용되어
-// 사용자가 다시 로그인 페이지로 튕긴다. no-store로 캐시 자체를 차단한다.
 function redirectWithoutCache(url: URL): NextResponse {
   const response = NextResponse.redirect(url);
   response.headers.set("Cache-Control", "no-store");
@@ -27,6 +24,12 @@ export function middleware(request: NextRequest): NextResponse | undefined {
   const isLoggedIn = request.cookies.has("accessToken") || request.cookies.has("refreshToken");
 
   if (isProtectedPath(pathname) && !isLoggedIn) {
+    // prefetch 요청에 307을 돌려주면 그 결과가 클라이언트 라우터 캐시에 박혀,
+    // 로그인 후에도 stale "→ /login" 엔트리가 재사용되어 사용자가 튕긴다.
+    // 401은 라우터 캐시에 저장되지 않으므로 prefetch만 끊어 캐시 오염을 막는다.
+    if (request.headers.get("next-router-prefetch")) {
+      return new NextResponse(null, { status: 401 });
+    }
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("redirect", pathname);
     return redirectWithoutCache(loginUrl);
