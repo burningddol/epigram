@@ -24,12 +24,6 @@ export function middleware(request: NextRequest): NextResponse | undefined {
   const isLoggedIn = request.cookies.has("accessToken") || request.cookies.has("refreshToken");
 
   if (isProtectedPath(pathname) && !isLoggedIn) {
-    // prefetch 요청에 307을 돌려주면 그 결과가 클라이언트 라우터 캐시에 박혀,
-    // 로그인 후에도 stale "→ /login" 엔트리가 재사용되어 사용자가 튕긴다.
-    // 401은 라우터 캐시에 저장되지 않으므로 prefetch만 끊어 캐시 오염을 막는다.
-    if (request.headers.get("next-router-prefetch")) {
-      return new NextResponse(null, { status: 401 });
-    }
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("redirect", pathname);
     return redirectWithoutCache(loginUrl);
